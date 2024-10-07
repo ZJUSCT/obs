@@ -96,6 +96,9 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
       - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
+      - http_proxy=socks5://bridge.internal.zjusct.io:7891
+      - https_proxy=socks5://bridge.internal.zjusct.io:7891
+      - no_proxy=127.0.0.1,.cn,.zjusct.io
     ports:
       - 3000:3000
     restart: unless-stopped
