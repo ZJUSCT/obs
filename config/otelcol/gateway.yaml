@@ -1,0 +1,108 @@
+# https://opentelemetry.io/docs/collector/configuration/
+# https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
+# Docker 中作为 gateway 的 otel-collector
+
+extensions:
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/healthcheckextension
+  health_check:
+    endpoint: otel-collector:13133
+    response_body: 
+      healthy: "ok"
+  pprof:
+    endpoint: otel-collector:1777
+  zpages:
+    endpoint: otel-collector:55679
+  bearertokenauth:
+    token: ${OTEL_BEARER_TOKEN}
+
+receivers:
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver
+  otlp/with_auth:
+    protocols:
+      http:
+        endpoint: otel-collector:4318
+        auth:
+          authenticator: bearertokenauth
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/syslogreceiver
+  syslog:
+    udp:
+      listen_address: otel-collector:514
+      add_attributes: true
+      one_log_per_packet: true
+    protocol: rfc3164
+    # we configure all infrastructure to use the same timezone UTC +8
+    location: Asia/Shanghai
+    operators:
+      - type: router
+        routes:
+          - output: huawei_add_resource
+            # before escape: %%\d+[^\/]+\/\d+\/.+\(.+\)
+            expr: 'attributes.appname matches "%%\\d+[^\\/]+\\/\\d+\\/.+\\(.+\\)"'
+        default: noop
+      - id: huawei_add_resource
+        type: add
+        field: resource.device.manufacturer
+        value: Huawei
+        output: huawei_regex_parser
+      - id: huawei_regex_parser
+        type: regex_parser
+        parse_from: attributes.appname
+        parse_to: attributes.huawei
+        regex: '%%(?P<version>\d+)(?P<module_name>[^\/]+)\/(?P<serverity>\d+)\/(?P<brief>.+)\((?P<type>.+)\)'
+      - id: noop
+        type: noop
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/collectdreceiver
+#  collectd:
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/snmpreceiver
+# sources are:
+# - MPDU
+# todo
+
+processors:
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
+  batch:
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor
+  memory_limiter:
+    # 75% of maximum memory up to 2G
+    limit_mib: 1536
+    # 25% of limit up to 2G
+    spike_limit_mib: 512
+    check_interval: 5s
+
+exporters:
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
+  debug:
+    # basic, normal, detailed
+    verbosity: basic
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/clickhouseexporter
+  clickhouse:
+    endpoint: clickhouse://clickhouse:9000
+    ttl: 72h
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusexporter
+  prometheus:
+    endpoint: otel-collector:9090
+    namespace: otel
+    send_timestamps: true
+    resource_to_telemetry_conversion:
+      enabled: true
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/fileexporter
+  #file:
+  #  path: /test/otel-collector.json
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/nopexporter
+  #nop:
+
+service:
+  extensions: [health_check, pprof, zpages, bearertokenauth]
+  pipelines:
+    logs:
+      receivers: [syslog, otlp/with_auth]
+      processors: [memory_limiter, batch]
+      exporters: [clickhouse, debug]
+    traces:
+      receivers: [otlp/with_auth]
+      processors: [memory_limiter, batch]
+      exporters: [clickhouse, debug]
+    metrics:
+      receivers: [otlp/with_auth]
+      processors: [memory_limiter, batch]
+      exporters: [prometheus, debug]

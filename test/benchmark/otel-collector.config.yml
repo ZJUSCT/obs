@@ -1,0 +1,32 @@
+# https://opentelemetry.io/docs/collector/configuration/
+# https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
+
+receivers:
+  filelog:
+    include: [ /logs/*.json ]
+    start_at: beginning
+    max_log_size: 10MiB
+    operators:
+      - type: json_parser
+
+processors:
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
+  batch:
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor
+  memory_limiter:
+    # 75% of maximum memory up to 2G
+    limit_mib: 1536
+    # 25% of limit up to 2G
+    spike_limit_mib: 512
+    check_interval: 5s
+
+exporters:
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/nopexporter
+  nop:
+
+service:
+  pipelines:
+    logs:
+      receivers: [filelog]
+      processors: [memory_limiter, batch]
+      exporters: [nop]

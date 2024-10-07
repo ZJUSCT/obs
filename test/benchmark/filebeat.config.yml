@@ -1,0 +1,12 @@
+filebeat.inputs:
+  - type: filestream
+    id: mystream
+    paths:
+      - /logs/*.json
+    parsers:
+      - ndjson:
+          target: ""
+          add_error_key: true
+
+output.discard:
+  enabled: true

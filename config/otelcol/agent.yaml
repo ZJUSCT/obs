@@ -1,0 +1,283 @@
+# https://opentelemetry.io/docs/collector/configuration/
+# https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
+# 节点上作为 agent 的 otel-collector，需要运行为 root
+# Environment variables:
+# - OTEL_BEARER_TOKEN
+# - OTEL_COLLECTOR_ENDPOINT
+
+extensions:
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/bearertokenauthextension
+  bearertokenauth:
+    token: ${OTEL_BEARER_TOKEN}
+
+receivers:
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
+  filelog/nginx_access:
+    include: /var/log/nginx/access.log
+    resource: 
+      service.name: nginx
+    # start_at: beginning
+    operators:
+      - type: json_parser
+        timestamp:
+          layout_type: 'epoch'
+          layout: 's.ms'
+          parse_from: attributes.timestamp
+        severity:
+          parse_from: attributes.http.response.status_code
+          mapping:
+            warn: 5xx
+            error: 4xx
+            info: 3xx
+            debug: 2xx
+      - type: remove
+        field: attributes.timestamp
+      - type: move
+        from: attributes.body
+        to: body
+      - type: move
+        from: attributes.resource.process
+        to: resource.process
+      - type: remove
+        field: attributes.resource
+  filelog/nginx_error:
+    include: /var/log/nginx/error.log
+    resource: 
+      service.name: nginx
+    # start_at: beginning
+    operators:
+      - type: regex_parser
+        regex: '(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<severity>\w+)\] (?P<pid>\d+)#(?P<tid>\d+): (?:\*(?P<cid>\d+) )?(?P<message>[^,]+), (?P<kv>.+)'
+        timestamp:
+          layout: '%Y/%m/%d %H:%M:%S'
+          parse_from: attributes.timestamp
+        severity:
+          parse_from: attributes.severity
+          # nginx error level: debug, info, notice, warn, error, crit, alert, or emerg
+          mapping:
+            fatal: emerg
+            error3: alert
+            error2: crit
+            error: error
+            warn: warn
+            info2: notice
+            info: info
+            debug: debug
+      - type: remove
+        field: attributes.timestamp
+      - type: remove
+        field: attributes.severity
+      - type: move
+        from: attributes.message
+        to: body
+      - type: move
+        from: attributes.pid
+        to: resource.process.pid
+      - type: move
+        from: attributes.tid
+        to: resource.thread.id
+      - type: move
+        from: attributes.cid
+        to: resource.correlation.id
+        if: 'type(attributes.cid) != "nil"'
+      # kv
+      - type: key_value_parser
+        parse_from: attributes.kv
+        parse_to: attributes.nginx
+        delimiter: ':'
+        pair_delimiter: ','
+      - type: remove
+        field: attributes.kv
+      - type: move
+        from: attributes.nginx.client
+        to: resource.client.address
+        if: 'type(attributes.nginx.client) != "nil"'
+      - type: move
+        from: attributes.nginx.server
+        to: resource.server.address
+        if: 'type(attributes.nginx.server) != "nil"'
+      # request
+      - type: router
+        routes:
+          - output: regex_parser_request
+            expr: 'type(attributes.nginx.request) == "string"'
+        default: end
+      - type: regex_parser
+        id: regex_parser_request
+        parse_from: attributes.nginx.request
+        parse_to: attributes.nginx.request
+        regex: '(?P<http_method>.+) (?P<url_path>.+) (?P<url_scheme>.+)'
+      - type: move
+        from: attributes.nginx.request.http_method
+        to: attributes.http.request.method
+      - type: move
+        from: attributes.nginx.request.url_path
+        to: attributes.url.path
+      - type: move
+        from: attributes.nginx.request.url_scheme
+        to: attributes.url.scheme
+      - type: remove
+        field: attributes.nginx.request
+      # end
+      - type: noop
+        id: end
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver
+  docker_stats:
+    # 默认的 metrics 和 resource attributes 已经足够
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver
+  otlp:
+    protocols: 
+      # default to localhost
+      grpc:
+      http:
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/journaldreceiver
+  journald:
+    # https://www.freedesktop.org/software/systemd/man/249/journald.conf.html
+    # In journald.conf, set Storage=volatile
+    directory: /run/log/journal
+    # start_at: beginning
+    all: true
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/pkg/stanza/docs/operators/README.md
+    # 目前，该 receiver 仅设置 timestamp，其余信息全部堆在 body。
+    # 正在等待标准修订，下面的 Issue 需要跟踪。
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/7298
+    operators:
+    # 特殊情况：
+    # - kernel 和某些 log 没有 PID、COMM、EXE、CMDLINE、UID、GID 等字段
+    # https://www.freedesktop.org/software/systemd/man/latest/systemd.journal-fields.html
+    # 全部移动到 attributes，然后将语义明确的移动到 resource 和 attributes
+    - type: move
+      from: body
+      to: attributes.journal
+    - type: move
+      from: attributes.journal.MESSAGE
+      to: body
+    - type: move
+      from: attributes.journal.SYSLOG_IDENTIFIER
+      to: resource.service.name
+      if: 'type(attributes.journal.SYSLOG_IDENTIFIER) != "nil"'
+    - type: move
+      from: attributes.journal._PID
+      to: resource.process.pid
+      if: 'type(attributes.journal._PID) != "nil"'
+    - type: move
+      from: attributes.journal._COMM
+      to: resource.process.executable.name
+      if: 'type(attributes.journal._COMM) != "nil"'
+    - type: move
+      from: attributes.journal._EXE
+      to: resource.process.executable.path
+      if: 'type(attributes.journal._EXE) != "nil"'
+    - type: move
+      from: attributes.journal._CMDLINE
+      to: resource.process.command_line
+      if: 'type(attributes.journal._CMDLINE) != "nil"'
+    - type: move
+      from: attributes.journal._UID
+      to: resource.process.owner
+      if: 'type(attributes.journal._UID) != "nil"'
+    # 下面的字段所有情况都有
+    - type: move
+      from: attributes.journal._HOSTNAME
+      to: resource.host.name
+    - type: severity_parser
+      parse_from: attributes.journal.PRIORITY
+      preset: none
+      mapping:
+      # OTel severity number: systemd priority # syslog severity
+        fatal: 0 # emerg
+        error3: 1 # alert
+        error2: 2 # crit
+        error: 3 
+        warn: 4
+        info2: 5 # notice
+        info: 6
+        debug: 7
+      
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver
+  hostmetrics/fast:
+    collection_interval: 15s
+    scrapers:
+      cpu:
+      load:
+      memory:
+      network:
+        include:
+          interfaces:
+            - "eth*"
+            - "en*"
+            - "ib*"
+          match_type: "regexp"
+      processes:
+#      process:
+  hostmetrics/slow:
+    collection_interval: 60m 
+    scrapers:
+      filesystem:
+        include_fs_types:
+          fs_types:
+            - btrfs
+            - nfs
+            - ext4
+            - zfs
+          match_type: "strict"
+#      disk:
+
+processors:
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
+  batch:
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor
+  memory_limiter:
+    # 75% of maximum memory up to 2G
+    limit_mib: 1536
+    # 25% of limit up to 2G
+    spike_limit_mib: 512
+    check_interval: 5s
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourcedetectionprocessor
+  resourcedetection:
+    detectors: ["system"]
+    timeout: 24h
+    system:
+      hostname_sources: ["os"]
+      resource_attributes:     
+        host.arch:
+          enabled: true
+        host.name:
+          enabled: true
+        host.id:
+          enabled: true
+        host.ip:
+          enabled: true
+        host.cpu.model.name:
+          enabled: true
+        os.description:
+          enabled: true
+        os.type:
+          enabled: true
+
+exporters:
+# https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
+  debug:
+    # basic, normal, detailed
+    verbosity: basic
+# https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
+  otlphttp/with_auth:
+    endpoint: https://otel.clusters.zjusct.io
+    auth:
+      authenticator: bearertokenauth
+
+service:
+  extensions: [bearertokenauth]
+  pipelines:
+    logs:
+      receivers: [otlp, journald]
+      processors: [memory_limiter, batch, resourcedetection]
+      exporters: [otlphttp/with_auth]
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, resourcedetection]
+      exporters: [otlphttp/with_auth]
+    metrics:
+      receivers: [docker_stats, hostmetrics/fast, hostmetrics/slow]
+      processors: [memory_limiter, batch, resourcedetection]
+      exporters: [otlphttp/with_auth]

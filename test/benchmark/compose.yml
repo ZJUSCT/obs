@@ -1,0 +1,19 @@
+services:
+  filebeat:
+    image: docker.elastic.co/beats/filebeat:8.15.2
+    user: "1000"
+    volumes:
+      - ./filebeat.config.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ./logs:/logs
+#    command: filebeat test config -c /usr/share/filebeat/filebeat.yml
+  otel-collector:
+    image: docker.m.daocloud.io/otel/opentelemetry-collector-contrib
+    user: "1000"
+    volumes:
+      - ./otel-collector.config.yml:/etc/otelcol-contrib/config.yaml
+      - ./logs:/logs
+    ports:
+      - 8888:8888 # internal metrics
+#    command: otelcol-contrib --config /etc/otelcol-contrib/config.yaml
+
+    

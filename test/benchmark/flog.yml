@@ -1,0 +1,7 @@
+services:
+  flog:
+    image: mingrammer/flog
+    user: "1000"
+    volumes: 
+      - ./logs:/logs
+    command: flog -t log -f json -o /logs/flog.json -b 1048576000 -p 1048576
