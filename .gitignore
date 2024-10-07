@@ -1,3 +1,4 @@
 database/*/*
+!database/*/.gitkeep
 certs/cert-key.pem
 .env

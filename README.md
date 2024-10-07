@@ -4,6 +4,25 @@
 
 本仓库是 ZJUSCT 可观测性系统的配置文件。
 
+## Todo
+
+- [ ] Elastic Exporter
+- [ ] Grafana Provision DataSources
+- [ ] Grafana Provision Dashboards
+- [ ] Grafana Provision Alerts
+
+## 技术选型
+
+We ❤️ Open Source
+
+| 层次 | 组件 |
+| --- | --- |
+| 数据采集 | [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector) |
+| 数据存储 | [ClickHouse](https://github.com/ClickHouse/ClickHouse)、[Elasticsearch](https://github.com/elastic/elasticsearch)、[InfluxDB](https://github.com/influxdata/influxdb)、[Prometheus](https://github.com/prometheus/prometheus) |
+| 数据分析、可视化和告警 | [Grafana](https://github.com/grafana/grafana) |
+
+## 数据状态
+
 为了方便运维管理，系统的状态应由仓库中的配置文件完全决定，Docker 是无状态的。需要持久化的数据使用 Docker Volume 存储在本地。
 
 - 配置文件：能够使用 Git 管理的配置文件，通常是简单的文本，存储在本仓库中。依靠这些配置文件，我们只需要克隆仓库并 `docker compose up` 就能够快速部署整个系统，开箱即用。
