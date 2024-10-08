@@ -7,9 +7,13 @@
 ## Todo
 
 - [ ] Elastic Exporter
+- [ ] InfluxDB Exporter
+- [ ] Nginx Native Collector
 - [ ] Grafana Provision DataSources
 - [ ] Grafana Provision Dashboards
 - [ ] Grafana Provision Alerts
+- [ ] Wait for Prometheus 3.0, [native support for OpenTelemetry](https://prometheus.io/blog/2024/03/14/commitment-to-opentelemetry/) is coming.
+- [ ] Wait for [journald - Consider parsing more known fields from logs · Issue #7298 · open-telemetry/opentelemetry-collector-contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/7298).
 
 ## 技术选型
 

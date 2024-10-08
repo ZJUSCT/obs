@@ -1,0 +1,57 @@
+# https://opentelemetry.io/docs/collector/configuration/
+# https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
+# 节点上作为 agent 的 otel-collector，需要运行为 root
+# Environment variables:
+# - OTEL_BEARER_TOKEN
+# - OTEL_COLLECTOR_ENDPOINT
+
+extensions:
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/bearertokenauthextension
+  bearertokenauth:
+    token: ${OTEL_BEARER_TOKEN}
+
+receivers:
+  otlp:
+    protocols: 
+      # default to localhost
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+
+processors:
+  batch:
+  memory_limiter:
+    limit_mib: 1536
+    spike_limit_mib: 512
+    check_interval: 5s
+  resource:
+    attributes:
+    - key: host.name
+      value: "testbench"
+      action: upsert
+
+exporters:
+  debug:
+    # basic, normal, detailed
+    verbosity: detailed
+  otlphttp/with_auth:
+    endpoint: https://otel.clusters.zjusct.io
+    auth:
+      authenticator: bearertokenauth
+
+service:
+  extensions: [bearertokenauth]
+  pipelines:
+    logs:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, resource]
+      exporters: [otlphttp/with_auth, debug]
+    traces:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, resource]
+      exporters: [otlphttp/with_auth, debug]
+    metrics:
+      receivers: [otlp]
+      processors: [memory_limiter, batch, resource]
+      exporters: [otlphttp/with_auth, debug]
