@@ -1,7 +1,10 @@
 # https://grafana.com/grafana/plugins/grafana-clickhouse-datasource/
 apiVersion: 1
+prune: true
+
 datasources:
   - name: ClickHouse
+    uid: clickhouse
     type: grafana-clickhouse-datasource
     jsonData:
       defaultDatabase: default
