@@ -3,6 +3,8 @@
 credential_names=(
     "OTEL_BEARER_TOKEN"
     "GF_SECURITY_ADMIN_PASSWORD"
+    "GF_TG_BOT_TOKEN"
+    "GF_TG_CHAT_ID"
 )
 
 bw_login() {
@@ -49,7 +51,13 @@ fi
 # for each credential name, get the password, append it to .env using format CREDENTIAL_NAME=PASSWORD
 for credential_name in "${credential_names[@]}"
 do
+    echo "Getting $credential_name"
     password=$(bw get password $credential_name)
+    if [ -z "$password" ]
+    then
+        echo "Failed to get $credential_name"
+        continue
+    fi
     echo "$credential_name=\"$password\"" >> .env
 done
 

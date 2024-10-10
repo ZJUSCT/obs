@@ -5,28 +5,31 @@
 extensions:
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/healthcheckextension
   health_check:
-    endpoint: otel-collector:13133
+    endpoint: otelcol:13133
     response_body: 
       healthy: "ok"
   pprof:
-    endpoint: otel-collector:1777
+    endpoint: otelcol:1777
   zpages:
-    endpoint: otel-collector:55679
+    endpoint: otelcol:55679
   bearertokenauth:
     token: ${OTEL_BEARER_TOKEN}
 
 receivers:
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/fluentforwardreceiver
+  fluentforward:
+    endpoint: otelcol:8006
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver
   otlp/with_auth:
     protocols:
       http:
-        endpoint: otel-collector:4318
+        endpoint: otelcol:4318
         auth:
           authenticator: bearertokenauth
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/syslogreceiver
   syslog:
     udp:
-      listen_address: otel-collector:514
+      listen_address: otelcol:514
       add_attributes: true
       one_log_per_packet: true
     protocol: rfc3164
@@ -80,7 +83,7 @@ exporters:
     ttl: 72h
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusexporter
   prometheus:
-    endpoint: otel-collector:9090
+    endpoint: otelcol:9090
     namespace: otel
     send_timestamps: true
     resource_to_telemetry_conversion:
