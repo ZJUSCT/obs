@@ -1,0 +1,14 @@
+# export from grafana
+apiVersion: 1
+contactPoints:
+  - name: telegram_bot
+    receivers:
+      - uid: telegram_bot
+        type: telegram
+        settings:
+          bottoken: ${GF_TG_BOT_TOKEN}
+          chatid: ${GF_TG_CHAT_ID}
+          disable_notification: false
+          disable_web_page_preview: false
+          protect_content: false
+        disableResolveMessage: false
