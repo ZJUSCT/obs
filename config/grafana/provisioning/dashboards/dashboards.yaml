@@ -1,0 +1,20 @@
+# https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
+apiVersion: 1
+
+providers:
+  - name: 'dashboards'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 60
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/zjusct
+      foldersFromFilesStructure: true
+  - name: 'grafana_official'
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 600
+    allowUiUpdates: true
+    options:
+      path: /etc/grafana/provisioning/dashboards/grafana_official
+      foldersFromFilesStructure: true

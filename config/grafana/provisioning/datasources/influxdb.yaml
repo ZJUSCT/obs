@@ -1,15 +1,17 @@
 # https://grafana.com/docs/grafana/latest/datasources/influxdb/
-apiVersion: 1
-
-datasources:
-  - name: InfluxDB_v3_InfluxQL
-    type: influxdb
-    access: proxy
-    url: http://influxdb:8086
-    jsonData:
-      version: SQL
-      dbName: site
-      httpMode: POST
-      insecureGrpc: false
-    secureJsonData:
-      token: '<api-token>'
+#apiVersion: 1
+#prune: true
+#
+#datasources:
+#  - name: InfluxDB_v3_InfluxQL
+#    uid: influxdb
+#    type: influxdb
+#    access: proxy
+#    url: http://influxdb:8086
+#    # jsonData:
+#    #   version: SQL
+#    #   dbName: site
+#    #   httpMode: POST
+#    #   insecureGrpc: false
+#    # secureJsonData:
+#    #   token: '<api-token>'
