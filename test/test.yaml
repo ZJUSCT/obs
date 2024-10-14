@@ -7,8 +7,8 @@
 
 extensions:
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/bearertokenauthextension
-  bearertokenauth:
-    token: ${OTEL_BEARER_TOKEN}
+#  bearertokenauth:
+#    token: ${OTEL_BEARER_TOKEN}
 
 receivers:
   otlp:
@@ -18,7 +18,21 @@ receivers:
         endpoint: "0.0.0.0:4317"
       http:
         endpoint: "0.0.0.0:4318"
-
+  filelog:
+    include: /tmp/docker-log.json
+    operators:
+      - type: json_parser
+        timestamp:
+          layout_type: '%Y-%m-%dT%H:%M:%S.%fZ'
+          parse_from: attributes.time
+      - type: remove
+        field: attributes.time
+      - type: key_value_parser
+        parse_from: attributes.attrs.tag
+        parse_to: resource
+      - type: remove
+        field: attributes.attrs
+      
 processors:
   batch:
   memory_limiter:
@@ -46,12 +60,13 @@ service:
     logs:
       receivers: [otlp]
       processors: [memory_limiter, batch, resource]
-      exporters: [otlphttp/with_auth, debug]
+#      exporters: [otlphttp/with_auth, debug]
+      exporters: [debug]
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch, resource]
-      exporters: [otlphttp/with_auth, debug]
+      exporters: [debug]
     metrics:
       receivers: [otlp]
       processors: [memory_limiter, batch, resource]
-      exporters: [otlphttp/with_auth, debug]
+      exporters: [debug]

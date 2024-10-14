@@ -1,0 +1,569 @@
+{
+        "annotations": {
+                "list": [
+                        {
+                                "builtIn": 1,
+                                "datasource": {
+                                        "type": "grafana",
+                                        "uid": "-- Grafana --"
+                                },
+                                "enable": true,
+                                "hide": true,
+                                "iconColor": "rgba(0, 211, 255, 1)",
+                                "name": "Annotations & Alerts",
+                                "type": "dashboard"
+                        }
+                ]
+        },
+        "editable": true,
+        "fiscalYearStartMonth": 0,
+        "graphTooltip": 0,
+        "id": 14,
+        "links": [],
+        "panels": [
+                {
+                        "datasource": {
+                                "default": false,
+                                "type": "prometheus",
+                                "uid": "prometheus"
+                        },
+                        "fieldConfig": {
+                                "defaults": {
+                                        "color": {
+                                                "mode": "thresholds"
+                                        },
+                                        "mappings": [],
+                                        "thresholds": {
+                                                "mode": "absolute",
+                                                "steps": [
+                                                        {
+                                                                "color": "green",
+                                                                "value": null
+                                                        },
+                                                        {
+                                                                "color": "red",
+                                                                "value": 80
+                                                        }
+                                                ]
+                                        }
+                                },
+                                "overrides": []
+                        },
+                        "gridPos": {
+                                "h": 7,
+                                "w": 10,
+                                "x": 0,
+                                "y": 0
+                        },
+                        "id": 3,
+                        "options": {
+                                "colorMode": "value",
+                                "graphMode": "area",
+                                "justifyMode": "auto",
+                                "orientation": "auto",
+                                "percentChangeColorMode": "standard",
+                                "reduceOptions": {
+                                        "calcs": [
+                                                "lastNotNull"
+                                        ],
+                                        "fields": "",
+                                        "values": false
+                                },
+                                "showPercentChange": false,
+                                "textMode": "auto",
+                                "wideLayout": true
+                        },
+                        "pluginVersion": "11.2.0",
+                        "targets": [
+                                {
+                                        "datasource": {
+                                                "type": "prometheus",
+                                                "uid": "prometheus"
+                                        },
+                                        "disableTextWrap": false,
+                                        "editorMode": "builder",
+                                        "expr": "avg by(__name__) (otel_system_cpu_load_average_5m)",
+                                        "fullMetaSearch": false,
+                                        "includeNullMetadata": true,
+                                        "instant": false,
+                                        "legendFormat": "__auto",
+                                        "range": true,
+                                        "refId": "A",
+                                        "useBackend": false
+                                }
+                        ],
+                        "title": "Cluster Load",
+                        "type": "stat"
+                },
+                {
+                        "datasource": {
+                                "default": false,
+                                "type": "prometheus",
+                                "uid": "prometheus"
+                        },
+                        "fieldConfig": {
+                                "defaults": {
+                                        "color": {
+                                                "mode": "thresholds"
+                                        },
+                                        "mappings": [],
+                                        "thresholds": {
+                                                "mode": "absolute",
+                                                "steps": [
+                                                        {
+                                                                "color": "green",
+                                                                "value": null
+                                                        },
+                                                        {
+                                                                "color": "red",
+                                                                "value": 80
+                                                        }
+                                                ]
+                                        }
+                                },
+                                "overrides": []
+                        },
+                        "gridPos": {
+                                "h": 7,
+                                "w": 10,
+                                "x": 10,
+                                "y": 0
+                        },
+                        "id": 8,
+                        "options": {
+                                "colorMode": "value",
+                                "graphMode": "area",
+                                "justifyMode": "auto",
+                                "orientation": "auto",
+                                "percentChangeColorMode": "standard",
+                                "reduceOptions": {
+                                        "calcs": [
+                                                "lastNotNull"
+                                        ],
+                                        "fields": "",
+                                        "values": false
+                                },
+                                "showPercentChange": false,
+                                "textMode": "auto",
+                                "wideLayout": true
+                        },
+                        "pluginVersion": "11.2.0",
+                        "targets": [
+                                {
+                                        "datasource": {
+                                                "type": "prometheus",
+                                                "uid": "prometheus"
+                                        },
+                                        "disableTextWrap": false,
+                                        "editorMode": "builder",
+                                        "expr": "avg by(host_name) (otel_system_cpu_load_average_5m)",
+                                        "fullMetaSearch": false,
+                                        "includeNullMetadata": true,
+                                        "instant": false,
+                                        "legendFormat": "__auto",
+                                        "range": true,
+                                        "refId": "A",
+                                        "useBackend": false
+                                }
+                        ],
+                        "title": "Cluster Load",
+                        "type": "stat"
+                },
+                {
+                        "collapsed": false,
+                        "gridPos": {
+                                "h": 1,
+                                "w": 24,
+                                "x": 0,
+                                "y": 7
+                        },
+                        "id": 5,
+                        "panels": [],
+                        "title": "Nodes",
+                        "type": "row"
+                },
+                {
+                        "datasource": {
+                                "default": false,
+                                "type": "prometheus",
+                                "uid": "prometheus"
+                        },
+                        "fieldConfig": {
+                                "defaults": {
+                                        "color": {
+                                                "mode": "thresholds"
+                                        },
+                                        "mappings": [],
+                                        "thresholds": {
+                                                "mode": "absolute",
+                                                "steps": [
+                                                        {
+                                                                "color": "green",
+                                                                "value": null
+                                                        },
+                                                        {
+                                                                "color": "red",
+                                                                "value": 80
+                                                        }
+                                                ]
+                                        }
+                                },
+                                "overrides": []
+                        },
+                        "gridPos": {
+                                "h": 7,
+                                "w": 5,
+                                "x": 0,
+                                "y": 8
+                        },
+                        "id": 6,
+                        "options": {
+                                "colorMode": "value",
+                                "graphMode": "area",
+                                "justifyMode": "auto",
+                                "orientation": "auto",
+                                "percentChangeColorMode": "standard",
+                                "reduceOptions": {
+                                        "calcs": [
+                                                "lastNotNull"
+                                        ],
+                                        "fields": "",
+                                        "values": false
+                                },
+                                "showPercentChange": false,
+                                "textMode": "auto",
+                                "wideLayout": true
+                        },
+                        "pluginVersion": "11.2.0",
+                        "targets": [
+                                {
+                                        "datasource": {
+                                                "type": "prometheus",
+                                                "uid": "prometheus"
+                                        },
+                                        "disableTextWrap": false,
+                                        "editorMode": "builder",
+                                        "expr": "sum(otel_system_cpu_load_average_5m{host_name=\"Root\"})",
+                                        "fullMetaSearch": false,
+                                        "includeNullMetadata": true,
+                                        "instant": false,
+                                        "legendFormat": "__auto",
+                                        "range": true,
+                                        "refId": "A",
+                                        "useBackend": false
+                                }
+                        ],
+                        "title": "Root Load",
+                        "type": "stat"
+                },
+                {
+                        "datasource": {
+                                "default": false,
+                                "type": "prometheus",
+                                "uid": "prometheus"
+                        },
+                        "fieldConfig": {
+                                "defaults": {
+                                        "color": {
+                                                "mode": "thresholds"
+                                        },
+                                        "mappings": [],
+                                        "thresholds": {
+                                                "mode": "absolute",
+                                                "steps": [
+                                                        {
+                                                                "color": "green",
+                                                                "value": null
+                                                        },
+                                                        {
+                                                                "color": "red",
+                                                                "value": 80
+                                                        }
+                                                ]
+                                        },
+                                        "unit": "decbytes"
+                                },
+                                "overrides": []
+                        },
+                        "gridPos": {
+                                "h": 7,
+                                "w": 5,
+                                "x": 5,
+                                "y": 8
+                        },
+                        "id": 7,
+                        "options": {
+                                "colorMode": "value",
+                                "graphMode": "area",
+                                "justifyMode": "auto",
+                                "orientation": "auto",
+                                "percentChangeColorMode": "standard",
+                                "reduceOptions": {
+                                        "calcs": [
+                                                "lastNotNull"
+                                        ],
+                                        "fields": "",
+                                        "values": false
+                                },
+                                "showPercentChange": false,
+                                "textMode": "auto",
+                                "wideLayout": true
+                        },
+                        "pluginVersion": "11.2.0",
+                        "targets": [
+                                {
+                                        "datasource": {
+                                                "type": "prometheus",
+                                                "uid": "prometheus"
+                                        },
+                                        "disableTextWrap": false,
+                                        "editorMode": "builder",
+                                        "expr": "sum by(state) (otel_system_memory_usage_bytes{host_name=\"Root\"})",
+                                        "fullMetaSearch": false,
+                                        "includeNullMetadata": true,
+                                        "instant": false,
+                                        "legendFormat": "__auto",
+                                        "range": true,
+                                        "refId": "A",
+                                        "useBackend": false
+                                }
+                        ],
+                        "title": "Root Memory",
+                        "type": "stat"
+                },
+                {
+                        "collapsed": false,
+                        "gridPos": {
+                                "h": 1,
+                                "w": 24,
+                                "x": 0,
+                                "y": 15
+                        },
+                        "id": 4,
+                        "panels": [],
+                        "title": "Docker",
+                        "type": "row"
+                },
+                {
+                        "datasource": {
+                                "default": false,
+                                "type": "prometheus",
+                                "uid": "prometheus"
+                        },
+                        "fieldConfig": {
+                                "defaults": {
+                                        "color": {
+                                                "mode": "palette-classic"
+                                        },
+                                        "custom": {
+                                                "axisBorderShow": false,
+                                                "axisCenteredZero": false,
+                                                "axisColorMode": "text",
+                                                "axisLabel": "",
+                                                "axisPlacement": "auto",
+                                                "barAlignment": 0,
+                                                "barWidthFactor": 0.6,
+                                                "drawStyle": "line",
+                                                "fillOpacity": 0,
+                                                "gradientMode": "none",
+                                                "hideFrom": {
+                                                        "legend": false,
+                                                        "tooltip": false,
+                                                        "viz": false
+                                                },
+                                                "insertNulls": false,
+                                                "lineInterpolation": "linear",
+                                                "lineWidth": 1,
+                                                "pointSize": 5,
+                                                "scaleDistribution": {
+                                                        "type": "linear"
+                                                },
+                                                "showPoints": "auto",
+                                                "spanNulls": false,
+                                                "stacking": {
+                                                        "group": "A",
+                                                        "mode": "none"
+                                                },
+                                                "thresholdsStyle": {
+                                                        "mode": "off"
+                                                }
+                                        },
+                                        "mappings": [],
+                                        "thresholds": {
+                                                "mode": "absolute",
+                                                "steps": [
+                                                        {
+                                                                "color": "green",
+                                                                "value": null
+                                                        },
+                                                        {
+                                                                "color": "red",
+                                                                "value": 80
+                                                        }
+                                                ]
+                                        },
+                                        "unit": "percent"
+                                },
+                                "overrides": []
+                        },
+                        "gridPos": {
+                                "h": 7,
+                                "w": 12,
+                                "x": 0,
+                                "y": 16
+                        },
+                        "id": 1,
+                        "options": {
+                                "legend": {
+                                        "calcs": [],
+                                        "displayMode": "list",
+                                        "placement": "right",
+                                        "showLegend": true
+                                },
+                                "tooltip": {
+                                        "mode": "single",
+                                        "sort": "none"
+                                }
+                        },
+                        "targets": [
+                                {
+                                        "datasource": {
+                                                "type": "prometheus",
+                                                "uid": "prometheus"
+                                        },
+                                        "disableTextWrap": false,
+                                        "editorMode": "builder",
+                                        "exemplar": false,
+                                        "expr": "sum by(container_name) (otel_container_cpu_utilization_ratio{host_name=\"Root\"})",
+                                        "fullMetaSearch": false,
+                                        "includeNullMetadata": true,
+                                        "instant": true,
+                                        "key": "Q-fd834d0b-78b2-4c06-8d9c-ae5357d21b3a-0",
+                                        "legendFormat": "{{container_name}}",
+                                        "range": true,
+                                        "refId": "A",
+                                        "useBackend": false
+                                }
+                        ],
+                        "title": "Docker CPU",
+                        "type": "timeseries"
+                },
+                {
+                        "datasource": {
+                                "default": false,
+                                "type": "prometheus",
+                                "uid": "prometheus"
+                        },
+                        "fieldConfig": {
+                                "defaults": {
+                                        "color": {
+                                                "mode": "palette-classic"
+                                        },
+                                        "custom": {
+                                                "axisBorderShow": false,
+                                                "axisCenteredZero": false,
+                                                "axisColorMode": "text",
+                                                "axisLabel": "",
+                                                "axisPlacement": "auto",
+                                                "barAlignment": 0,
+                                                "barWidthFactor": 0.6,
+                                                "drawStyle": "line",
+                                                "fillOpacity": 0,
+                                                "gradientMode": "none",
+                                                "hideFrom": {
+                                                        "legend": false,
+                                                        "tooltip": false,
+                                                        "viz": false
+                                                },
+                                                "insertNulls": false,
+                                                "lineInterpolation": "linear",
+                                                "lineWidth": 1,
+                                                "pointSize": 5,
+                                                "scaleDistribution": {
+                                                        "type": "linear"
+                                                },
+                                                "showPoints": "auto",
+                                                "spanNulls": false,
+                                                "stacking": {
+                                                        "group": "A",
+                                                        "mode": "none"
+                                                },
+                                                "thresholdsStyle": {
+                                                        "mode": "off"
+                                                }
+                                        },
+                                        "mappings": [],
+                                        "thresholds": {
+                                                "mode": "absolute",
+                                                "steps": [
+                                                        {
+                                                                "color": "green",
+                                                                "value": null
+                                                        },
+                                                        {
+                                                                "color": "red",
+                                                                "value": 80
+                                                        }
+                                                ]
+                                        },
+                                        "unit": "decbytes"
+                                },
+                                "overrides": []
+                        },
+                        "gridPos": {
+                                "h": 7,
+                                "w": 12,
+                                "x": 12,
+                                "y": 16
+                        },
+                        "id": 2,
+                        "options": {
+                                "legend": {
+                                        "calcs": [],
+                                        "displayMode": "list",
+                                        "placement": "right",
+                                        "showLegend": true
+                                },
+                                "tooltip": {
+                                        "mode": "single",
+                                        "sort": "none"
+                                }
+                        },
+                        "targets": [
+                                {
+                                        "datasource": {
+                                                "type": "prometheus",
+                                                "uid": "prometheus"
+                                        },
+                                        "disableTextWrap": false,
+                                        "editorMode": "builder",
+                                        "expr": "sum by(container_name) (otel_container_memory_file_bytes{host_name=\"Root\"})",
+                                        "fullMetaSearch": false,
+                                        "includeNullMetadata": true,
+                                        "instant": false,
+                                        "legendFormat": "__auto",
+                                        "range": true,
+                                        "refId": "A",
+                                        "useBackend": false
+                                }
+                        ],
+                        "title": "Docker Memory",
+                        "type": "timeseries"
+                }
+        ],
+        "schemaVersion": 39,
+        "tags": [],
+        "templating": {
+                "list": []
+        },
+        "time": {
+                "from": "now-30m",
+                "to": "now"
+        },
+        "timepicker": {},
+        "timezone": "browser",
+        "title": "ZJUSCT Cluster",
+        "uid": "ce0qhdyuzrojkf",
+        "version": 5,
+        "weekStart": ""
+}

@@ -47,7 +47,7 @@ receivers:
     # start_at: beginning
     operators:
       - type: regex_parser
-        regex: '(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<severity>\w+)\] (?P<pid>\d+)#(?P<tid>\d+): (?:\*(?P<cid>\d+) )?(?P<message>[^,]+), (?P<kv>.+)'
+        regex: '(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<severity>\w+)\] (?P<pid>\d+)#(?P<tid>\d+): (?:\*(?P<cid>\d+) )?(?P<message>.+)'
         timestamp:
           layout: '%Y/%m/%d %H:%M:%S'
           parse_from: attributes.timestamp
@@ -80,47 +80,6 @@ receivers:
         from: attributes.cid
         to: resource.correlation.id
         if: 'type(attributes.cid) != "nil"'
-      # kv
-      - type: key_value_parser
-        parse_from: attributes.kv
-        parse_to: attributes.nginx
-        delimiter: ':'
-        pair_delimiter: ','
-      - type: remove
-        field: attributes.kv
-      - type: move
-        from: attributes.nginx.client
-        to: resource.client.address
-        if: 'type(attributes.nginx.client) != "nil"'
-      - type: move
-        from: attributes.nginx.server
-        to: resource.server.address
-        if: 'type(attributes.nginx.server) != "nil"'
-      # request
-      - type: router
-        routes:
-          - output: regex_parser_request
-            expr: 'type(attributes.nginx.request) == "string"'
-        default: end
-      - type: regex_parser
-        id: regex_parser_request
-        parse_from: attributes.nginx.request
-        parse_to: attributes.nginx.request
-        regex: '(?P<http_method>.+) (?P<url_path>.+) (?P<url_scheme>.+)'
-      - type: move
-        from: attributes.nginx.request.http_method
-        to: attributes.http.request.method
-      - type: move
-        from: attributes.nginx.request.url_path
-        to: attributes.url.path
-      - type: move
-        from: attributes.nginx.request.url_scheme
-        to: attributes.url.scheme
-      - type: remove
-        field: attributes.nginx.request
-      # end
-      - type: noop
-        id: end
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver
   docker_stats:
     # 默认的 metrics 和 resource attributes 已经足够
@@ -257,9 +216,12 @@ processors:
 
 exporters:
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
-  debug:
-    # basic, normal, detailed
+  debug/basic:
     verbosity: basic
+  debug/normal:
+    verbosity: normal
+  debug/detailed:
+    verbosity: detailed
 # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
   otlphttp/with_auth:
     endpoint: https://otel.clusters.zjusct.io
@@ -272,7 +234,7 @@ service:
     logs:
       receivers: [otlp, journald]
       processors: [memory_limiter, batch, resourcedetection]
-      exporters: [otlphttp/with_auth]
+      exporters: [otlphttp/with_auth, debug/basic]
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch, resourcedetection]
@@ -280,4 +242,4 @@ service:
     metrics:
       receivers: [docker_stats, hostmetrics/fast, hostmetrics/slow]
       processors: [memory_limiter, batch, resourcedetection]
-      exporters: [otlphttp/with_auth]
+      exporters: [otlphttp/with_auth, debug/basic]
