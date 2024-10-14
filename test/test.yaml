@@ -18,20 +18,25 @@ receivers:
 #        endpoint: "0.0.0.0:4317"
 #      http:
 #        endpoint: "0.0.0.0:4318"
-  filelog/docker:
-    include: /var/lib/docker/containers/*/*-json.log
+  filelog/nginx_access:
+    include: /apps/obs/test/nginx/access.log
     start_at: beginning
+    resource: 
+      service.name: nginx
     operators:
-      - type: container
-        format: docker
-        add_metadata_from_filepath: false
-      - type: key_value_parser
-        parse_from: attributes.attrs.tag
-        parse_to: resource
-        if: 'type(attributes.attrs) != "nil"'
+      - type: json_parser
+        timestamp:
+          layout_type: 'epoch'
+          layout: 's.ms'
+          parse_from: attributes["timestamp"]
       - type: remove
-        field: attributes.attrs
-        if: 'type(attributes.attrs) != "nil"'
+        field: attributes["timestamp"]
+      - type: move
+        from: attributes["body"]
+        to: body
+      - type: move
+        from: attributes["resource.process.pid"]
+        to: resource["process.pid"]
       
 processors:
   batch:
@@ -63,7 +68,7 @@ service:
 #  extensions: [bearertokenauth]
   pipelines:
     logs:
-      receivers: [filelog/docker]
+      receivers: [filelog/nginx_access]
       processors: [memory_limiter, batch, resource]
 #      exporters: [otlphttp/with_auth, debug]
       exporters: [debug/basic, file]

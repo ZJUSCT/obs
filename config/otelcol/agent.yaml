@@ -11,26 +11,24 @@ extensions:
 receivers:
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
   filelog/nginx_access:
-    include: /var/log/nginx/access.log
+    include: /apps/obs/test/nginx/access.log
+    start_at: beginning
     resource: 
       service.name: nginx
-    # start_at: beginning
     operators:
       - type: json_parser
         timestamp:
           layout_type: 'epoch'
           layout: 's.ms'
-          parse_from: attributes.timestamp
+          parse_from: attributes["timestamp"]
       - type: remove
-        field: attributes.timestamp
+        field: attributes["timestamp"]
       - type: move
-        from: attributes.body
+        from: attributes["body"]
         to: body
       - type: move
-        from: attributes.resource.process
-        to: resource.process
-      - type: remove
-        field: attributes.resource
+        from: attributes["resource.process.pid"]
+        to: resource["process.pid"]
   filelog/nginx_error:
     include: /var/log/nginx/error.log
     resource: 
@@ -41,9 +39,9 @@ receivers:
         regex: '(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<severity>\w+)\] (?P<pid>\d+)#(?P<tid>\d+): (?:\*(?P<cid>\d+) )?(?P<message>.+)'
         timestamp:
           layout: '%Y/%m/%d %H:%M:%S'
-          parse_from: attributes.timestamp
+          parse_from: attributes["timestamp"]
         severity:
-          parse_from: attributes.severity
+          parse_from: attributes["severity"]
           # nginx error level: debug, info, notice, warn, error, crit, alert, or emerg
           mapping:
             fatal: emerg
@@ -55,25 +53,24 @@ receivers:
             info: info
             debug: debug
       - type: remove
-        field: attributes.timestamp
+        field: attributes["timestamp"]
       - type: remove
-        field: attributes.severity
+        field: attributes["severity"]
       - type: move
-        from: attributes.message
+        from: attributes["message"]
         to: body
       - type: move
-        from: attributes.pid
-        to: resource.process.pid
+        from: attributes["pid"]
+        to: resource["process.pid"]
       - type: move
-        from: attributes.tid
-        to: resource.thread.id
+        from: attributes["tid"]
+        to: resource["thread.id"]
       - type: move
-        from: attributes.cid
-        to: resource.correlation.id
-        if: 'type(attributes.cid) != "nil"'
+        from: attributes["cid"]
+        to: resource["correlation.id"]
+        if: 'type(attributes["cid"]) != "nil"'
   filelog/docker:
     include: /var/lib/docker/containers/*/*-json.log
-    start_at: beginning
     operators:
       - type: container
         format: docker

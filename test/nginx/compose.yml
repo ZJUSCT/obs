@@ -6,7 +6,8 @@ services:
       - 443:443
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./80-otel-json.conf:/etc/nginx/conf.d/80-otel-json.conf
+      - ./nginx-log-format.conf:/etc/nginx/conf.d/nginx-log-format.conf
+      - ./access.log:/var/log/nginx/access.log
     extra_hosts:
       - "host.docker.internal:host-gateway"
     
