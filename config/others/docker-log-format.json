@@ -1,0 +1,5 @@
+{
+        "log-opts": {
+                "tag": "container.name={{.Name}} container.id={{.ID}} container.image.name={{.ImageName}} container.image.id={{.ImageID}}"
+        }
+}

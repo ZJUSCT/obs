@@ -11,27 +11,27 @@ extensions:
 #    token: ${OTEL_BEARER_TOKEN}
 
 receivers:
-  otlp:
-    protocols: 
-      # default to localhost
-      grpc:
-        endpoint: "0.0.0.0:4317"
-      http:
-        endpoint: "0.0.0.0:4318"
-  filelog:
-    include: /tmp/docker-log.json
+#  otlp:
+#    protocols: 
+#      # default to localhost
+#      grpc:
+#        endpoint: "0.0.0.0:4317"
+#      http:
+#        endpoint: "0.0.0.0:4318"
+  filelog/docker:
+    include: /var/lib/docker/containers/*/*-json.log
+    start_at: beginning
     operators:
-      - type: json_parser
-        timestamp:
-          layout_type: '%Y-%m-%dT%H:%M:%S.%fZ'
-          parse_from: attributes.time
-      - type: remove
-        field: attributes.time
+      - type: container
+        format: docker
+        add_metadata_from_filepath: false
       - type: key_value_parser
         parse_from: attributes.attrs.tag
         parse_to: resource
+        if: 'type(attributes.attrs) != "nil"'
       - type: remove
         field: attributes.attrs
+        if: 'type(attributes.attrs) != "nil"'
       
 processors:
   batch:
@@ -46,27 +46,32 @@ processors:
       action: upsert
 
 exporters:
-  debug:
+  debug/detailed:
     # basic, normal, detailed
     verbosity: detailed
-  otlphttp/with_auth:
-    endpoint: https://otel.clusters.zjusct.io
-    auth:
-      authenticator: bearertokenauth
+  debug/basic:
+    verbosity: basic
+  #otlphttp/with_auth:
+  #  endpoint: https://otel.clusters.zjusct.io
+  #  auth:
+  #    authenticator: bearertokenauth
+  file:
+    path: /tmp/otel-output.json
+  
 
 service:
-  extensions: [bearertokenauth]
+#  extensions: [bearertokenauth]
   pipelines:
     logs:
-      receivers: [otlp]
+      receivers: [filelog/docker]
       processors: [memory_limiter, batch, resource]
 #      exporters: [otlphttp/with_auth, debug]
-      exporters: [debug]
-    traces:
-      receivers: [otlp]
-      processors: [memory_limiter, batch, resource]
-      exporters: [debug]
-    metrics:
-      receivers: [otlp]
-      processors: [memory_limiter, batch, resource]
-      exporters: [debug]
+      exporters: [debug/basic, file]
+#    traces:
+#      receivers: [otlp]
+#      processors: [memory_limiter, batch, resource]
+#      exporters: [debug]
+#    metrics:
+#      receivers: [otlp]
+#      processors: [memory_limiter, batch, resource]
+#      exporters: [debug]

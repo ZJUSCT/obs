@@ -1,9 +1,7 @@
 # https://opentelemetry.io/docs/collector/configuration/
 # https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
-# 节点上作为 agent 的 otel-collector，需要运行为 root
-# Environment variables:
-# - OTEL_BEARER_TOKEN
-# - OTEL_COLLECTOR_ENDPOINT
+# Version: otelcol-contrib v0.111.0
+# Date: 2024-10-14
 
 extensions:
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/bearertokenauthextension
@@ -23,13 +21,6 @@ receivers:
           layout_type: 'epoch'
           layout: 's.ms'
           parse_from: attributes.timestamp
-        severity:
-          parse_from: attributes.http.response.status_code
-          mapping:
-            warn: 5xx
-            error: 4xx
-            info: 3xx
-            debug: 2xx
       - type: remove
         field: attributes.timestamp
       - type: move
@@ -80,6 +71,20 @@ receivers:
         from: attributes.cid
         to: resource.correlation.id
         if: 'type(attributes.cid) != "nil"'
+  filelog/docker:
+    include: /var/lib/docker/containers/*/*-json.log
+    start_at: beginning
+    operators:
+      - type: container
+        format: docker
+        add_metadata_from_filepath: false
+      - type: key_value_parser
+        parse_from: attributes.attrs.tag
+        parse_to: resource
+        if: 'type(attributes.attrs) != "nil"'
+      - type: remove
+        field: attributes.attrs
+        if: 'type(attributes.attrs) != "nil"'
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver
   docker_stats:
     # 默认的 metrics 和 resource attributes 已经足够
@@ -234,7 +239,7 @@ service:
     logs:
       receivers: [otlp, journald]
       processors: [memory_limiter, batch, resourcedetection]
-      exporters: [otlphttp/with_auth, debug/basic]
+      exporters: [otlphttp/with_auth]
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch, resourcedetection]
@@ -242,4 +247,4 @@ service:
     metrics:
       receivers: [docker_stats, hostmetrics/fast, hostmetrics/slow]
       processors: [memory_limiter, batch, resourcedetection]
-      exporters: [otlphttp/with_auth, debug/basic]
+      exporters: [otlphttp/with_auth]
