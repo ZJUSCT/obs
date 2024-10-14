@@ -100,12 +100,12 @@ service:
     logs:
       receivers: [syslog, otlp/with_auth]
       processors: [memory_limiter, batch]
-      exporters: [clickhouse, debug]
+      exporters: [clickhouse]
     traces:
       receivers: [otlp/with_auth]
       processors: [memory_limiter, batch]
-      exporters: [clickhouse, debug]
+      exporters: [clickhouse]
     metrics:
       receivers: [otlp/with_auth]
       processors: [memory_limiter, batch]
-      exporters: [prometheus, debug]
+      exporters: [prometheus]

@@ -18,7 +18,7 @@
         "editable": true,
         "fiscalYearStartMonth": 0,
         "graphTooltip": 0,
-        "id": 14,
+        "id": 2,
         "links": [],
         "panels": [
                 {
@@ -437,7 +437,7 @@
                                         "expr": "sum by(container_name) (otel_container_cpu_utilization_ratio{host_name=\"Root\"})",
                                         "fullMetaSearch": false,
                                         "includeNullMetadata": true,
-                                        "instant": true,
+                                        "instant": false,
                                         "key": "Q-fd834d0b-78b2-4c06-8d9c-ae5357d21b3a-0",
                                         "legendFormat": "{{container_name}}",
                                         "range": true,
@@ -557,13 +557,13 @@
                 "list": []
         },
         "time": {
-                "from": "now-30m",
+                "from": "now-6h",
                 "to": "now"
         },
         "timepicker": {},
         "timezone": "browser",
         "title": "ZJUSCT Cluster",
         "uid": "ce0qhdyuzrojkf",
-        "version": 5,
+        "version": 2,
         "weekStart": ""
 }
