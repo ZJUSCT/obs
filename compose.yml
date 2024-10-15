@@ -10,6 +10,8 @@ services:
     # https://opentelemetry.io/docs/collector/configuration/#environment-variables
     environment:
       - OTEL_BEARER_TOKEN=${OTEL_BEARER_TOKEN}
+      - SNMP_PRIVATE_KEY=${SNMP_PRIVATE_KEY}
+      - SNMP_AUTH_KEY=${SNMP_AUTH_KEY}
     ports:
     # extension ports
       - 127.0.0.1:13133:13133   # health_check extension

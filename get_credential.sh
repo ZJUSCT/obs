@@ -7,6 +7,8 @@ credential_names=(
     "GF_TG_CHAT_ID"
     "INFLUXDB_PASSWORD"
     "INFLUXDB_TOKEN"
+    "SNMP_PRIVATE_KEY"
+    "SNMP_AUTH_KEY"
 )
 
 bw_login() {
