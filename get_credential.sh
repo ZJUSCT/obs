@@ -5,6 +5,8 @@ credential_names=(
     "GF_SECURITY_ADMIN_PASSWORD"
     "GF_TG_BOT_TOKEN"
     "GF_TG_CHAT_ID"
+    "INFLUXDB_PASSWORD"
+    "INFLUXDB_TOKEN"
 )
 
 bw_login() {

@@ -31,7 +31,7 @@ We ❤️ Open Source
 
 - 配置文件：能够使用 Git 管理的配置文件，通常是简单的文本，存储在本仓库中。依靠这些配置文件，我们只需要克隆仓库并 `docker compose up` 就能够快速部署整个系统，开箱即用。
 
-    部分服务将配置保存到数据库中，比如 Grafana，它使用内置的 SQLite 3 存储配置、用户、仪表盘等数据。即使如此，它也提供了 [Provisioning](https://grafana.com/docs/grafana/latest/administration/provisioning/) 功能，可以通过配置文件初始化各项配置。
+    部分服务将配置保存到数据库中，比如 Grafana，它使用内置的 SQLite 3 存储配置、用户、仪表盘等数据。即使如此，它也提供了 [Provisioning](https://grafana.com/docs/grafana/latest/administration/provisioning/) 功能，可以通过配置文件初始化各项配置。InfluxDB 更加极端，其自动生成 token 的机制导致配置文件无法完全决定状态。
 
 - 数据库：服务的数据库需要持久化存储，Docker 官方建议使用 Volume 来存储数据库这类写入密集型的数据。
 
@@ -56,7 +56,7 @@ We ❤️ Open Source
 
 ### OpenTelemetry
 
-Collector 部署为 **Agent + Gateway 模式**。在这种模式下，为了方便配置和管理，agent 尽可能只负责采集数据，更多的转换和处理逻辑交给 gateway。
+Collector 部署为 **Agent + Gateway 模式**。在这种模式下，agent 尽可能只负责采集数据，更多的转换和处理逻辑交给 gateway。
 
 ```mermaid
 flowchart TD
@@ -109,10 +109,4 @@ flowchart TD
         > 目前 OTel 并未规定真正意义上的“集群”资源属性，因此暂借云服务信息 `cloud.*` 代替。
     > 在简单跨集群部署的情况下可能没有单独的集群 gateway，此时需要 agent 中添加 `cloud.region`。
 
-除了上述资源属性和基本的 JSON 等格式解析，agent 尽可能不进行其他处理。
-
-### Grafana
-
-Provisioning 一般在 UI 中完成，然后导出 JSON 写到配置文件。
-
-DataSources 暂不支持导出配置文件，可以在 UI 中配置，再查看 `grafana.db`。见 [:simple-github: Export data sources to provisioning datasource.yml · Issue #82851 · grafana/grafana](https://github.com/grafana/grafana/issues/82851)
+除了上述资源属性和基本的 JSON 等格式解析，agent 尽可能不进行其他处理。这样既方便部署（更改主要发生在 gateway），也能够保持 agent 的轻量化，减少边缘侧资源消耗。

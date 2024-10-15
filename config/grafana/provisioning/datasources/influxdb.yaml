@@ -1,17 +1,41 @@
 # https://grafana.com/docs/grafana/latest/datasources/influxdb/
-#apiVersion: 1
-#prune: true
-#
-#datasources:
-#  - name: InfluxDB_v3_InfluxQL
-#    uid: influxdb
+apiVersion: 1
+prune: true
+
+datasources:
+# v3 SQL is not ready for InfluxDB OSS 2
+# https://community.grafana.com/t/flight-sql-connection-to-influxdb-v2-7-9-failing-with-frame-too-large-error/128520/3
+#  - name: InfluxDB_v3_SQL
+#    uid: influxdb_v3_sql
 #    type: influxdb
 #    access: proxy
 #    url: http://influxdb:8086
-#    # jsonData:
-#    #   version: SQL
-#    #   dbName: site
-#    #   httpMode: POST
-#    #   insecureGrpc: false
-#    # secureJsonData:
-#    #   token: '<api-token>'
+#    jsonData:
+#      version: SQL
+#      dbName: otel
+#      httpMode: POST
+#      insecureGrpc: true
+#    secureJsonData:
+#      token: ${INFLUXDB_TOKEN}
+  - name: InfluxDB_v2_Flux
+    uid: influxdb_v2_flux
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    jsonData:
+      version: Flux
+      organization: zjusct
+      defaultBucket: otel
+      tlsSkipVerify: true
+    secureJsonData:
+      token: ${INFLUXDB_TOKEN}
+  - name: InfluxDB_v2_InfluxQL
+    uid: influxdb_v2_influxql
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    jsonData:
+      dbName: otel
+      httpHeaderName1: 'Authorization'
+    secureJsonData:
+      httpHeaderValue1: 'Token ${INFLUXDB_TOKEN}'

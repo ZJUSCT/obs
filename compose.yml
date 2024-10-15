@@ -12,9 +12,9 @@ services:
       - OTEL_BEARER_TOKEN=${OTEL_BEARER_TOKEN}
     ports:
     # extension ports
-      - 13133:13133   # health_check extension
-      - 1777:1777     # pprof
-      - 55679:55679   # zpages
+      - 127.0.0.1:13133:13133   # health_check extension
+      - 127.0.0.1:1777:1777     # pprof
+      - 127.0.0.1:55679:55679   # zpages
     # receiver ports
     #  - 161:161       # SNMP (responses) receiver
     #  - 162:162       # SNMP (traps) receiver
@@ -57,7 +57,7 @@ services:
       - prometheus:/prometheus
     # only for localhost
     ports:
-      - 9090:9090
+      - 127.0.0.1:9090:9090
     restart: unless-stopped
     # https://github.com/prometheus/prometheus/blob/main/Dockerfile
     command: [
@@ -70,6 +70,28 @@ services:
     healthcheck:
       # no curl command in the image
       test: ["CMD", "wget", "-q", "--spider", "http://prometheus:9090/-/healthy"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+  
+# https://hub.docker.com/_/influxdb
+  influxdb:
+    image: influxdb:2
+    volumes:
+      - influxdb:/var/lib/influxdb2
+    # only for localhost
+    ports:
+      - 127.0.0.1:8086:8086
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=zjusct
+      - DOCKER_INFLUXDB_INIT_PASSWORD=${INFLUXDB_PASSWORD}
+      - DOCKER_INFLUXDB_INIT_ORG=zjusct
+      - DOCKER_INFLUXDB_INIT_BUCKET=zjusct
+      - DOCKER_INFLUXDB_INIT_RETENTION=180d
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -100,11 +122,11 @@ services:
       - ./config/grafana:/etc/grafana
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
-      - GF_USERS_ALLOW_SIGN_UP=false
       # https://github.com/grafana/grafana/issues/11409
       - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
       - GF_TG_BOT_TOKEN=${GF_TG_BOT_TOKEN}
       - GF_TG_CHAT_ID=${GF_TG_CHAT_ID}
+      - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
       - http_proxy=http://bridge.internal.zjusct.io:7890
       - https_proxy=http://bridge.internal.zjusct.io:7890
       # https://unix.stackexchange.com/questions/23452/set-a-network-range-in-the-no-proxy-environment-variable
@@ -142,4 +164,10 @@ volumes:
     driver_opts:
       type: none
       device: ./database/elasticsearch
+      o: bind
+  influxdb:
+    driver: local
+    driver_opts:
+      type: none
+      device: ./database/influxdb
       o: bind
