@@ -3,8 +3,11 @@
 # Version: otelcol-contrib v0.111.0
 # Date: 2024-10-14
 # Environment Variables should be set in systemd service file:
-# Environment=OTEL_BEARER_TOKEN=
-# Environment=OTEL_CLOUD_REGION=
+#
+#   [Service]
+#   User=root
+#   Environment=OTEL_BEARER_TOKEN=
+#   Environment=OTEL_CLOUD_REGION=
 
 extensions:
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/bearertokenauthextension

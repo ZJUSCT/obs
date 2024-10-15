@@ -1,6 +1,15 @@
 # https://opentelemetry.io/docs/collector/configuration/
 # https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
-# Docker 中作为 gateway 的 otel-collector
+# Version: otelcol-contrib v0.111.0
+# Date: 2024-10-14
+# Environment Variables should be set in .env:
+#
+#   OTEL_BEARER_TOKEN=
+#
+# and docker compose file:
+#
+#   environment:
+#     - OTEL_BEARER_TOKEN=${OTEL_BEARER_TOKEN}
 
 extensions:
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/healthcheckextension
@@ -80,11 +89,10 @@ exporters:
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/clickhouseexporter
   clickhouse:
     endpoint: clickhouse://clickhouse:9000
-    ttl: 72h
+    ttl: 4320h
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusexporter
   prometheus:
     endpoint: otelcol:9090
-    namespace: otel
     send_timestamps: true
     resource_to_telemetry_conversion:
       enabled: true
