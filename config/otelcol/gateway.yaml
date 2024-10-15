@@ -44,25 +44,25 @@ receivers:
     protocol: rfc3164
     # we configure all infrastructure to use the same timezone UTC +8
     location: Asia/Shanghai
-    operators:
-      - type: router
-        routes:
-          - output: huawei_add_resource
-            # before escape: %%\d+[^\/]+\/\d+\/.+\(.+\)
-            expr: 'attributes.appname matches "%%\\d+[^\\/]+\\/\\d+\\/.+\\(.+\\)"'
-        default: noop
-      - id: huawei_add_resource
-        type: add
-        field: resource.device.manufacturer
-        value: Huawei
-        output: huawei_regex_parser
-      - id: huawei_regex_parser
-        type: regex_parser
-        parse_from: attributes.appname
-        parse_to: attributes.huawei
-        regex: '%%(?P<version>\d+)(?P<module_name>[^\/]+)\/(?P<serverity>\d+)\/(?P<brief>.+)\((?P<type>.+)\)'
-      - id: noop
-        type: noop
+    #operators:
+    #  - type: router
+    #    routes:
+    #      - output: huawei_add_resource
+    #        # before escape: %%\d+[^\/]+\/\d+\/.+\(.+\)
+    #        expr: 'attributes.appname matches "%%\\d+[^\\/]+\\/\\d+\\/.+\\(.+\\)"'
+    #    default: noop
+    #  - id: huawei_add_resource
+    #    type: add
+    #    field: resource.device.manufacturer
+    #    value: Huawei
+    #    output: huawei_regex_parser
+    #  - id: huawei_regex_parser
+    #    type: regex_parser
+    #    parse_from: attributes.appname
+    #    parse_to: attributes.huawei
+    #    regex: '%%(?P<version>\d+)(?P<module_name>[^\/]+)\/(?P<serverity>\d+)\/(?P<brief>.+)\((?P<type>.+)\)'
+    #  - id: noop
+    #    type: noop
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/collectdreceiver
 #  collectd:
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/snmpreceiver

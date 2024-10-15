@@ -1,7 +1,7 @@
 # https://opentelemetry.io/docs/collector/configuration/
 # https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
 # Version: otelcol-contrib v0.111.0
-# Date: 2024-10-14
+# Date: 2024-10-15
 # Environment Variables should be set in systemd service file:
 #
 #   [Service]
@@ -104,7 +104,6 @@ receivers:
     # https://www.freedesktop.org/software/systemd/man/249/journald.conf.html
     # In journald.conf, set Storage=volatile
     directory: /run/log/journal
-    all: true
     # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/pkg/stanza/docs/operators/README.md
     # 目前，该 receiver 仅设置 timestamp，其余信息全部堆在 body。
     # 正在等待标准修订，下面的 Issue 需要跟踪。
@@ -173,9 +172,9 @@ receivers:
       network:
         include:
           interfaces:
-            - "eth*"
-            - "en*"
-            - "ib*"
+            - "^eth*"
+            - "^en*"
+            - "^ib*"
           match_type: "regexp"
       paging:
       processes:
