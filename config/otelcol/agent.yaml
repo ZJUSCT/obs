@@ -19,6 +19,34 @@ extensions:
     endpoint: localhost:55680
 
 receivers:
+##############
+# Containers #
+##############
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver
+  docker_stats:
+    # 默认的 metrics 和 resource attributes 已经足够
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
+  filelog/docker:
+    include: /var/lib/docker/containers/*/*-json.log
+    operators:
+      - type: container
+        format: docker
+        add_metadata_from_filepath: false
+      - type: key_value_parser
+        parse_from: attributes.attrs.tag
+        parse_to: resource
+        if: 'type(attributes.attrs) != "nil"'
+      - type: remove
+        field: attributes.attrs
+        if: 'type(attributes.attrs) != "nil"'
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/podmanreceiver
+  podman_stats:
+    # 默认仅收集 root 的 /run/podman/podman.sock
+    # 每个用户有自己的 /run/user/<uid>/podman/podman.sock，无法逐一收集
+
+########
+# Apps #
+########
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
   filelog/nginx_access:
     include: /var/log/nginx/otel.log
@@ -38,6 +66,7 @@ receivers:
       - type: move
         from: attributes["resource.process.pid"]
         to: resource["process.pid"]
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
   filelog/nginx_error:
     include: /var/log/nginx/error.log
     resource: 
@@ -77,28 +106,16 @@ receivers:
         from: attributes["cid"]
         to: resource["correlation.id"]
         if: 'type(attributes["cid"]) != "nil"'
-  filelog/docker:
-    include: /var/lib/docker/containers/*/*-json.log
-    operators:
-      - type: container
-        format: docker
-        add_metadata_from_filepath: false
-      - type: key_value_parser
-        parse_from: attributes.attrs.tag
-        parse_to: resource
-        if: 'type(attributes.attrs) != "nil"'
-      - type: remove
-        field: attributes.attrs
-        if: 'type(attributes.attrs) != "nil"'
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver
-  docker_stats:
-    # 默认的 metrics 和 resource attributes 已经足够
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver
   otlp:
     protocols: 
       # default to localhost
       grpc:
       http:
+
+##########
+# System #  
+##########
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/journaldreceiver
   journald:
     # https://www.freedesktop.org/software/systemd/man/249/journald.conf.html
@@ -160,7 +177,6 @@ receivers:
         info2: 5 # notice
         info: 6
         debug: 7
-      
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver
   hostmetrics/fast:
     collection_interval: 15s

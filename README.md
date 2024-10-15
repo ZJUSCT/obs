@@ -61,18 +61,17 @@ Collector 部署为 **Agent + Gateway 模式**。在这种模式下，agent 尽�
 ```mermaid
 flowchart TD
  subgraph s1["cloud.region"]
-  n1(["agent"])
-  subgraph s3["host.name"]
-   n7(["agent"])
-   
-   n6["service.name"]
-  end
-  subgraph s2["host.name"]
-   n5["service.name"]
-   n4(["agent"])
-   n2["service.name"]
-  end
-  
+    n8["Infrastructure"]
+    n1(["agent"])
+    subgraph s3["host.name"]
+     n7(["agent"])
+     n6["service.name"]
+    end
+    subgraph s2["host.name"]
+     n5["service.name"]
+     n4(["agent"])
+     n2["service.name"]
+    end
  end
  n3(["gateway"])
  n5 --> n4
@@ -80,7 +79,8 @@ flowchart TD
  n6 --> n7
  n7 --> n1
  n4 --> n1(["gateway"])
- n1(["gateway(cluster)"]) --- n3(["gateway(final)"])
+ n1(["gateway(cluster)"]) --> n3(["gateway(final)"])
+ n8["Infrastructure"] --> n1
 ```
 
 **资源属性（Resource Attributes）**用于表示产生数据的实体，由不同层级的 Collector 附加。下面是基于
@@ -94,19 +94,22 @@ flowchart TD
 
 - 节点 agent：服务和容器至少具有一项，节点必须有。
     - [进程和运行时 `process.*`](https://opentelemetry.io/docs/specs/semconv/resource/process/)：不强制要求。
-    - [服务 `service.*`](https://opentelemetry.io/docs/specs/semconv/resource/#service)：
+    - [服务 `service.name`](https://opentelemetry.io/docs/specs/semconv/resource/#service)：
         - `journaldreceiver` **使用 Operator 提取** `SYSLOG_IDENTIFIER` 字段。
         - `filelogreceiver` **使用 Operator 添加**。一般情况下手动添加（文件内很少再包含服务名）。
-    - [容器 `container.*`](https://opentelemetry.io/docs/specs/semconv/resource/container/)：
+    - [容器 `container.name`](https://opentelemetry.io/docs/specs/semconv/resource/container/)：
         - `dockerstatsreceiver` **自动添加**。
         - `filelogreceiver` **使用 Operator 提取** Docker JSON 日志中的字段，需要修改 Docker `deamon.json`。
             > 修改 `daemon.json` 后，需要重建 docker 容器，日志选项才会生效。[linux - Docker daemon.json logging config not effective - Stack Overflow](https://stackoverflow.com/questions/46304780/docker-daemon-json-logging-config-not-effective)
-    - [节点 `host.*`](https://opentelemetry.io/docs/specs/semconv/resource/host/) 和[系统 `os.*`](https://opentelemetry.io/docs/specs/semconv/resource/os/)：
+    - [节点 `host.name`](https://opentelemetry.io/docs/specs/semconv/resource/host/) 和[系统 `os.*`](https://opentelemetry.io/docs/specs/semconv/resource/os/)：
         - `resourcedetector` 在流水线中**自动添加**。
 - 集群 gateway：
-    - [集群 `cloud.*`](https://opentelemetry.io/docs/specs/semconv/resource/cloud/)：
-        - `cloud.region`：在流水线中**手动添加**。
+    - [集群 `cloud.region`](https://opentelemetry.io/docs/specs/semconv/resource/cloud/)：
+        - 在流水线中**手动添加**。
         > 目前 OTel 并未规定真正意义上的“集群”资源属性，因此暂借云服务信息 `cloud.*` 代替。
     > 在简单跨集群部署的情况下可能没有单独的集群 gateway，此时需要 agent 中添加 `cloud.region`。
+    - [设备 `device.id`](https://opentelemetry.io/docs/specs/semconv/resource/device/)：
+        > 我们主要使用设备属性表示基础设施（路由器、交换机、智能 PDU 等），和节点有所区分。
+        - `syslogreceiver` **使用 Operator 提取** `hostname` 字段。
 
 除了上述资源属性和基本的 JSON 等格式解析，agent 尽可能不进行其他处理。这样既方便部署（更改主要发生在 gateway），也能够保持 agent 的轻量化，减少边缘侧资源消耗。

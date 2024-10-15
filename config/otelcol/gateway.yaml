@@ -5,6 +5,8 @@
 # Environment Variables should be set in .env:
 #
 #   OTEL_BEARER_TOKEN=
+#   SNMP_AUTH_KEY=
+#   SNMP_PRIVATE_KEY=
 #
 # and docker compose file:
 #
@@ -25,9 +27,6 @@ extensions:
     token: ${OTEL_BEARER_TOKEN}
 
 receivers:
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/fluentforwardreceiver
-  fluentforward:
-    endpoint: otelcol:8006
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver
   otlp/with_auth:
     protocols:
