@@ -110,3 +110,9 @@ flowchart TD
     > 在简单跨集群部署的情况下可能没有单独的集群 gateway，此时需要 agent 中添加 `cloud.region`。
 
 除了上述资源属性和基本的 JSON 等格式解析，agent 尽可能不进行其他处理。
+
+### Grafana
+
+Provisioning 一般在 UI 中完成，然后导出 JSON 写到配置文件。
+
+DataSources 暂不支持导出配置文件，可以在 UI 中配置，再查看 `grafana.db`。见 [:simple-github: Export data sources to provisioning datasource.yml · Issue #82851 · grafana/grafana](https://github.com/grafana/grafana/issues/82851)
