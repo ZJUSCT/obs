@@ -59,7 +59,12 @@ services:
     ports:
       - 9090:9090
     restart: unless-stopped
-    #command: --web.listen-address="0.0.0.0:9090" --config.file="/etc/prometheus/prometheus.yml"
+    # https://github.com/prometheus/prometheus/blob/main/Dockerfile
+    command: [
+      "--config.file=/etc/prometheus/prometheus.yml",
+      "--storage.tsdb.path=/prometheus",
+      "--storage.tsdb.retention.time=180d"
+    ]
     depends_on:
       - otelcol # scrape from OpenTelemetry Collector
     healthcheck:
