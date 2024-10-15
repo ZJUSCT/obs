@@ -13,12 +13,7 @@ if [ ! -d /etc/systemd/system/otelcol-contrib.service.d ]; then
         mkdir -p /etc/systemd/system/otelcol-contrib.service.d
 fi
 
-echo "
-[Service]
-User=root
-Environment=OTEL_BEARER_TOKEN=$OTEL_BEARER_TOKEN
-" >/etc/systemd/system/otelcol-contrib.service.d/override.conf
-
+# cp config/others/systemd-otelcol-override.conf /etc/systemd/system/otelcol-contrib.service.d/override.conf
 cp config/otelcol/agent.yaml /etc/otelcol-contrib/config.yaml
 
 systemctl daemon-reload
