@@ -1,763 +1,1079 @@
 {
-        "annotations": {
-                "list": [
-                        {
-                                "builtIn": 1,
-                                "datasource": {
-                                        "type": "grafana",
-                                        "uid": "-- Grafana --"
-                                },
-                                "enable": true,
-                                "hide": true,
-                                "iconColor": "rgba(0, 211, 255, 1)",
-                                "name": "Annotations & Alerts",
-                                "type": "dashboard"
-                        }
-                ]
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
         },
-        "editable": true,
-        "fiscalYearStartMonth": 0,
-        "graphTooltip": 0,
-        "id": 2,
-        "links": [],
-        "panels": [
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 2,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 9,
+      "panels": [],
+      "title": "Cluster Overview",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 0,
+        "y": 1
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "avg by(__name__) (system_cpu_load_average_5m{cloud_region=\"$cloud_region\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Cluster Load",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 2,
+        "y": 1
+      },
+      "id": 16,
+      "options": {
+        "calculate": false,
+        "cellGap": 1,
+        "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "Oranges",
+          "steps": 64
+        },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "mode": "single",
+          "showColorScale": false,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": false
+        }
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "sum by(host_name) (system_memory_usage_bytes{cloud_region=\"$cloud_region\", state=\"used\"}) / sum by(host_name) (system_memory_usage_bytes{cloud_region=\"$cloud_region\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{host.name}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Cluster Memory Usage",
+      "type": "heatmap"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 10,
+        "x": 8,
+        "y": 1
+      },
+      "id": 10,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "targets": [
+        {
+          "builderOptions": {
+            "columns": [
+              {
+                "hint": "trace_id",
+                "name": "TraceId"
+              },
+              {
+                "hint": "time",
+                "name": "Timestamp"
+              },
+              {
+                "hint": "log_level",
+                "name": "SeverityText"
+              },
+              {
+                "hint": "log_message",
+                "name": "Body"
+              },
+              {
+                "hint": "log_labels",
+                "name": "LogAttributes"
+              }
+            ],
+            "database": "default",
+            "filters": [
+              {
+                "condition": "AND",
+                "filterType": "custom",
+                "hint": "time",
+                "key": "",
+                "operator": "WITH IN DASHBOARD TIME RANGE",
+                "type": "datetime"
+              },
+              {
+                "condition": "AND",
+                "filterType": "custom",
+                "hint": "log_level",
+                "key": "",
+                "operator": "IS ANYTHING",
+                "type": "string"
+              },
+              {
+                "condition": "AND",
+                "filterType": "custom",
+                "key": "ResourceAttributes",
+                "label": "ResourceAttributes",
+                "mapKey": "cloud.region",
+                "operator": "=",
+                "type": "Map(LowCardinality(String), String)",
+                "value": "'$cloud_region'"
+              }
+            ],
+            "limit": 1000,
+            "meta": {
+              "logMessageLike": "",
+              "otelEnabled": true,
+              "otelVersion": "latest"
+            },
+            "mode": "list",
+            "orderBy": [
+              {
+                "default": true,
+                "dir": "DESC",
+                "hint": "time",
+                "name": ""
+              }
+            ],
+            "queryType": "logs",
+            "table": "otel_logs"
+          },
+          "datasource": {
+            "type": "grafana-clickhouse-datasource",
+            "uid": "clickhouse"
+          },
+          "editorType": "sql",
+          "format": 2,
+          "meta": {
+            "builderOptions": {
+              "columns": [
                 {
-                        "collapsed": false,
-                        "gridPos": {
-                                "h": 1,
-                                "w": 24,
-                                "x": 0,
-                                "y": 0
-                        },
-                        "id": 9,
-                        "panels": [],
-                        "repeat": "cloud_region",
-                        "repeatDirection": "h",
-                        "title": "Cluster Overview",
-                        "type": "row"
+                  "hint": "trace_id",
+                  "name": "TraceId"
                 },
                 {
-                        "datasource": {
-                                "default": false,
-                                "type": "prometheus",
-                                "uid": "prometheus"
-                        },
-                        "fieldConfig": {
-                                "defaults": {
-                                        "custom": {
-                                                "hideFrom": {
-                                                        "legend": false,
-                                                        "tooltip": false,
-                                                        "viz": false
-                                                },
-                                                "scaleDistribution": {
-                                                        "type": "linear"
-                                                }
-                                        }
-                                },
-                                "overrides": []
-                        },
-                        "gridPos": {
-                                "h": 8,
-                                "w": 8,
-                                "x": 0,
-                                "y": 1
-                        },
-                        "id": 8,
-                        "options": {
-                                "calculate": false,
-                                "cellGap": 1,
-                                "color": {
-                                        "exponent": 0.5,
-                                        "fill": "dark-orange",
-                                        "mode": "scheme",
-                                        "reverse": false,
-                                        "scale": "exponential",
-                                        "scheme": "Oranges",
-                                        "steps": 64
-                                },
-                                "exemplars": {
-                                        "color": "rgba(255,0,255,0.7)"
-                                },
-                                "filterValues": {
-                                        "le": 1e-9
-                                },
-                                "legend": {
-                                        "show": true
-                                },
-                                "rowsFrame": {
-                                        "layout": "auto"
-                                },
-                                "tooltip": {
-                                        "mode": "single",
-                                        "showColorScale": false,
-                                        "yHistogram": false
-                                },
-                                "yAxis": {
-                                        "axisPlacement": "left",
-                                        "reverse": false
-                                }
-                        },
-                        "pluginVersion": "11.2.0",
-                        "targets": [
-                                {
-                                        "datasource": {
-                                                "type": "prometheus",
-                                                "uid": "prometheus"
-                                        },
-                                        "disableTextWrap": false,
-                                        "editorMode": "builder",
-                                        "exemplar": false,
-                                        "expr": "avg by(host_name) (system_cpu_load_average_5m{cloud_region=\"$cloud_region\"})",
-                                        "fullMetaSearch": false,
-                                        "includeNullMetadata": true,
-                                        "instant": false,
-                                        "interval": "",
-                                        "legendFormat": "{{host.name}}",
-                                        "range": true,
-                                        "refId": "A",
-                                        "useBackend": false
-                                }
-                        ],
-                        "title": "Cluster Load",
-                        "type": "heatmap"
+                  "hint": "time",
+                  "name": "Timestamp"
                 },
                 {
-                        "datasource": {
-                                "default": false,
-                                "type": "grafana-clickhouse-datasource",
-                                "uid": "clickhouse"
-                        },
-                        "gridPos": {
-                                "h": 8,
-                                "w": 16,
-                                "x": 8,
-                                "y": 1
-                        },
-                        "id": 10,
-                        "options": {
-                                "dedupStrategy": "none",
-                                "enableLogDetails": true,
-                                "prettifyLogMessage": false,
-                                "showCommonLabels": false,
-                                "showLabels": false,
-                                "showTime": true,
-                                "sortOrder": "Descending",
-                                "wrapLogMessage": true
-                        },
-                        "targets": [
-                                {
-                                        "builderOptions": {
-                                                "columns": [
-                                                        {
-                                                                "hint": "trace_id",
-                                                                "name": "TraceId"
-                                                        },
-                                                        {
-                                                                "hint": "time",
-                                                                "name": "Timestamp"
-                                                        },
-                                                        {
-                                                                "hint": "log_level",
-                                                                "name": "SeverityText"
-                                                        },
-                                                        {
-                                                                "hint": "log_message",
-                                                                "name": "Body"
-                                                        },
-                                                        {
-                                                                "hint": "log_labels",
-                                                                "name": "LogAttributes"
-                                                        }
-                                                ],
-                                                "database": "default",
-                                                "filters": [
-                                                        {
-                                                                "condition": "AND",
-                                                                "filterType": "custom",
-                                                                "hint": "time",
-                                                                "key": "",
-                                                                "operator": "WITH IN DASHBOARD TIME RANGE",
-                                                                "type": "datetime"
-                                                        },
-                                                        {
-                                                                "condition": "AND",
-                                                                "filterType": "custom",
-                                                                "hint": "log_level",
-                                                                "key": "",
-                                                                "operator": "IS ANYTHING",
-                                                                "type": "string"
-                                                        },
-                                                        {
-                                                                "condition": "AND",
-                                                                "filterType": "custom",
-                                                                "key": "ResourceAttributes",
-                                                                "label": "ResourceAttributes",
-                                                                "mapKey": "cloud.region",
-                                                                "operator": "=",
-                                                                "type": "Map(LowCardinality(String), String)",
-                                                                "value": "'$cloud_region'"
-                                                        }
-                                                ],
-                                                "limit": 1000,
-                                                "meta": {
-                                                        "logMessageLike": "",
-                                                        "otelEnabled": true,
-                                                        "otelVersion": "latest"
-                                                },
-                                                "mode": "list",
-                                                "orderBy": [
-                                                        {
-                                                                "default": true,
-                                                                "dir": "DESC",
-                                                                "hint": "time",
-                                                                "name": ""
-                                                        }
-                                                ],
-                                                "queryType": "logs",
-                                                "table": "otel_logs"
-                                        },
-                                        "datasource": {
-                                                "type": "grafana-clickhouse-datasource",
-                                                "uid": "clickhouse"
-                                        },
-                                        "editorType": "sql",
-                                        "format": 2,
-                                        "meta": {
-                                                "builderOptions": {
-                                                        "columns": [
-                                                                {
-                                                                        "hint": "trace_id",
-                                                                        "name": "TraceId"
-                                                                },
-                                                                {
-                                                                        "hint": "time",
-                                                                        "name": "Timestamp"
-                                                                },
-                                                                {
-                                                                        "hint": "log_level",
-                                                                        "name": "SeverityText"
-                                                                },
-                                                                {
-                                                                        "hint": "log_message",
-                                                                        "name": "Body"
-                                                                },
-                                                                {
-                                                                        "hint": "log_labels",
-                                                                        "name": "LogAttributes"
-                                                                }
-                                                        ],
-                                                        "database": "default",
-                                                        "filters": [
-                                                                {
-                                                                        "condition": "AND",
-                                                                        "filterType": "custom",
-                                                                        "hint": "time",
-                                                                        "key": "",
-                                                                        "operator": "WITH IN DASHBOARD TIME RANGE",
-                                                                        "type": "datetime"
-                                                                },
-                                                                {
-                                                                        "condition": "AND",
-                                                                        "filterType": "custom",
-                                                                        "hint": "log_level",
-                                                                        "key": "",
-                                                                        "operator": "IS ANYTHING",
-                                                                        "type": "string"
-                                                                },
-                                                                {
-                                                                        "condition": "AND",
-                                                                        "filterType": "custom",
-                                                                        "key": "ResourceAttributes",
-                                                                        "label": "ResourceAttributes",
-                                                                        "mapKey": "cloud.region",
-                                                                        "operator": "=",
-                                                                        "type": "Map(LowCardinality(String), String)",
-                                                                        "value": "'$cloud_region'"
-                                                                }
-                                                        ],
-                                                        "limit": 1000,
-                                                        "meta": {
-                                                                "logMessageLike": "",
-                                                                "otelEnabled": true,
-                                                                "otelVersion": "latest"
-                                                        },
-                                                        "mode": "list",
-                                                        "orderBy": [
-                                                                {
-                                                                        "default": true,
-                                                                        "dir": "DESC",
-                                                                        "hint": "time",
-                                                                        "name": ""
-                                                                }
-                                                        ],
-                                                        "queryType": "logs",
-                                                        "table": "otel_logs"
-                                                }
-                                        },
-                                        "pluginVersion": "4.5.0",
-                                        "queryType": "logs",
-                                        "rawSql": "SELECT \n  Timestamp as \"timestamp\", \n  Body as \"body\", \n  SeverityText as \"level\", \n  LogAttributes as \"labels\", \n  ResourceAttributes as \"resource\", \n  TraceId as \"traceID\" \nFROM \"default\".\"otel_logs\" \nWHERE \n  ( timestamp >= $__fromTime AND timestamp <= $__toTime ) \n  AND ( '$cloud_region' == ' ' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \n  AND ( '$host_name' == ' ' OR ResourceAttributes['host.name'] = '$host_name' )\nORDER BY timestamp \nDESC LIMIT 1000",
-                                        "refId": "A"
-                                }
-                        ],
-                        "title": "Cluster Log",
-                        "type": "logs"
+                  "hint": "log_level",
+                  "name": "SeverityText"
                 },
                 {
-                        "collapsed": false,
-                        "gridPos": {
-                                "h": 1,
-                                "w": 24,
-                                "x": 0,
-                                "y": 9
-                        },
-                        "id": 5,
-                        "panels": [],
-                        "title": "Nodes",
-                        "type": "row"
+                  "hint": "log_message",
+                  "name": "Body"
                 },
                 {
-                        "datasource": {
-                                "default": false,
-                                "type": "prometheus",
-                                "uid": "prometheus"
-                        },
-                        "fieldConfig": {
-                                "defaults": {
-                                        "color": {
-                                                "mode": "thresholds"
-                                        },
-                                        "mappings": [],
-                                        "thresholds": {
-                                                "mode": "absolute",
-                                                "steps": [
-                                                        {
-                                                                "color": "green"
-                                                        },
-                                                        {
-                                                                "color": "red",
-                                                                "value": 80
-                                                        }
-                                                ]
-                                        }
-                                },
-                                "overrides": []
-                        },
-                        "gridPos": {
-                                "h": 7,
-                                "w": 5,
-                                "x": 0,
-                                "y": 10
-                        },
-                        "id": 6,
-                        "options": {
-                                "colorMode": "value",
-                                "graphMode": "area",
-                                "justifyMode": "auto",
-                                "orientation": "auto",
-                                "percentChangeColorMode": "standard",
-                                "reduceOptions": {
-                                        "calcs": [
-                                                "lastNotNull"
-                                        ],
-                                        "fields": "",
-                                        "values": false
-                                },
-                                "showPercentChange": false,
-                                "textMode": "auto",
-                                "wideLayout": true
-                        },
-                        "pluginVersion": "11.2.0",
-                        "targets": [
-                                {
-                                        "datasource": {
-                                                "type": "prometheus",
-                                                "uid": "prometheus"
-                                        },
-                                        "disableTextWrap": false,
-                                        "editorMode": "builder",
-                                        "expr": "system_cpu_load_average_5m{host_name=\"$host_name\", cloud_region=\"$cloud_region\"}",
-                                        "fullMetaSearch": false,
-                                        "includeNullMetadata": true,
-                                        "instant": false,
-                                        "legendFormat": "__auto",
-                                        "range": true,
-                                        "refId": "A",
-                                        "useBackend": false
-                                }
-                        ],
-                        "title": "Node Load",
-                        "type": "stat"
-                },
-                {
-                        "datasource": {
-                                "default": false,
-                                "type": "prometheus",
-                                "uid": "prometheus"
-                        },
-                        "fieldConfig": {
-                                "defaults": {
-                                        "color": {
-                                                "mode": "thresholds"
-                                        },
-                                        "mappings": [],
-                                        "thresholds": {
-                                                "mode": "absolute",
-                                                "steps": [
-                                                        {
-                                                                "color": "green"
-                                                        },
-                                                        {
-                                                                "color": "red",
-                                                                "value": 80
-                                                        }
-                                                ]
-                                        },
-                                        "unit": "decbytes"
-                                },
-                                "overrides": []
-                        },
-                        "gridPos": {
-                                "h": 7,
-                                "w": 5,
-                                "x": 5,
-                                "y": 10
-                        },
-                        "id": 7,
-                        "options": {
-                                "colorMode": "value",
-                                "graphMode": "area",
-                                "justifyMode": "auto",
-                                "orientation": "auto",
-                                "percentChangeColorMode": "standard",
-                                "reduceOptions": {
-                                        "calcs": [
-                                                "lastNotNull"
-                                        ],
-                                        "fields": "",
-                                        "values": false
-                                },
-                                "showPercentChange": false,
-                                "textMode": "auto",
-                                "wideLayout": true
-                        },
-                        "pluginVersion": "11.2.0",
-                        "targets": [
-                                {
-                                        "datasource": {
-                                                "type": "prometheus",
-                                                "uid": "prometheus"
-                                        },
-                                        "disableTextWrap": false,
-                                        "editorMode": "builder",
-                                        "expr": "sum by(state) (system_memory_usage_bytes{cloud_region=\"$cloud_region\", host_name=\"$host_name\"})",
-                                        "fullMetaSearch": false,
-                                        "includeNullMetadata": true,
-                                        "instant": false,
-                                        "legendFormat": "__auto",
-                                        "range": true,
-                                        "refId": "A",
-                                        "useBackend": false
-                                }
-                        ],
-                        "title": "Node Memory",
-                        "type": "stat"
-                },
-                {
-                        "collapsed": false,
-                        "gridPos": {
-                                "h": 1,
-                                "w": 24,
-                                "x": 0,
-                                "y": 17
-                        },
-                        "id": 4,
-                        "panels": [],
-                        "title": "Docker",
-                        "type": "row"
-                },
-                {
-                        "datasource": {
-                                "default": false,
-                                "type": "prometheus",
-                                "uid": "prometheus"
-                        },
-                        "fieldConfig": {
-                                "defaults": {
-                                        "color": {
-                                                "mode": "palette-classic"
-                                        },
-                                        "custom": {
-                                                "axisBorderShow": false,
-                                                "axisCenteredZero": false,
-                                                "axisColorMode": "text",
-                                                "axisLabel": "",
-                                                "axisPlacement": "auto",
-                                                "barAlignment": 0,
-                                                "barWidthFactor": 0.6,
-                                                "drawStyle": "line",
-                                                "fillOpacity": 0,
-                                                "gradientMode": "none",
-                                                "hideFrom": {
-                                                        "legend": false,
-                                                        "tooltip": false,
-                                                        "viz": false
-                                                },
-                                                "insertNulls": false,
-                                                "lineInterpolation": "linear",
-                                                "lineWidth": 1,
-                                                "pointSize": 5,
-                                                "scaleDistribution": {
-                                                        "type": "linear"
-                                                },
-                                                "showPoints": "auto",
-                                                "spanNulls": false,
-                                                "stacking": {
-                                                        "group": "A",
-                                                        "mode": "none"
-                                                },
-                                                "thresholdsStyle": {
-                                                        "mode": "off"
-                                                }
-                                        },
-                                        "mappings": [],
-                                        "thresholds": {
-                                                "mode": "absolute",
-                                                "steps": [
-                                                        {
-                                                                "color": "green"
-                                                        },
-                                                        {
-                                                                "color": "red",
-                                                                "value": 80
-                                                        }
-                                                ]
-                                        },
-                                        "unit": "percent"
-                                },
-                                "overrides": []
-                        },
-                        "gridPos": {
-                                "h": 7,
-                                "w": 12,
-                                "x": 0,
-                                "y": 18
-                        },
-                        "id": 1,
-                        "options": {
-                                "legend": {
-                                        "calcs": [],
-                                        "displayMode": "list",
-                                        "placement": "right",
-                                        "showLegend": true
-                                },
-                                "tooltip": {
-                                        "mode": "single",
-                                        "sort": "none"
-                                }
-                        },
-                        "targets": [
-                                {
-                                        "datasource": {
-                                                "type": "prometheus",
-                                                "uid": "prometheus"
-                                        },
-                                        "disableTextWrap": false,
-                                        "editorMode": "builder",
-                                        "exemplar": false,
-                                        "expr": "sum by(container_name) (container_cpu_utilization_ratio{host_name=\"Root\"})",
-                                        "fullMetaSearch": false,
-                                        "includeNullMetadata": true,
-                                        "instant": false,
-                                        "key": "Q-fd834d0b-78b2-4c06-8d9c-ae5357d21b3a-0",
-                                        "legendFormat": "{{container_name}}",
-                                        "range": true,
-                                        "refId": "A",
-                                        "useBackend": false
-                                }
-                        ],
-                        "title": "Docker CPU",
-                        "type": "timeseries"
-                },
-                {
-                        "datasource": {
-                                "default": false,
-                                "type": "prometheus",
-                                "uid": "prometheus"
-                        },
-                        "fieldConfig": {
-                                "defaults": {
-                                        "color": {
-                                                "mode": "palette-classic"
-                                        },
-                                        "custom": {
-                                                "axisBorderShow": false,
-                                                "axisCenteredZero": false,
-                                                "axisColorMode": "text",
-                                                "axisLabel": "",
-                                                "axisPlacement": "auto",
-                                                "barAlignment": 0,
-                                                "barWidthFactor": 0.6,
-                                                "drawStyle": "line",
-                                                "fillOpacity": 0,
-                                                "gradientMode": "none",
-                                                "hideFrom": {
-                                                        "legend": false,
-                                                        "tooltip": false,
-                                                        "viz": false
-                                                },
-                                                "insertNulls": false,
-                                                "lineInterpolation": "linear",
-                                                "lineWidth": 1,
-                                                "pointSize": 5,
-                                                "scaleDistribution": {
-                                                        "type": "linear"
-                                                },
-                                                "showPoints": "auto",
-                                                "spanNulls": false,
-                                                "stacking": {
-                                                        "group": "A",
-                                                        "mode": "none"
-                                                },
-                                                "thresholdsStyle": {
-                                                        "mode": "off"
-                                                }
-                                        },
-                                        "mappings": [],
-                                        "thresholds": {
-                                                "mode": "absolute",
-                                                "steps": [
-                                                        {
-                                                                "color": "green"
-                                                        },
-                                                        {
-                                                                "color": "red",
-                                                                "value": 80
-                                                        }
-                                                ]
-                                        },
-                                        "unit": "decbytes"
-                                },
-                                "overrides": []
-                        },
-                        "gridPos": {
-                                "h": 7,
-                                "w": 12,
-                                "x": 12,
-                                "y": 18
-                        },
-                        "id": 2,
-                        "options": {
-                                "legend": {
-                                        "calcs": [],
-                                        "displayMode": "list",
-                                        "placement": "right",
-                                        "showLegend": true
-                                },
-                                "tooltip": {
-                                        "mode": "single",
-                                        "sort": "none"
-                                }
-                        },
-                        "targets": [
-                                {
-                                        "datasource": {
-                                                "type": "prometheus",
-                                                "uid": "prometheus"
-                                        },
-                                        "disableTextWrap": false,
-                                        "editorMode": "builder",
-                                        "expr": "sum by(container_name) (container_memory_file_bytes{host_name=\"Root\"})",
-                                        "fullMetaSearch": false,
-                                        "includeNullMetadata": true,
-                                        "instant": false,
-                                        "legendFormat": "__auto",
-                                        "range": true,
-                                        "refId": "A",
-                                        "useBackend": false
-                                }
-                        ],
-                        "title": "Docker Memory",
-                        "type": "timeseries"
+                  "hint": "log_labels",
+                  "name": "LogAttributes"
                 }
-        ],
-        "refresh": "5s",
-        "schemaVersion": 39,
-        "tags": [
-                "clickhouse",
-                "prometheus"
-        ],
-        "templating": {
-                "list": [
-                        {
-                                "allValue": " ",
-                                "current": {
-                                        "selected": false,
-                                        "text": "zjusct-cluster",
-                                        "value": "zjusct-cluster"
-                                },
-                                "datasource": {
-                                        "type": "prometheus",
-                                        "uid": "prometheus"
-                                },
-                                "definition": "label_values(cloud_region)",
-                                "hide": 0,
-                                "includeAll": true,
-                                "label": "Cloud Region",
-                                "multi": false,
-                                "name": "cloud_region",
-                                "options": [],
-                                "query": {
-                                        "qryType": 1,
-                                        "query": "label_values(cloud_region)",
-                                        "refId": "PrometheusVariableQueryEditor-VariableQuery"
-                                },
-                                "refresh": 1,
-                                "regex": "",
-                                "skipUrlSync": false,
-                                "sort": 0,
-                                "type": "query"
-                        },
-                        {
-                                "allValue": " ",
-                                "current": {
-                                        "selected": false,
-                                        "text": "Root",
-                                        "value": "Root"
-                                },
-                                "datasource": {
-                                        "type": "prometheus",
-                                        "uid": "prometheus"
-                                },
-                                "definition": "label_values({cloud_region=\"$cloud_region\"},host_name)",
-                                "hide": 0,
-                                "includeAll": true,
-                                "label": "Host Name",
-                                "multi": false,
-                                "name": "host_name",
-                                "options": [],
-                                "query": {
-                                        "qryType": 1,
-                                        "query": "label_values({cloud_region=\"$cloud_region\"},host_name)",
-                                        "refId": "PrometheusVariableQueryEditor-VariableQuery"
-                                },
-                                "refresh": 1,
-                                "regex": "",
-                                "skipUrlSync": false,
-                                "sort": 0,
-                                "type": "query"
-                        }
-                ]
+              ],
+              "database": "default",
+              "filters": [
+                {
+                  "condition": "AND",
+                  "filterType": "custom",
+                  "hint": "time",
+                  "key": "",
+                  "operator": "WITH IN DASHBOARD TIME RANGE",
+                  "type": "datetime"
+                },
+                {
+                  "condition": "AND",
+                  "filterType": "custom",
+                  "hint": "log_level",
+                  "key": "",
+                  "operator": "IS ANYTHING",
+                  "type": "string"
+                },
+                {
+                  "condition": "AND",
+                  "filterType": "custom",
+                  "key": "ResourceAttributes",
+                  "label": "ResourceAttributes",
+                  "mapKey": "cloud.region",
+                  "operator": "=",
+                  "type": "Map(LowCardinality(String), String)",
+                  "value": "'$cloud_region'"
+                }
+              ],
+              "limit": 1000,
+              "meta": {
+                "logMessageLike": "",
+                "otelEnabled": true,
+                "otelVersion": "latest"
+              },
+              "mode": "list",
+              "orderBy": [
+                {
+                  "default": true,
+                  "dir": "DESC",
+                  "hint": "time",
+                  "name": ""
+                }
+              ],
+              "queryType": "logs",
+              "table": "otel_logs"
+            }
+          },
+          "pluginVersion": "4.5.0",
+          "queryType": "logs",
+          "rawSql": "SELECT \n  Timestamp as \"timestamp\", \n  Body as \"body\", \n  SeverityText as \"level\", \n  LogAttributes as \"labels\", \n  ResourceAttributes as \"resource\", \n  TraceId as \"traceID\" \nFROM \"default\".\"otel_logs\" \nWHERE \n  ( timestamp >= $__fromTime AND timestamp <= $__toTime ) \n  AND ( '$cloud_region' == ' ' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \n  AND ( '$host_name' == ' ' OR ResourceAttributes['host.name'] = '$host_name' )\nORDER BY timestamp \nDESC LIMIT 1000",
+          "refId": "A"
+        }
+      ],
+      "title": "Cluster Log",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
         },
-        "time": {
-                "from": "now-15m",
-                "to": "now"
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 5
+      },
+      "id": 8,
+      "options": {
+        "calculate": false,
+        "cellGap": 1,
+        "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "Oranges",
+          "steps": 64
         },
-        "timepicker": {},
-        "timezone": "browser",
-        "title": "ZJUSCT Cluster",
-        "uid": "ce0qhdyuzrojkf",
-        "version": 23,
-        "weekStart": ""
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "mode": "single",
+          "showColorScale": false,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": false
+        }
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "avg by(host_name) (system_cpu_load_average_5m{cloud_region=\"$cloud_region\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{host.name}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Cluster Load",
+      "type": "heatmap"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 4,
+      "panels": [],
+      "title": "Docker",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 14
+      },
+      "id": 1,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "sum by(container_name) (container_cpu_utilization_ratio{host_name=\"Root\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "key": "Q-fd834d0b-78b2-4c06-8d9c-ae5357d21b3a-0",
+          "legendFormat": "{{container_name}}",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Docker CPU",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 7,
+        "x": 8,
+        "y": 14
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum by(container_name) (container_memory_file_bytes{host_name=\"Root\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Docker Memory",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 11,
+      "panels": [],
+      "title": "Infrastructure",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 22
+      },
+      "id": 14,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum by(device_id) (pdu_energy_kWh{pdu_port_type=\"input\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "PDU Energy",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 5000
+              },
+              {
+                "color": "red",
+                "value": 10000
+              }
+            ]
+          },
+          "unit": "watt"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 7,
+        "x": 4,
+        "y": 22
+      },
+      "id": 12,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum by(device_id) (pdu_power_watt{pdu_port_type=\"input\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "PDU Power",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "amp"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 11,
+        "y": 22
+      },
+      "id": 15,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum by(device_id) (pdu_current_ampere{pdu_port_type=\"input\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "PDU Energy",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 5000
+              },
+              {
+                "color": "red",
+                "value": 10000
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 7,
+        "x": 17,
+        "y": 22
+      },
+      "id": 13,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "11.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "expr": "sum by(device_id) (pdu_power_factor_ratio{pdu_port_type=\"input\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "PDU Power Factor",
+      "type": "gauge"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": [
+    "clickhouse",
+    "prometheus"
+  ],
+  "templating": {
+    "list": [
+      {
+        "allValue": " ",
+        "current": {
+          "selected": false,
+          "text": "zjusct-cluster",
+          "value": "zjusct-cluster"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values(cloud_region)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Cloud Region",
+        "multi": false,
+        "name": "cloud_region",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(cloud_region)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": " ",
+        "current": {
+          "selected": false,
+          "text": "Root",
+          "value": "Root"
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "definition": "label_values({cloud_region=\"$cloud_region\"},host_name)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Host Name",
+        "multi": false,
+        "name": "host_name",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values({cloud_region=\"$cloud_region\"},host_name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "ZJUSCT Cluster",
+  "uid": "ce0qhdyuzrojkf",
+  "version": 9,
+  "weekStart": ""
 }
