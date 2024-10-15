@@ -65,7 +65,8 @@ services:
     command: [
       "--config.file=/etc/prometheus/prometheus.yml",
       "--storage.tsdb.path=/prometheus",
-      "--storage.tsdb.retention.time=180d"
+      "--storage.tsdb.retention.time=180d",
+      "--web.enable-admin-api"
     ]
     depends_on:
       - otelcol # scrape from OpenTelemetry Collector
