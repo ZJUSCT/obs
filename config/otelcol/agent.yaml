@@ -2,17 +2,23 @@
 # https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
 # Version: otelcol-contrib v0.111.0
 # Date: 2024-10-14
+# Environment Variables should be set in systemd service file:
+# Environment=OTEL_BEARER_TOKEN=
+# Environment=OTEL_CLOUD_REGION=
 
 extensions:
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/bearertokenauthextension
   bearertokenauth:
     token: ${OTEL_BEARER_TOKEN}
+  pprof:
+    endpoint: localhost:1778
+  zpages:
+    endpoint: localhost:55680
 
 receivers:
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
   filelog/nginx_access:
-    include: /apps/obs/test/nginx/access.log
-    start_at: beginning
+    include: /var/log/nginx/otel.log
     resource: 
       service.name: nginx
     operators:
@@ -33,7 +39,6 @@ receivers:
     include: /var/log/nginx/error.log
     resource: 
       service.name: nginx
-    # start_at: beginning
     operators:
       - type: regex_parser
         regex: '(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<severity>\w+)\] (?P<pid>\d+)#(?P<tid>\d+): (?:\*(?P<cid>\d+) )?(?P<message>.+)'
@@ -96,7 +101,6 @@ receivers:
     # https://www.freedesktop.org/software/systemd/man/249/journald.conf.html
     # In journald.conf, set Storage=volatile
     directory: /run/log/journal
-    # start_at: beginning
     all: true
     # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/pkg/stanza/docs/operators/README.md
     # 目前，该 receiver 仅设置 timestamp，其余信息全部堆在 body。
@@ -160,6 +164,7 @@ receivers:
     collection_interval: 15s
     scrapers:
       cpu:
+      disk:
       load:
       memory:
       network:
@@ -169,6 +174,7 @@ receivers:
             - "en*"
             - "ib*"
           match_type: "regexp"
+      paging:
       processes:
 #      process:
   hostmetrics/slow:
@@ -181,12 +187,14 @@ receivers:
             - nfs
             - ext4
             - zfs
+            - xfs
+            - nfs4
           match_type: "strict"
-#      disk:
 
 processors:
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
   batch:
+    timeout: 1s
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor
   memory_limiter:
     # 75% of maximum memory up to 2G
@@ -215,6 +223,12 @@ processors:
           enabled: true
         os.type:
           enabled: true
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourceprocessor
+  resource:
+    attributes:
+    - key: cloud.region
+      value: ${OTEL_CLOUD_REGION}
+      action: upsert
 
 exporters:
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
@@ -231,17 +245,17 @@ exporters:
       authenticator: bearertokenauth
 
 service:
-  extensions: [bearertokenauth]
+  extensions: [bearertokenauth, pprof, zpages]
   pipelines:
     logs:
-      receivers: [otlp, journald]
-      processors: [memory_limiter, batch, resourcedetection]
+      receivers: [otlp, journald, filelog/nginx_access, filelog/nginx_error, filelog/docker]
+      processors: [memory_limiter, batch, resourcedetection, resource]
       exporters: [otlphttp/with_auth]
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, batch, resourcedetection]
+      processors: [memory_limiter, batch, resourcedetection, resource]
       exporters: [otlphttp/with_auth]
     metrics:
       receivers: [docker_stats, hostmetrics/fast, hostmetrics/slow]
-      processors: [memory_limiter, batch, resourcedetection]
+      processors: [memory_limiter, batch, resourcedetection, resource]
       exporters: [otlphttp/with_auth]

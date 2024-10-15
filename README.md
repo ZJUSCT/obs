@@ -107,5 +107,6 @@ flowchart TD
     - [集群 `cloud.*`](https://opentelemetry.io/docs/specs/semconv/resource/cloud/)：
         - `cloud.region`：在流水线中**手动添加**。
         > 目前 OTel 并未规定真正意义上的“集群”资源属性，因此暂借云服务信息 `cloud.*` 代替。
+    > 在简单跨集群部署的情况下可能没有单独的集群 gateway，此时需要 agent 中添加 `cloud.region`。
 
 除了上述资源属性和基本的 JSON 等格式解析，agent 尽可能不进行其他处理。
