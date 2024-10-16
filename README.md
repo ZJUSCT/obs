@@ -113,3 +113,12 @@ flowchart TD
         - `syslogreceiver` **使用 Operator 提取** `hostname` 字段。
 
 除了上述资源属性和基本的 JSON 等格式解析，agent 尽可能不进行其他处理。这样既方便部署（更改主要发生在 gateway），也能够保持 agent 的轻量化，减少边缘侧资源消耗。
+
+### Grafana Dashboards
+
+下面是我们为 ZJUSCT 可观测性系统制作的仪表盘，基于上述的数据源、资源属性和 OpenTelemetry 语义规范：
+
+| Dashboard | DataSources |
+| --- | --- |
+| [Host Metrics](config/grafana/provisioning/dashboards/zjusct/single/hostmetric.json) | [otelcol-contrib hostmetricsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver) |
+| [Container Stats](config/grafana/provisioning/dashboards/zjusct/single/container.json) | [otelcol-contrib dockerstatsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver) <br/> [otelcol-contrib podmanstatsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/podmanreceiver) |

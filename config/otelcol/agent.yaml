@@ -24,7 +24,9 @@ receivers:
 ##############
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver
   docker_stats:
-    # 默认的 metrics 和 resource attributes 已经足够
+    metrics:
+      container.uptime:
+        enabled: true
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
   filelog/docker:
     include: /var/lib/docker/containers/*/*-json.log
@@ -178,36 +180,51 @@ receivers:
         info: 6
         debug: 7
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver
-  hostmetrics/fast:
+  hostmetrics:
     collection_interval: 15s
     scrapers:
+      # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/cpuscraper/documentation.md
       cpu:
+        metrics:
+          system.cpu.frequency: 
+            enabled: true
+          system.cpu.utilization:
+            enabled: true
+          system.cpu.logical.count:
+            enabled: true
+          system.cpu.physical.count:
+            enabled: true
       disk:
       load:
+      filesystem:
+        include_fs_types:
+          fs_types: [btrfs, nfs, ext4, zfs, xfs, nfs4]
+          match_type: "strict"
       memory:
       network:
         include:
-          interfaces:
-            - "^eth*"
-            - "^en*"
-            - "^ib*"
+          interfaces: ["^eth*", "^en*", "^ib*"]
           match_type: "regexp"
       paging:
       processes:
-#      process:
-  hostmetrics/slow:
-    collection_interval: 60m 
-    scrapers:
-      filesystem:
-        include_fs_types:
-          fs_types:
-            - btrfs
-            - nfs
-            - ext4
-            - zfs
-            - xfs
-            - nfs4
-          match_type: "strict"
+      # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/processscraper/documentation.md
+      process:
+        mute_process_all_errors: true
+        metrics:
+          process.cpu.utilization:
+            enabled: true
+          process.disk.operations:
+            enabled: true
+          process.handles:
+            enabled: true
+          process.open_file_descriptors:
+            enabled: true
+          process.paging.faults:
+            enabled: true
+          process.signals_pending:
+            enabled: true
+          process.threads:
+            enabled: true
 
 processors:
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
@@ -242,7 +259,7 @@ processors:
         os.type:
           enabled: true
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourceprocessor
-  resource:
+  resource/cloud:
     attributes:
     - key: cloud.region
       value: ${OTEL_CLOUD_REGION}
@@ -267,13 +284,13 @@ service:
   pipelines:
     logs:
       receivers: [otlp, journald, filelog/nginx_access, filelog/nginx_error, filelog/docker]
-      processors: [memory_limiter, batch, resourcedetection, resource]
+      processors: [memory_limiter, batch, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
     traces:
       receivers: [otlp]
-      processors: [memory_limiter, batch, resourcedetection, resource]
+      processors: [memory_limiter, batch, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
     metrics:
-      receivers: [docker_stats, hostmetrics/fast, hostmetrics/slow]
-      processors: [memory_limiter, batch, resourcedetection, resource]
+      receivers: [podman_stats, docker_stats, hostmetrics]
+      processors: [memory_limiter, batch, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
