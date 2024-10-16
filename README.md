@@ -118,7 +118,7 @@ flowchart TD
 
 下面是我们为 ZJUSCT 可观测性系统制作的仪表盘，基于上述的数据源、资源属性和 OpenTelemetry 语义规范：
 
-| Dashboard | DataSources |
-| --- | --- |
-| [Host Metrics](config/grafana/provisioning/dashboards/zjusct/single/hostmetric.json) | [otelcol-contrib hostmetricsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver) |
-| [Container Stats](config/grafana/provisioning/dashboards/zjusct/single/container.json) | [otelcol-contrib dockerstatsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver) <br/> [otelcol-contrib podmanstatsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/podmanreceiver) |
+| State | Dashboard | DataSources |
+| --- | --- | --- |
+| Stable | [Host Metrics](config/grafana/provisioning/dashboards/zjusct/single/hostmetric.json) | [otelcol-contrib hostmetricsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver) |
+| Dev    | [Container Stats](config/grafana/provisioning/dashboards/zjusct/single/container.json) | [otelcol-contrib dockerstatsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver) <br/> [otelcol-contrib podmanstatsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/podmanreceiver) |
