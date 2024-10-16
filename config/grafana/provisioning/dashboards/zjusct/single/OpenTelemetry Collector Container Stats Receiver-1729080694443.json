@@ -121,14 +121,14 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "decbytes"
+                "value": "Bps"
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 8,
+        "h": 13,
         "w": 24,
         "x": 0,
         "y": 1
@@ -138,13 +138,20 @@
         "cellHeight": "sm",
         "footer": {
           "countRows": false,
+          "enablePagination": true,
           "fields": "",
           "reducer": [
             "sum"
           ],
           "show": false
         },
-        "showHeader": true
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "CPU"
+          }
+        ]
       },
       "pluginVersion": "11.2.0",
       "targets": [
@@ -352,7 +359,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 9
+        "y": 14
       },
       "id": 5,
       "options": {
@@ -475,7 +482,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 9
+        "y": 14
       },
       "id": 6,
       "options": {
@@ -579,7 +586,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 15
+        "y": 20
       },
       "id": 8,
       "options": {
@@ -710,7 +717,7 @@
         },
         "definition": "label_values({cloud_region=\"$cloud_region\", host_name=\"$host_name\"},container_runtime)",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": "Container Runtime",
         "multi": false,
         "name": "container_runtime",
@@ -736,6 +743,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Container Stats Receiver",
   "uid": "be10un9edmmf4c",
-  "version": 15,
+  "version": 19,
   "weekStart": ""
 }

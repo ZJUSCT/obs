@@ -82,9 +82,9 @@ services:
     image: influxdb:2
     volumes:
       - influxdb:/var/lib/influxdb2
-    # only for localhost
+    # not only for localhost
     ports:
-      - 127.0.0.1:8086:8086
+      - 8086:8086
     environment:
       - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=zjusct
