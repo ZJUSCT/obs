@@ -2919,7 +2919,7 @@ service:
   extensions: [health_check, pprof, zpages, bearertokenauth]
   pipelines:
     logs:
-      receivers: [syslog, otlp/with_auth]
+      receivers: [otlp/with_auth, otlp/internal]
       processors: [memory_limiter, batch, resource/cloud]
       exporters: [clickhouse]
     traces:
@@ -2927,9 +2927,13 @@ service:
       processors: [memory_limiter, batch, resource/cloud]
       exporters: [clickhouse]
     metrics:
-      receivers: [otlp/with_auth]
+      receivers: [otlp/with_auth, otlp/internal]
       processors: [memory_limiter, batch, resource/cloud]
       exporters: [prometheus]
+    logs/syslog:
+      receivers: [syslog]
+      processors: [memory_limiter, batch, resource/cloud]
+      exporters: [clickhouse]
     metrics/pdu-30966:
       receivers: [snmp/pdu-30966-1, snmp/pdu-30966-2]
       processors: [memory_limiter, batch, metricstransform/pdu-30966, resource/cloud]

@@ -10,7 +10,7 @@
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
+        "name": "Annotations \u0026 Alerts",
         "type": "dashboard"
       }
     ]
@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 9,
+  "id": 5,
   "links": [],
   "panels": [
     {
@@ -359,7 +359,7 @@
           },
           "pluginVersion": "4.5.0",
           "queryType": "logs",
-          "rawSql": "SELECT \n   toStartOfInterval(Timestamp, toIntervalMillisecond($__interval_ms * 6) ) as timestamp, \n   countIf(SeverityNumber >= 17 AND SeverityNumber <= 20) as error,\n   countIf(SeverityNumber >= 21 AND SeverityNumber <= 24) as fatal,\n   countIf(SeverityNumber >= 13 AND SeverityNumber <= 16) as warn,\n   countIf(SeverityNumber >= 9 AND SeverityNumber <= 12) as info,\n   countIf(SeverityNumber >= 5 AND SeverityNumber <= 8) as debug,\n   countIf(SeverityNumber >= 1 AND SeverityNumber <= 4) as trace\nFROM default.otel_logs\nWHERE ( timestamp >= $__fromTime AND timestamp <= $__toTime ) \n  AND ( '$host_name' = 'ALL' OR ResourceAttributes['host.name'] = '$host_name' ) \n  AND ( '$cloud_region' = 'ALL' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \nGROUP BY timestamp\nORDER BY timestamp DESC;",
+          "rawSql": "SELECT \n   toStartOfInterval(Timestamp, toIntervalMillisecond($__interval_ms * 6) ) as timestamp, \n   countIf(SeverityNumber \u003e= 17 AND SeverityNumber \u003c= 20) as error,\n   countIf(SeverityNumber \u003e= 21 AND SeverityNumber \u003c= 24) as fatal,\n   countIf(SeverityNumber \u003e= 13 AND SeverityNumber \u003c= 16) as warn,\n   countIf(SeverityNumber \u003e= 9 AND SeverityNumber \u003c= 12) as info,\n   countIf(SeverityNumber \u003e= 5 AND SeverityNumber \u003c= 8) as debug,\n   countIf(SeverityNumber \u003e= 1 AND SeverityNumber \u003c= 4) as trace\nFROM default.otel_logs\nWHERE ( timestamp \u003e= $__fromTime AND timestamp \u003c= $__toTime ) \n  AND ( '$host_name' = 'ALL' OR ResourceAttributes['host.name'] = '$host_name' ) \n  AND ( '$cloud_region' = 'ALL' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \nGROUP BY timestamp\nORDER BY timestamp DESC;",
           "refId": "A"
         }
       ],
@@ -560,7 +560,7 @@
           },
           "pluginVersion": "4.5.0",
           "queryType": "logs",
-          "rawSql": "SELECT Timestamp as \"timestamp\", Body as \"body\", SeverityText as \"level\", LogAttributes as \"labels\", TraceId as \"traceID\" FROM \"default\".\"otel_logs\" \nWHERE ( timestamp >= $__fromTime AND timestamp <= $__toTime ) \n  AND ( '$host_name' = 'ALL' OR ResourceAttributes['host.name'] = '$host_name' ) \n  AND ( '$cloud_region' = 'ALL' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \nORDER BY timestamp DESC LIMIT 1000",
+          "rawSql": "SELECT Timestamp as \"timestamp\", Body as \"body\", SeverityText as \"level\", LogAttributes as \"labels\", TraceId as \"traceID\" FROM \"default\".\"otel_logs\" \nWHERE ( timestamp \u003e= $__fromTime AND timestamp \u003c= $__toTime ) \n  AND ( '$host_name' = 'ALL' OR ResourceAttributes['host.name'] = '$host_name' ) \n  AND ( '$cloud_region' = 'ALL' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \nORDER BY timestamp DESC LIMIT 1000",
           "refId": "A"
         }
       ],
@@ -568,10 +568,7 @@
     }
   ],
   "schemaVersion": 39,
-  "tags": [
-    "otelcol",
-    "clickhouse"
-  ],
+  "tags": ["otelcol", "clickhouse"],
   "templating": {
     "list": [
       {
@@ -653,6 +650,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Filelog Receiver",
   "uid": "ae11zuc35vv28f",
-  "version": 13,
+  "version": 1,
   "weekStart": ""
 }

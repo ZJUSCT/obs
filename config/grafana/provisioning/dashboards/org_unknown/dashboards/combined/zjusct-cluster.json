@@ -10,7 +10,7 @@
         "enable": true,
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
-        "name": "Annotations & Alerts",
+        "name": "Annotations \u0026 Alerts",
         "type": "dashboard"
       }
     ]
@@ -76,9 +76,7 @@
         "orientation": "auto",
         "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -369,7 +367,7 @@
           },
           "pluginVersion": "4.5.0",
           "queryType": "logs",
-          "rawSql": "SELECT \n  Timestamp as \"timestamp\", \n  Body as \"body\", \n  SeverityText as \"level\", \n  LogAttributes as \"labels\", \n  ResourceAttributes as \"resource\", \n  TraceId as \"traceID\" \nFROM \"default\".\"otel_logs\" \nWHERE \n  ( timestamp >= $__fromTime AND timestamp <= $__toTime ) \n  AND ( '$cloud_region' == ' ' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \n  AND ( '$host_name' == ' ' OR ResourceAttributes['host.name'] = '$host_name' )\nORDER BY timestamp \nDESC LIMIT 1000",
+          "rawSql": "SELECT \n  Timestamp as \"timestamp\", \n  Body as \"body\", \n  SeverityText as \"level\", \n  LogAttributes as \"labels\", \n  ResourceAttributes as \"resource\", \n  TraceId as \"traceID\" \nFROM \"default\".\"otel_logs\" \nWHERE \n  ( timestamp \u003e= $__fromTime AND timestamp \u003c= $__toTime ) \n  AND ( '$cloud_region' == ' ' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \n  AND ( '$host_name' == ' ' OR ResourceAttributes['host.name'] = '$host_name' )\nORDER BY timestamp \nDESC LIMIT 1000",
           "refId": "A"
         }
       ],
@@ -738,9 +736,7 @@
         "namePlacement": "auto",
         "orientation": "horizontal",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -815,9 +811,7 @@
         "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -888,9 +882,7 @@
         "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -965,9 +957,7 @@
         "minVizWidth": 75,
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
+          "calcs": ["lastNotNull"],
           "fields": "",
           "values": false
         },
@@ -1000,10 +990,7 @@
   ],
   "refresh": "5s",
   "schemaVersion": 39,
-  "tags": [
-    "clickhouse",
-    "prometheus"
-  ],
+  "tags": ["clickhouse", "prometheus"],
   "templating": {
     "list": [
       {
