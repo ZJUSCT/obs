@@ -2909,6 +2909,20 @@ exporters:
     send_timestamps: true
     resource_to_telemetry_conversion:
       enabled: true
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter
+  prometheusremotewrite:
+    endpoint: "http://prometheus:9090/api/v1/write"
+    # wal cause error, do not use
+    # wal:
+    resource_to_telemetry_conversion:
+      enabled: true
+    retry_on_failure:
+      enabled: true
+      initial_interval: 10s
+      max_interval: 60s
+      max_elapsed_time: 10m
+    # to be same with prometheus exporter
+    add_metric_suffixes: true
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/fileexporter
   #file:
   #  path: /test/otel-collector.json

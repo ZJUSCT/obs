@@ -1,16 +1,59 @@
 # https://opentelemetry.io/docs/collector/configuration/
 # https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
-# 节点上作为 agent 的 otel-collector，需要运行为 root
-# Environment variables:
-# - OTEL_BEARER_TOKEN
-# - OTEL_COLLECTOR_ENDPOINT
 
 extensions:
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/bearertokenauthextension
-#  bearertokenauth:
-#    token: ${OTEL_BEARER_TOKEN}
+  health_check:
+  pprof:
+    endpoint: "localhost:1778"
+  zpages:
+    endpoint: "localhost:55680"
 
 receivers:
+  hostmetrics:
+    collection_interval: 1s
+    scrapers:
+      # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/cpuscraper/documentation.md
+      cpu:
+        metrics:
+          system.cpu.frequency: 
+            enabled: true
+          system.cpu.utilization:
+            enabled: true
+          system.cpu.logical.count:
+            enabled: true
+          system.cpu.physical.count:
+            enabled: true
+      disk:
+      load:
+      filesystem:
+        include_fs_types:
+          fs_types: [btrfs, nfs, ext4, zfs, xfs, nfs4]
+          match_type: "strict"
+      memory:
+      network:
+        include:
+          interfaces: ["^eth*", "^en*", "^ib*"]
+          match_type: "regexp"
+      paging:
+      processes:
+      # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/processscraper/documentation.md
+      process:
+        mute_process_all_errors: true
+        metrics:
+          process.cpu.utilization:
+            enabled: true
+          process.disk.operations:
+            enabled: true
+          process.handles:
+            enabled: true
+          process.open_file_descriptors:
+            enabled: true
+          process.paging.faults:
+            enabled: true
+          process.signals_pending:
+            enabled: true
+          process.threads:
+            enabled: true
 #  otlp:
 #    protocols: 
 #      # default to localhost
@@ -18,25 +61,6 @@ receivers:
 #        endpoint: "0.0.0.0:4317"
 #      http:
 #        endpoint: "0.0.0.0:4318"
-  filelog/nginx_access:
-    include: /apps/obs/test/nginx/access.log
-    start_at: beginning
-    resource: 
-      service.name: nginx
-    operators:
-      - type: json_parser
-        timestamp:
-          layout_type: 'epoch'
-          layout: 's.ms'
-          parse_from: attributes["timestamp"]
-      - type: remove
-        field: attributes["timestamp"]
-      - type: move
-        from: attributes["body"]
-        to: body
-      - type: move
-        from: attributes["resource.process.pid"]
-        to: resource["process.pid"]
       
 processors:
   batch:
@@ -52,31 +76,44 @@ processors:
 
 exporters:
   debug/detailed:
-    # basic, normal, detailed
     verbosity: detailed
   debug/basic:
     verbosity: basic
-  #otlphttp/with_auth:
-  #  endpoint: https://otel.clusters.zjusct.io
-  #  auth:
-  #    authenticator: bearertokenauth
   file:
     path: /tmp/otel-output.json
-  
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter
+  prometheusremotewrite:
+    endpoint: "http://localhost:9090/api/v1/write"
+    # wal cause error, do not use
+    # wal:
+    resource_to_telemetry_conversion:
+      enabled: true
+    retry_on_failure:
+      enabled: true
+      initial_interval: 10s
+      max_interval: 60s
+      max_elapsed_time: 10m
+    # to be same with prometheus exporter
+    add_metric_suffixes: true
 
 service:
-#  extensions: [bearertokenauth]
   pipelines:
-    logs:
-      receivers: [filelog/nginx_access]
-      processors: [memory_limiter, batch, resource]
-#      exporters: [otlphttp/with_auth, debug]
-      exporters: [debug/basic, file]
-#    traces:
-#      receivers: [otlp]
-#      processors: [memory_limiter, batch, resource]
-#      exporters: [debug]
-#    metrics:
-#      receivers: [otlp]
-#      processors: [memory_limiter, batch, resource]
-#      exporters: [debug]
+    #logs:
+    #  receivers: [filelog/nginx_access]
+    #  processors: [memory_limiter, batch, resource]
+    #  exporters: [debug/basic, file]
+    #traces:
+    #  receivers: [otlp]
+    #  processors: [memory_limiter, batch, resource]
+    #  exporters: [debug]
+    metrics:
+      receivers: [hostmetrics]
+      processors: [memory_limiter, batch]
+      exporters: [prometheusremotewrite]
+  #telemetry:
+  #  logs:
+  #    level: DEBUG
+  #    development: true
+  #    output_paths: ["stdout"]
+  #    #sampling:
+  #    #  enabled: false

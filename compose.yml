@@ -66,6 +66,7 @@ services:
       "--config.file=/etc/prometheus/prometheus.yml",
       "--storage.tsdb.path=/prometheus",
       "--storage.tsdb.retention.time=180d",
+      "--web.enable-remote-write-receiver",
       "--web.enable-admin-api"
     ]
     depends_on:

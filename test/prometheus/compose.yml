@@ -1,0 +1,13 @@
+services:
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    command: [
+      "--config.file=/etc/prometheus/prometheus.yml",
+      "--web.enable-admin-api",
+      "--web.enable-remote-write-receiver",
+      "--log.level=debug"
+    ]
