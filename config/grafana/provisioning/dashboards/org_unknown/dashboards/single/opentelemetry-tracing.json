@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 10,
+  "id": 4,
   "links": [],
   "panels": [
     {
@@ -515,6 +515,10 @@
           "text": "grafana",
           "value": "grafana"
         },
+        "datasource": {
+          "type": "grafana-clickhouse-datasource",
+          "uid": "clickhouse"
+        },
         "definition": "SELECT ServiceName FROM otel_traces GROUP BY ServiceName;",
         "hide": 0,
         "includeAll": false,
@@ -531,6 +535,10 @@
       },
       {
         "current": {},
+        "datasource": {
+          "type": "grafana-clickhouse-datasource",
+          "uid": "clickhouse"
+        },
         "definition": "SELECT \n        TraceId\nFROM \n        \"default\".\"otel_traces\" \nWHERE \n        (Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime) \n        AND (ParentSpanId = '') \n        AND (ServiceName = '$service_name')\nORDER BY \n        Timestamp DESC, \n        Duration DESC \nLIMIT 10;",
         "hide": 0,
         "includeAll": false,
@@ -548,13 +556,13 @@
     ]
   },
   "time": {
-    "from": "2024-10-17T05:26:03.323Z",
-    "to": "2024-10-17T06:26:03.323Z"
+    "from": "now-1h",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "OpenTelemetry Tracing",
   "uid": "de14bivmffl6oe",
-  "version": 14,
+  "version": 2,
   "weekStart": ""
 }
