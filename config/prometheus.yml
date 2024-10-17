@@ -1,22 +1,22 @@
 # https://prometheus.io/docs/prometheus/latest/configuration/configuration/
 # https://github.com/prometheus/prometheus/tree/main/documentation/examples
-global:
-  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
-  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
-  # scrape_timeout is set to the global default (10s).
+# changed to remote write
+#global:
+#  scrape_interval: 15s 
+#  evaluation_interval: 15s 
 
-scrape_configs:
-  - job_name: 'otelcol'
-    honor_labels: true # this is a gateway
-    honor_timestamps: true
-    static_configs:
-      - targets:
-          - otelcol:9090
+#scrape_configs:
+#  - job_name: 'otelcol'
+#    honor_labels: true # this is a gateway
+#    honor_timestamps: true
+#    static_configs:
+#      - targets:
+#          - otelcol:9090
 
 # https://prometheus.io/docs/guides/opentelemetry/
-#storage:
-#  tsdb:
-#    out_of_order_time_window: 30m
+storage:
+  tsdb:
+    out_of_order_time_window: 30m
 #otlp:
 #  promote_resource_attributes:
 #    - deployment.environment

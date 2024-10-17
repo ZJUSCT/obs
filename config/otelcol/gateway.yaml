@@ -2904,11 +2904,11 @@ exporters:
     endpoint: clickhouse://clickhouse:9000
     ttl: 4320h
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusexporter
-  prometheus:
-    endpoint: otelcol:9090
-    send_timestamps: true
-    resource_to_telemetry_conversion:
-      enabled: true
+#  prometheus:
+#    endpoint: otelcol:9090
+#    send_timestamps: true
+#    resource_to_telemetry_conversion:
+#      enabled: true
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter
   prometheusremotewrite:
     endpoint: "http://prometheus:9090/api/v1/write"
@@ -2943,7 +2943,7 @@ service:
     metrics:
       receivers: [otlp/with_auth, otlp/internal]
       processors: [memory_limiter, batch, resource/cloud]
-      exporters: [prometheus]
+      exporters: [prometheusremotewrite]
     logs/syslog:
       receivers: [syslog]
       processors: [memory_limiter, batch, resource/cloud]
@@ -2951,8 +2951,8 @@ service:
     metrics/pdu-30966:
       receivers: [snmp/pdu-30966-1, snmp/pdu-30966-2]
       processors: [memory_limiter, batch, metricstransform/pdu-30966, resource/cloud]
-      exporters: [prometheus]
+      exporters: [prometheusremotewrite]
     metrics/pdu-42578:
       receivers: [snmp/pdu-42578-1]
       processors: [memory_limiter, batch, metricstransform/pdu-42578, resource/cloud]
-      exporters: [prometheus]
+      exporters: [prometheusremotewrite]
