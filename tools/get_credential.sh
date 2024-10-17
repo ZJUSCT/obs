@@ -1,5 +1,8 @@
 #!/bin/bash
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+cd $SCRIPT_DIR/..
+
 credential_names=(
     "OTEL_BEARER_TOKEN"
     "GF_SECURITY_ADMIN_PASSWORD"
