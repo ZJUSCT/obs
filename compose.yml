@@ -130,10 +130,10 @@ services:
       - GF_TG_BOT_TOKEN=${GF_TG_BOT_TOKEN}
       - GF_TG_CHAT_ID=${GF_TG_CHAT_ID}
       - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
-      - http_proxy=http://bridge.internal.zjusct.io:7890
-      - https_proxy=http://bridge.internal.zjusct.io:7890
+      # - http_proxy=http://bridge.internal.zjusct.io:7890
+      # - https_proxy=http://bridge.internal.zjusct.io:7890
       # https://unix.stackexchange.com/questions/23452/set-a-network-range-in-the-no-proxy-environment-variable
-      - no_proxy=127.0.0.1,.cn,.zjusct.io,grafana,prometheus,clickhouse,otelcol,elasticsearch,influxdb
+      # - no_proxy=127.0.0.1,.cn,.zjusct.io,grafana,prometheus,clickhouse,otelcol,elasticsearch,influxdb
     ports:
       - 3000:3000
     restart: unless-stopped
