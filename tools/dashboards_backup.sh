@@ -15,6 +15,14 @@ fi
 # source ../.env
 # export GDG_CONTEXTS__ZJUSCT__PASSWORD=$GF_SECURITY_ADMIN_PASSWORD
 
+# test grafana up
+curl -f https://grafana.clusters.zjusct.io/api/health
+
+if [ $? -ne 0 ]; then
+    echo "Grafana is down"
+    exit
+fi
+
 # backup dashboards
 gdg backup dashboards list --config tools/gdg/importer.yml
 gdg backup dashboards download --config tools/gdg/importer.yml
