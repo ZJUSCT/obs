@@ -4,16 +4,20 @@
 
 本仓库是 ZJUSCT 可观测性系统的配置文件。
 
-## Todo
+## Todo List
 
-- [ ] Elastic Exporter
-- [ ] InfluxDB Exporter
-- [ ] Nginx Native Collector
-- [ ] Grafana Provision DataSources
-- [ ] Grafana Provision Dashboards
-- [ ] Grafana Provision Alerts
-- [ ] Wait for Prometheus 3.0, [native support for OpenTelemetry](https://prometheus.io/blog/2024/03/14/commitment-to-opentelemetry/) is coming.
-- [ ] Wait for [journald - Consider parsing more known fields from logs · Issue #7298 · open-telemetry/opentelemetry-collector-contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/7298).
+- To be done
+    - [ ] Elastic Exporter
+    - [ ] InfluxDB Exporter
+    - [ ] Nginx Native Collector
+    - [ ] Grafana Provision Alerts
+- Pending
+    - [ ] 修复 Prometheus Exporter 描述不一致报错：Wait for [Inconsistent Metric Descriptions Between `dockerstatsreceiver` and `podmanstatsreceiver` Causing `prometheusexporter` Errors · Issue #35829 · open-telemetry/opentelemetry-collector-contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/35829)
+    - [ ] Uptime 指标：Wait for [Add system uptime metric · Issue #648 · open-telemetry/semantic-conventions](https://github.com/open-telemetry/semantic-conventions/issues/648), [Semantic conventions for Uptime Monitoring by jsuereth · Pull Request #185 · open-telemetry/oteps](https://github.com/open-telemetry/oteps/pull/185)
+    - [ ] Netflow 分析：Wait for [New component: netflow receiver · Issue #32732 · open-telemetry/opentelemetry-collector-contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/32732)
+        - [IPFIX Lookup Processor](https://github.com/fizzers123/opentelemetry-collector-contrib/tree/ipfix-processor-implementation/processor/ipfixlookupprocessor)
+    - [ ] Wait for Prometheus 3.0, [native support for OpenTelemetry](https://prometheus.io/blog/2024/03/14/commitment-to-opentelemetry/) is coming.
+    - [ ] Journald 属性处理：Wait for [journald - Consider parsing more known fields from logs · Issue #7298 · open-telemetry/opentelemetry-collector-contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/7298).
 
 ## 技术选型
 
@@ -24,6 +28,8 @@ We ❤️ Open Source
 | 数据采集 | [OpenTelemetry Collector](https://github.com/open-telemetry/opentelemetry-collector) |
 | 数据存储 | [ClickHouse](https://github.com/ClickHouse/ClickHouse)、[Elasticsearch](https://github.com/elastic/elasticsearch)、[InfluxDB](https://github.com/influxdata/influxdb)、[Prometheus](https://github.com/prometheus/prometheus) |
 | 数据分析、可视化和告警 | [Grafana](https://github.com/grafana/grafana) |
+
+系统整体设计遵循 KISS（Keep It Simple, Stupid）原则，简化层次间交互的复杂度，降低系统维护的难度。
 
 ## 数据状态
 
@@ -134,3 +140,5 @@ flowchart TD
     | Dev    | [ZJUSCT Cluster](config/grafana/provisioning/dashboards/zjusct/combined/ZJUSCT%20Cluster-1729080780675.json) |
     | Dev    | [ZJU Mirror](config/grafana/provisioning/dashboards/zjusct/combined/ZJU%20Mirror-1729080729604.json) |
     | Dev    | [ZJU Mirror Defence](config/grafana/provisioning/dashboards/zjusct/combined/defence.json) |
+
+因为 Grafana 数据无持久化，移除 Grafana Docker 时应当注意备份仪表盘。我们使用 [esnet/gdg: Grafana Dashboard Manager](https://github.com/esnet/gdg) 进行仪表盘批量备份。

@@ -7,5 +7,5 @@ providers:
     disableDeletion: false
     allowUiUpdates: true
     options:
-      path: /etc/grafana/provisioning/dashboards/zjusct
+      path: /etc/grafana/provisioning/dashboards
       foldersFromFilesStructure: true

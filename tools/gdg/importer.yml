@@ -1,0 +1,17 @@
+context_name: zjusct
+contexts:
+    zjusct:
+        #storage: ""
+        url: https://grafana.clusters.zjusct.io
+        # use anonymous access
+        watched:
+            - "single"
+            - "combined"
+        output_path: ../config/grafana/provisioning/dashboards
+
+global:
+    debug: true
+    api_debug: false
+    ignore_ssl_errors: false
+    retry_count: 3
+    retry_delay: 5s
