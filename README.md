@@ -142,3 +142,7 @@ flowchart TD
     | Dev    | [ZJU Mirror Defence](config/grafana/provisioning/dashboards/zjusct/combined/defence.json) |
 
 因为 Grafana 数据无持久化，移除 Grafana Docker 时应当注意备份仪表盘。我们使用 [esnet/gdg: Grafana Dashboard Manager](https://github.com/esnet/gdg) 进行仪表盘批量备份。
+
+有很多站点也提供了公开的仪表盘，我们参考了其中的一些设计：
+
+- [Sentry Software](https://hws-demo.sentrysoftware.com/dashboards)
