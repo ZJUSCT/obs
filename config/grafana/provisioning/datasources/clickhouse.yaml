@@ -1,5 +1,5 @@
 # https://grafana.com/grafana/plugins/grafana-clickhouse-datasource/
-apiVersion: 2
+apiVersion: 3
 prune: true
 
 datasources:
@@ -16,7 +16,7 @@ datasources:
         otelEnabled: true
         otelVersion: latest
       traces:
-        defaultDatabase: deafult
+        defaultDatabase: default
         defaultTable: otel_traces
         otelEnabled: true
         otelVersion: latest
