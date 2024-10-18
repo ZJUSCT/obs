@@ -9,58 +9,66 @@ extensions:
     endpoint: "localhost:55680"
 
 receivers:
-  hostmetrics:
-    collection_interval: 1s
-    scrapers:
-      # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/cpuscraper/documentation.md
-      cpu:
-        metrics:
-          system.cpu.frequency: 
-            enabled: true
-          system.cpu.utilization:
-            enabled: true
-          system.cpu.logical.count:
-            enabled: true
-          system.cpu.physical.count:
-            enabled: true
-      disk:
-      load:
-      filesystem:
-        include_fs_types:
-          fs_types: [btrfs, nfs, ext4, zfs, xfs, nfs4]
-          match_type: "strict"
-      memory:
-      network:
-        include:
-          interfaces: ["^eth*", "^en*", "^ib*"]
-          match_type: "regexp"
-      paging:
-      processes:
-      # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/processscraper/documentation.md
-      process:
-        mute_process_all_errors: true
-        metrics:
-          process.cpu.utilization:
-            enabled: true
-          process.disk.operations:
-            enabled: true
-          process.handles:
-            enabled: true
-          process.open_file_descriptors:
-            enabled: true
-          process.paging.faults:
-            enabled: true
-          process.signals_pending:
-            enabled: true
-          process.threads:
-            enabled: true
-#  otlp:
-#    protocols: 
-#      # default to localhost
-#      grpc:
-#        endpoint: "0.0.0.0:4317"
-#      http:
-#        endpoint: "0.0.0.0:4318"
+  journald:
+    # https://www.freedesktop.org/software/systemd/man/249/journald.conf.html
+    # In journald.conf, set Storage=volatile
+    directory: /run/log/journal
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/pkg/stanza/docs/operators/README.md
+    # 目前，该 receiver 仅设置 timestamp，其余信息全部堆在 body。
+    # 正在等待标准修订，下面的 Issue 需要跟踪。
+    # https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/7298
+    operators:
+    # 特殊情况：
+    # - kernel 和某些 log 没有 PID、COMM、EXE、CMDLINE、UID、GID 等字段
+    # https://www.freedesktop.org/software/systemd/man/latest/systemd.journal-fields.html
+    # 全部移动到 attributes.journald，然后将语义明确的移动到 resource 和 attributes
+    - type: move
+      from: body
+      to: attributes.journald
+    - type: move
+      from: attributes.journald["MESSAGE"]
+      to: body
+    - type: move
+      from: attributes.journald["_PID"]
+      to: resource["process.pid"]
+      if: 'type(attributes.journald["_PID"]) != "nil"'
+    - type: move
+      from: attributes.journald["_COMM"]
+      to: resource["process.executable.name"]
+      if: 'type(attributes.journald["_COMM"]) != "nil"'
+    - type: move
+      from: attributes.journald["_EXE"]
+      to: resource["process.executable.path"]
+      if: 'type(attributes.journald["_EXE"]) != "nil"'
+    - type: move
+      from: attributes.journald["_CMDLINE"]
+      to: resource["process.command_line"]
+      if: 'type(attributes.journald["_CMDLINE"]) != "nil"'
+    - type: move
+      from: attributes.journald["_UID"]
+      to: resource["process.owner"]
+      if: 'type(attributes.journald["_UID"]) != "nil"'
+    # 下面的字段所有情况都有
+    - type: move
+      from: attributes.journald["SYSLOG_IDENTIFIER"]
+      to: resource["service.name"]
+      if: 'type(attributes.journald["SYSLOG_IDENTIFIER"]) != "nil"'
+    - type: move
+      from: attributes.journald["_HOSTNAME"]
+      to: resource["host.name"]
+    - type: severity_parser
+      parse_from: attributes.journald["PRIORITY"]
+      preset: none
+      mapping:
+      # OTel severity number: systemd priority # syslog severity
+        fatal: 0 # emerg
+        error3: 1 # alert
+        error2: 2 # crit
+        error: 3 
+        warn: 4
+        info2: 5 # notice
+        info: 6
+        debug: 7
       
 processors:
   batch:
@@ -68,11 +76,17 @@ processors:
     limit_mib: 1536
     spike_limit_mib: 512
     check_interval: 5s
-  resource:
-    attributes:
-    - key: host.name
-      value: "testbench"
-      action: upsert
+  transform/journald:
+    error_mode: ignore
+    log_statements:
+      - context: log
+        statements:
+        - flatten(attributes)
+  #resource:
+  #  attributes:
+  #  - key: host.name
+  #    value: "testbench"
+  #    action: upsert
 
 exporters:
   debug/detailed:
@@ -98,18 +112,18 @@ exporters:
 
 service:
   pipelines:
-    #logs:
-    #  receivers: [filelog/nginx_access]
-    #  processors: [memory_limiter, batch, resource]
-    #  exporters: [debug/basic, file]
+    logs:
+      receivers: [journald]
+      processors: [memory_limiter, batch, transform/journald]
+      exporters: [debug/basic, file]
     #traces:
     #  receivers: [otlp]
     #  processors: [memory_limiter, batch, resource]
     #  exporters: [debug]
-    metrics:
-      receivers: [hostmetrics]
-      processors: [memory_limiter, batch]
-      exporters: [prometheusremotewrite]
+    #metrics:
+    #  receivers: [hostmetrics]
+    #  processors: [memory_limiter, batch]
+    #  exporters: [prometheusremotewrite]
   #telemetry:
   #  logs:
   #    level: DEBUG

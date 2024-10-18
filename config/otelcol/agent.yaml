@@ -1,7 +1,7 @@
 # https://opentelemetry.io/docs/collector/configuration/
 # https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
 # Version: otelcol-contrib v0.111.0
-# Date: 2024-10-15
+# Date: 2024-10-18
 # Environment Variables should be set in systemd service file:
 #
 #   [Service]
@@ -131,43 +131,43 @@ receivers:
     # 特殊情况：
     # - kernel 和某些 log 没有 PID、COMM、EXE、CMDLINE、UID、GID 等字段
     # https://www.freedesktop.org/software/systemd/man/latest/systemd.journal-fields.html
-    # 全部移动到 attributes，然后将语义明确的移动到 resource 和 attributes
+    # 全部移动到 attributes.journald，然后将语义明确的移动到 resource 和 attributes
     - type: move
       from: body
-      to: attributes.journal
+      to: attributes.journald
     - type: move
-      from: attributes.journal.MESSAGE
+      from: attributes.journald["MESSAGE"]
       to: body
     - type: move
-      from: attributes.journal.SYSLOG_IDENTIFIER
-      to: resource.service.name
-      if: 'type(attributes.journal.SYSLOG_IDENTIFIER) != "nil"'
+      from: attributes.journald["_PID"]
+      to: resource["process.pid"]
+      if: 'type(attributes.journald["_PID"]) != "nil"'
     - type: move
-      from: attributes.journal._PID
-      to: resource.process.pid
-      if: 'type(attributes.journal._PID) != "nil"'
+      from: attributes.journald["_COMM"]
+      to: resource["process.executable.name"]
+      if: 'type(attributes.journald["_COMM"]) != "nil"'
     - type: move
-      from: attributes.journal._COMM
-      to: resource.process.executable.name
-      if: 'type(attributes.journal._COMM) != "nil"'
+      from: attributes.journald["_EXE"]
+      to: resource["process.executable.path"]
+      if: 'type(attributes.journald["_EXE"]) != "nil"'
     - type: move
-      from: attributes.journal._EXE
-      to: resource.process.executable.path
-      if: 'type(attributes.journal._EXE) != "nil"'
+      from: attributes.journald["_CMDLINE"]
+      to: resource["process.command_line"]
+      if: 'type(attributes.journald["_CMDLINE"]) != "nil"'
     - type: move
-      from: attributes.journal._CMDLINE
-      to: resource.process.command_line
-      if: 'type(attributes.journal._CMDLINE) != "nil"'
-    - type: move
-      from: attributes.journal._UID
-      to: resource.process.owner
-      if: 'type(attributes.journal._UID) != "nil"'
+      from: attributes.journald["_UID"]
+      to: resource["process.owner"]
+      if: 'type(attributes.journald["_UID"]) != "nil"'
     # 下面的字段所有情况都有
     - type: move
-      from: attributes.journal._HOSTNAME
-      to: resource.host.name
+      from: attributes.journald["SYSLOG_IDENTIFIER"]
+      to: resource["service.name"]
+      if: 'type(attributes.journald["SYSLOG_IDENTIFIER"]) != "nil"'
+    - type: move
+      from: attributes.journald["_HOSTNAME"]
+      to: resource["host.name"]
     - type: severity_parser
-      parse_from: attributes.journal.PRIORITY
+      parse_from: attributes.journald["PRIORITY"]
       preset: none
       mapping:
       # OTel severity number: systemd priority # syslog severity
@@ -264,6 +264,13 @@ processors:
     - key: cloud.region
       value: ${OTEL_CLOUD_REGION}
       action: upsert
+# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/transformprocessor
+  transform/journald:
+    error_mode: ignore
+    log_statements:
+      - context: log
+        statements:
+        - flatten(attributes)
 
 exporters:
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
@@ -283,8 +290,12 @@ service:
   extensions: [bearertokenauth, pprof, zpages]
   pipelines:
     logs:
-      receivers: [otlp, journald, filelog/nginx_access, filelog/nginx_error, filelog/docker]
+      receivers: [otlp, filelog/nginx_access, filelog/nginx_error, filelog/docker]
       processors: [memory_limiter, batch, resourcedetection, resource/cloud]
+      exporters: [otlphttp/with_auth]
+    logs/journald:
+      receivers: [journald]
+      processors: [memory_limiter, batch, transform/journald, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
     traces:
       receivers: [otlp]
