@@ -198,7 +198,7 @@ receivers:
       load:
       filesystem:
         include_fs_types:
-          fs_types: [btrfs, nfs, ext4, zfs, xfs, nfs4]
+          fs_types: [btrfs, nfs, ext4, zfs, xfs, nfs4, exfat]
           match_type: "strict"
       memory:
       network:

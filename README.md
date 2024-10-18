@@ -146,3 +146,7 @@ flowchart TD
 有很多站点也提供了公开的仪表盘，我们参考了其中的一些设计：
 
 - [Sentry Software](https://hws-demo.sentrysoftware.com/dashboards)
+
+## 代码风格
+
+- SQL 使用 VSCode SQLTools 插件格式化。
