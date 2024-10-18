@@ -158,7 +158,7 @@
         ]
       },
       "gridPos": {
-        "h": 9,
+        "h": 6,
         "w": 24,
         "x": 0,
         "y": 0
@@ -359,7 +359,7 @@
           },
           "pluginVersion": "4.5.0",
           "queryType": "logs",
-          "rawSql": "SELECT \n   toStartOfInterval(Timestamp, toIntervalMillisecond($__interval_ms * 6) ) as timestamp, \n   countIf(SeverityNumber \u003e= 17 AND SeverityNumber \u003c= 20) as error,\n   countIf(SeverityNumber \u003e= 21 AND SeverityNumber \u003c= 24) as fatal,\n   countIf(SeverityNumber \u003e= 13 AND SeverityNumber \u003c= 16) as warn,\n   countIf(SeverityNumber \u003e= 9 AND SeverityNumber \u003c= 12) as info,\n   countIf(SeverityNumber \u003e= 5 AND SeverityNumber \u003c= 8) as debug,\n   countIf(SeverityNumber \u003e= 1 AND SeverityNumber \u003c= 4) as trace\nFROM default.otel_logs\nWHERE ( timestamp \u003e= $__fromTime AND timestamp \u003c= $__toTime ) \n  AND ( '$host_name' = 'ALL' OR ResourceAttributes['host.name'] = '$host_name' ) \n  AND ( '$cloud_region' = 'ALL' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \nGROUP BY timestamp\nORDER BY timestamp DESC;",
+          "rawSql": "SELECT \n   toStartOfInterval(Timestamp, toIntervalMillisecond($__interval_ms * 6) ) as timestamp, \n   countIf(SeverityNumber \u003e= 17 AND SeverityNumber \u003c= 20) as error,\n   countIf(SeverityNumber \u003e= 21 AND SeverityNumber \u003c= 24) as fatal,\n   countIf(SeverityNumber \u003e= 13 AND SeverityNumber \u003c= 16) as warn,\n   countIf(SeverityNumber \u003e= 9 AND SeverityNumber \u003c= 12) as info,\n   countIf(SeverityNumber \u003e= 5 AND SeverityNumber \u003c= 8) as debug,\n   countIf(SeverityNumber \u003e= 1 AND SeverityNumber \u003c= 4) as trace\nFROM default.otel_logs\nWHERE ( timestamp \u003e= $__fromTime AND timestamp \u003c= $__toTime ) \n  AND ( '$host_name' = 'ALL' OR ResourceAttributes['host.name'] = '$host_name' ) \n  AND ( '$cloud_region' = 'ALL' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \n  AND ( '$service_name' = 'ALL' OR ResourceAttributes['service.name'] = '$service_name' )\n  AND ( '$container_name' = 'ALL' OR ResourceAttributes['container.name'] = '$container_name' )\nGROUP BY timestamp\nORDER BY timestamp DESC;",
           "refId": "A"
         }
       ],
@@ -375,7 +375,7 @@
         "h": 22,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 6
       },
       "id": 2,
       "options": {
@@ -383,10 +383,10 @@
         "enableLogDetails": true,
         "prettifyLogMessage": false,
         "showCommonLabels": false,
-        "showLabels": true,
+        "showLabels": false,
         "showTime": true,
         "sortOrder": "Descending",
-        "wrapLogMessage": false
+        "wrapLogMessage": true
       },
       "targets": [
         {
@@ -560,7 +560,7 @@
           },
           "pluginVersion": "4.5.0",
           "queryType": "logs",
-          "rawSql": "SELECT Timestamp as \"timestamp\", Body as \"body\", SeverityText as \"level\", LogAttributes as \"labels\", TraceId as \"traceID\" FROM \"default\".\"otel_logs\" \nWHERE ( timestamp \u003e= $__fromTime AND timestamp \u003c= $__toTime ) \n  AND ( '$host_name' = 'ALL' OR ResourceAttributes['host.name'] = '$host_name' ) \n  AND ( '$cloud_region' = 'ALL' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \nORDER BY timestamp DESC LIMIT 1000",
+          "rawSql": "SELECT \n  Timestamp as \"timestamp\", \n  Body as \"body\", \n  SeverityText as \"level\", \n  mapConcat(LogAttributes, ResourceAttributes) as \"labels\", \n  TraceId as \"traceID\"\nFROM \"default\".\"otel_logs\" \nWHERE ( timestamp \u003e= $__fromTime AND timestamp \u003c= $__toTime ) \n  AND ( '$cloud_region' = 'ALL' OR ResourceAttributes['cloud.region'] = '$cloud_region' ) \n  AND ( '$host_name' = 'ALL' OR ResourceAttributes['host.name'] = '$host_name' ) \n  AND ( '$service_name' = 'ALL' OR ResourceAttributes['service.name'] = '$service_name' )\n  AND ( '$container_name' = 'ALL' OR ResourceAttributes['container.name'] = '$container_name' )\nORDER BY timestamp DESC LIMIT 500;\n",
           "refId": "A"
         }
       ],
@@ -593,7 +593,7 @@
       {
         "allValue": "ALL",
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -601,18 +601,18 @@
           "type": "grafana-clickhouse-datasource",
           "uid": "${datasource}"
         },
-        "definition": "SELECT ResourceAttributes['cloud.region'] AS cloud_region\nFROM otel_logs\nWHERE NOT empty(cloud_region)\nGROUP BY cloud_region",
+        "definition": "SELECT ResourceAttributes['cloud.region'] AS cloud_region\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(cloud_region))\nGROUP BY cloud_region;",
         "hide": 0,
         "includeAll": true,
         "label": "Cloud Region",
         "multi": false,
         "name": "cloud_region",
         "options": [],
-        "query": "SELECT ResourceAttributes['cloud.region'] AS cloud_region\nFROM otel_logs\nWHERE NOT empty(cloud_region)\nGROUP BY cloud_region",
+        "query": "SELECT ResourceAttributes['cloud.region'] AS cloud_region\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(cloud_region))\nGROUP BY cloud_region;",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
+        "sort": 1,
         "type": "query"
       },
       {
@@ -626,30 +626,81 @@
           "type": "grafana-clickhouse-datasource",
           "uid": "${datasource}"
         },
-        "definition": "SELECT \n  ResourceAttributes['host.name'] AS host_name\nFROM otel_logs\nWHERE (NOT empty(host_name))\n  AND (ResourceAttributes['cloud.region'] = '$cloud_region')\nGROUP BY host_name; ",
+        "definition": "SELECT \n  ResourceAttributes['host.name'] AS host_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(host_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\nGROUP BY host_name; ",
         "hide": 0,
         "includeAll": true,
         "label": "Host Name",
         "multi": false,
         "name": "host_name",
         "options": [],
-        "query": "SELECT \n  ResourceAttributes['host.name'] AS host_name\nFROM otel_logs\nWHERE (NOT empty(host_name))\n  AND (ResourceAttributes['cloud.region'] = '$cloud_region')\nGROUP BY host_name; ",
+        "query": "SELECT \n  ResourceAttributes['host.name'] AS host_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(host_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\nGROUP BY host_name; ",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 0,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": "ALL",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "grafana-clickhouse-datasource",
+          "uid": "${datasource}"
+        },
+        "definition": "SELECT \n  ResourceAttributes['service.name'] AS service_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(service_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY service_name;",
+        "description": "SELECT \n  ResourceAttributes['service.name'] AS service_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(service_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY service_name;",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Service Name",
+        "multi": false,
+        "name": "service_name",
+        "options": [],
+        "query": "SELECT \n  ResourceAttributes['service.name'] AS service_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(service_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY service_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "allValue": "ALL",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "grafana-clickhouse-datasource",
+          "uid": "${datasource}"
+        },
+        "definition": "SELECT \n  ResourceAttributes['container.name'] AS container_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(container_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY container_name;",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Container Name",
+        "multi": false,
+        "name": "container_name",
+        "options": [],
+        "query": "SELECT \n  ResourceAttributes['container.name'] AS container_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(container_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY container_name;",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
         "type": "query"
       }
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "OpenTelemetry Collector Filelog Receiver",
   "uid": "ae11zuc35vv28f",
-  "version": 1,
+  "version": 29,
   "weekStart": ""
 }

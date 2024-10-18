@@ -330,6 +330,6 @@
   "timezone": "browser",
   "title": "SNMP PDU Metrics",
   "uid": "fe11nlbe4vz7ka",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
