@@ -208,23 +208,24 @@ receivers:
       paging:
       processes:
       # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/processscraper/documentation.md
-      process:
-        mute_process_all_errors: true
-        metrics:
-          process.cpu.utilization:
-            enabled: true
-          process.disk.operations:
-            enabled: true
-          process.handles:
-            enabled: true
-          process.open_file_descriptors:
-            enabled: true
-          process.paging.faults:
-            enabled: true
-          process.signals_pending:
-            enabled: true
-          process.threads:
-            enabled: true
+      # consumes a lot of resources
+      # process:
+      #   mute_process_all_errors: true
+      #   metrics:
+      #     process.cpu.utilization:
+      #       enabled: true
+      #     process.disk.operations:
+      #       enabled: true
+      #     process.handles:
+      #       enabled: true
+      #     process.open_file_descriptors:
+      #       enabled: true
+      #     process.paging.faults:
+      #       enabled: true
+      #     process.signals_pending:
+      #       enabled: true
+      #     process.threads:
+      #       enabled: true
 
 processors:
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
@@ -289,8 +290,10 @@ exporters:
 service:
   extensions: [bearertokenauth, pprof, zpages]
   pipelines:
+    # not enabled by default:
+    # - filelog/nginx_access, filelog/nginx_error
     logs:
-      receivers: [otlp, filelog/nginx_access, filelog/nginx_error, filelog/docker]
+      receivers: [otlp, filelog/docker]
       processors: [memory_limiter, batch, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
     logs/journald:
@@ -301,7 +304,8 @@ service:
       receivers: [otlp]
       processors: [memory_limiter, batch, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
+    # - podman_stats
     metrics:
-      receivers: [podman_stats, docker_stats, hostmetrics]
+      receivers: [docker_stats, hostmetrics]
       processors: [memory_limiter, batch, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
