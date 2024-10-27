@@ -7,7 +7,6 @@ WHERE (
   )
   AND (NOT empty(cloud_region))
 GROUP BY cloud_region;
-
 SELECT ResourceAttributes ['host.name'] AS host_name
 FROM otel_traces
 WHERE (
@@ -20,7 +19,6 @@ WHERE (
     OR ResourceAttributes ['cloud.region'] = '$cloud_region'
   )
 GROUP BY host_name;
-
 SELECT ResourceAttributes ['service.name'] AS service_name
 FROM otel_logs
 WHERE (
@@ -37,7 +35,6 @@ WHERE (
     OR ResourceAttributes ['host.name'] = '$host_name'
   )
 GROUP BY service_name;
-
 SELECT TraceId
 FROM "default"."otel_traces"
 WHERE (

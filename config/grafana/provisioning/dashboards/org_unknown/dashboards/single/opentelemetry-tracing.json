@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 8,
   "links": [],
   "panels": [
     {
@@ -60,7 +60,7 @@
             "properties": [
               {
                 "id": "unit",
-                "value": "µs"
+                "value": "ns"
               },
               {
                 "id": "custom.width",
@@ -103,9 +103,14 @@
           "show": false
         },
         "showHeader": true,
-        "sortBy": []
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "startTime"
+          }
+        ]
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "builderOptions": {
@@ -341,6 +346,10 @@
         "type": "grafana-clickhouse-datasource",
         "uid": "clickhouse"
       },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 18,
         "w": 15,
@@ -348,6 +357,8 @@
         "y": 0
       },
       "id": 3,
+      "options": {},
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "builderOptions": {
@@ -486,32 +497,28 @@
       "type": "traces"
     }
   ],
+  "preload": false,
   "refresh": "",
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": ["trace"],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": false,
           "text": "ClickHouse",
           "value": "clickhouse"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "datasource",
         "options": [],
         "query": "grafana-clickhouse-datasource",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "selected": false,
           "text": "grafana",
           "value": "grafana"
         },
@@ -520,17 +527,13 @@
           "uid": "clickhouse"
         },
         "definition": "SELECT ServiceName FROM otel_traces GROUP BY ServiceName;",
-        "hide": 0,
         "includeAll": false,
         "label": "Service Name",
-        "multi": false,
         "name": "service_name",
         "options": [],
         "query": "SELECT ServiceName FROM otel_traces GROUP BY ServiceName;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
@@ -540,17 +543,13 @@
           "uid": "clickhouse"
         },
         "definition": "SELECT \n        TraceId\nFROM \n        \"default\".\"otel_traces\" \nWHERE \n        (Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime) \n        AND (ParentSpanId = '') \n        AND (ServiceName = '$service_name')\nORDER BY \n        Timestamp DESC, \n        Duration DESC \nLIMIT 10;",
-        "hide": 0,
         "includeAll": false,
         "label": "Trace ID",
-        "multi": false,
         "name": "trace_id",
         "options": [],
         "query": "SELECT \n        TraceId\nFROM \n        \"default\".\"otel_traces\" \nWHERE \n        (Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime) \n        AND (ParentSpanId = '') \n        AND (ServiceName = '$service_name')\nORDER BY \n        Timestamp DESC, \n        Duration DESC \nLIMIT 10;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -563,6 +562,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Tracing",
   "uid": "de14bivmffl6oe",
-  "version": 3,
+  "version": 2,
   "weekStart": ""
 }

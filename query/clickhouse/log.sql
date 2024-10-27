@@ -1,4 +1,5 @@
 -- variables
+-- cloud_region
 SELECT ResourceAttributes ['cloud.region'] AS cloud_region
 FROM otel_logs
 WHERE (
@@ -7,6 +8,7 @@ WHERE (
   )
   AND (NOT empty(cloud_region))
 GROUP BY cloud_region;
+-- host_name
 SELECT ResourceAttributes ['host.name'] AS host_name
 FROM otel_logs
 WHERE (
@@ -19,6 +21,7 @@ WHERE (
     OR ResourceAttributes ['cloud.region'] = '$cloud_region'
   )
 GROUP BY host_name;
+-- service_name
 SELECT ResourceAttributes ['service.name'] AS service_name
 FROM otel_logs
 WHERE (
@@ -35,6 +38,7 @@ WHERE (
     OR ResourceAttributes ['host.name'] = '$host_name'
   )
 GROUP BY service_name;
+-- container_name
 SELECT ResourceAttributes ['container.name'] AS container_name
 FROM otel_logs
 WHERE (
@@ -52,6 +56,7 @@ WHERE (
   )
 GROUP BY container_name;
 -- panels
+-- log volume
 SELECT toStartOfInterval(
     Timestamp,
     toIntervalMillisecond($__interval_ms * 6)
@@ -104,6 +109,7 @@ WHERE (
   AND (Body LIKE '%$content%')
 GROUP BY timestamp
 ORDER BY timestamp DESC;
+-- log details
 SELECT Timestamp as "timestamp",
   Body as "body",
   SeverityText as "level",

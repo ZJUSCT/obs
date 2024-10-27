@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 9,
+  "id": 5,
   "links": [],
   "panels": [
     {
@@ -876,6 +876,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Container Stats Receiver",
   "uid": "be10un9edmmf4c",
-  "version": 2,
+  "version": 1,
   "weekStart": ""
 }

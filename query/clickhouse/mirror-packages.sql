@@ -1,8 +1,10 @@
 SELECT toStartOfInterval(
     Timestamp,
-    toIntervalMillisecond($__interval_ms * 6)
+    -- 根据 grafana 的查询时间范围调整聚合粒度
+    toIntervalMillisecond($__interval_ms * 30)
   ) as timestamp,
   replaceRegexpOne(
+    -- 从 URL 中提取仓库名
     LogAttributes ['url.path'],
     '^/([^/]+)/.*',
     '\\1'
@@ -22,6 +24,6 @@ WHERE (
   AND (
     match(LogAttributes ['url.path'], '^/([^/]+)/.*')
   )
-GROUP BY ALL,
+GROUP BY ALL -- 按请求次数降序排列，然后对每个时间段取前 5 个
 ORDER BY COUNT(*) DESC
-LIMIT 5 BY COUNT(*);
+LIMIT 5 BY timestamp;

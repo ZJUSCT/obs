@@ -18,9 +18,671 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 7,
+  "id": 2,
   "links": [],
   "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 17,
+      "panels": [],
+      "title": "Mirror Status",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 10,
+      "options": {
+        "calculate": false,
+        "cellGap": 1,
+        "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "Oranges",
+          "steps": 64
+        },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "mode": "single",
+          "showColorScale": false,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": true
+        }
+      },
+      "pluginVersion": "11.3.0",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.5.0",
+          "queryType": "table",
+          "rawSql": "SELECT toStartOfInterval(\n    Timestamp,\n    -- 根据 grafana 的查询时间范围调整聚合粒度\n    toIntervalMillisecond($__interval_ms * 30) \n  ) as timestamp,\n  replaceRegexpOne(\n    -- 从 URL 中提取仓库名\n    LogAttributes ['url.path'],\n    '^/([^/]+)/.*',\n    '\\\\1'\n  ) AS repo,\n  COUNT(*)\nFROM default.otel_logs\nWHERE (\n    Timestamp \u003e= $__fromTime\n    AND Timestamp \u003c= $__toTime\n  )\n  AND (\n    ResourceAttributes ['cloud.region'] = 'zjusct-falcon'\n  )\n  AND (ResourceAttributes ['host.name'] = 'zjumirror')\n  AND (ResourceAttributes ['service.name'] = 'nginx')\n  AND (LogAttributes ['log.file.name'] = 'otel.log')\n  AND (\n    match(LogAttributes ['url.path'], '^/([^/]+)/.*')\n  )\nGROUP BY ALL\n-- 按请求次数降序排列，然后对每个时间段取前 5 个\nORDER BY COUNT(*) DESC\nLIMIT 5 BY timestamp;",
+          "refId": "A"
+        }
+      ],
+      "title": "Most used repos",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "multi"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "repo"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {
+            "regex": "(.*)",
+            "renamePattern": "$1"
+          }
+        }
+      ],
+      "type": "heatmap"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "id": 15,
+      "panels": [],
+      "title": "Anti Scraper",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 12
+      },
+      "id": 12,
+      "options": {
+        "calculate": false,
+        "cellGap": 1,
+        "cellValues": {
+          "unit": "reqpm"
+        },
+        "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "Oranges",
+          "steps": 64
+        },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "mode": "single",
+          "showColorScale": false,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": true
+        }
+      },
+      "pluginVersion": "11.3.0",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.5.0",
+          "queryType": "table",
+          "rawSql": "select timestamp,\n        ip,\n        request_count\nfrom zjumirror_nginx_request_ipv4\nwhere timestamp \u003e= $__fromTime\n        AND timestamp \u003c= $__toTime\norder by request_count desc -- 按请求数降序排列，然后对每个时间段取前 10 个\nLIMIT 10 BY timestamp;",
+          "refId": "A"
+        }
+      ],
+      "title": "IPv4 Top Requests",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "multi"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "ip"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {}
+        }
+      ],
+      "type": "heatmap"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "reqps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 12
+      },
+      "id": 11,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "field": "rps",
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "field": "rps",
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "text": {
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "location": {
+              "mode": "auto"
+            },
+            "name": "Layer 1",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "e-asia",
+          "lat": 33,
+          "lon": 120,
+          "shared": true,
+          "zoom": 4
+        }
+      },
+      "pluginVersion": "11.3.0",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.5.0",
+          "queryType": "table",
+          "rawSql": "with coords as (\n        with ip as (\n                select ip,\n                        sum(request_count) as request_count\n                from zjumirror_nginx_request_ipv4\n                where (\n                                timestamp \u003e= $__fromTime\n                                AND timestamp \u003c= $__toTime\n                        )\n                group by ip\n        )\n        select dictGet(\n                        'ip_trie',\n                        ('latitude', 'longitude'),\n                        tuple(ip)\n                ) as coords,\n                coords.1 as latitude,\n                coords.2 as longitude,\n                geohashEncode(longitude, latitude, 4) as geohash,\n                request_count\n        from ip\n        where longitude != 0\n                and latitude != 0\n)\nselect geohash,\n        sum(request_count) / date_diff('second', $__fromTime, $__toTime) as rps\nfrom coords\ngroup by geohash;",
+          "refId": "A"
+        }
+      ],
+      "title": "IPv4 Request Average",
+      "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
+      "id": 13,
+      "options": {
+        "calculate": false,
+        "cellGap": 1,
+        "cellValues": {
+          "unit": "binBps"
+        },
+        "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "Oranges",
+          "steps": 64
+        },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "mode": "single",
+          "showColorScale": false,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": true
+        }
+      },
+      "pluginVersion": "11.3.0",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.5.0",
+          "queryType": "table",
+          "rawSql": "select timestamp,\n        ip,\n        request_size / 60 -- 时间戳精度为分钟，Grafana 只有 byte/s 的单位\nfrom zjumirror_nginx_request_ipv4\nwhere timestamp \u003e= $__fromTime\n        AND timestamp \u003c= $__toTime\norder by request_size desc -- 按带宽降序排列，然后对每个时间段取前 10 个\nLIMIT 10 BY timestamp;",
+          "refId": "A"
+        }
+      ],
+      "title": "IPv4 Top Bandwidth",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "multi"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "ip"
+          }
+        },
+        {
+          "id": "renameByRegex",
+          "options": {}
+        }
+      ],
+      "type": "heatmap"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "binBps"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 22
+      },
+      "id": 16,
+      "options": {
+        "basemap": {
+          "config": {},
+          "name": "Layer 0",
+          "type": "default"
+        },
+        "controls": {
+          "mouseWheelZoom": true,
+          "showAttribution": true,
+          "showDebug": false,
+          "showMeasure": false,
+          "showScale": false,
+          "showZoom": true
+        },
+        "layers": [
+          {
+            "config": {
+              "showLegend": false,
+              "style": {
+                "color": {
+                  "field": "rps",
+                  "fixed": "dark-green"
+                },
+                "opacity": 0.4,
+                "rotation": {
+                  "fixed": 0,
+                  "max": 360,
+                  "min": -360,
+                  "mode": "mod"
+                },
+                "size": {
+                  "field": "bandwidth",
+                  "fixed": 5,
+                  "max": 15,
+                  "min": 2
+                },
+                "symbol": {
+                  "fixed": "img/icons/marker/circle.svg",
+                  "mode": "fixed"
+                },
+                "symbolAlign": {
+                  "horizontal": "center",
+                  "vertical": "center"
+                },
+                "text": {
+                  "fixed": "",
+                  "mode": "field"
+                },
+                "textConfig": {
+                  "fontSize": 12,
+                  "offsetX": 0,
+                  "offsetY": 0,
+                  "textAlign": "center",
+                  "textBaseline": "middle"
+                }
+              }
+            },
+            "filterData": {
+              "id": "byRefId",
+              "options": "A"
+            },
+            "location": {
+              "mode": "auto"
+            },
+            "name": "Layer 1",
+            "tooltip": true,
+            "type": "markers"
+          }
+        ],
+        "tooltip": {
+          "mode": "details"
+        },
+        "view": {
+          "allLayers": true,
+          "id": "e-asia",
+          "lat": 33,
+          "lon": 120,
+          "shared": true,
+          "zoom": 4
+        }
+      },
+      "pluginVersion": "11.3.0",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.5.0",
+          "queryType": "table",
+          "rawSql": "with coords as (\n        with ip as (\n                select ip,\n                        sum(request_size) as request_size\n                from zjumirror_nginx_request_ipv4\n                where (\n                                timestamp \u003e= $__fromTime\n                                AND timestamp \u003c= $__toTime\n                        )\n                group by ip\n        )\n        select dictGet(\n                        'ip_trie',\n                        ('latitude', 'longitude'),\n                        tuple(ip)\n                ) as coords,\n                coords.1 as latitude,\n                coords.2 as longitude,\n                geohashEncode(longitude, latitude, 4) as geohash,\n                request_size\n        from ip\n        where longitude != 0\n                and latitude != 0\n)\nselect geohash,\n        sum(request_size) / date_diff('second', $__fromTime, $__toTime) as bandwidth\nfrom coords\ngroup by geohash;",
+          "refId": "A"
+        }
+      ],
+      "title": "IPv4 Bandwidth Average",
+      "type": "geomap"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 14,
+      "panels": [],
+      "title": "Host",
+      "type": "row"
+    },
     {
       "datasource": {
         "default": false,
@@ -51,9 +713,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 5,
+        "w": 6,
         "x": 0,
-        "y": 0
+        "y": 33
       },
       "id": 5,
       "options": {
@@ -71,7 +733,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -80,7 +742,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "sum(system_cpu_load_average_5m{host_name=\"zjumirror\"})",
+          "expr": "sum(system_cpu_load_average_5m{cloud_region=\"zjusct-falcon\", host_name=\"zjumirror\"})",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -123,9 +785,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 5,
-        "x": 5,
-        "y": 0
+        "w": 6,
+        "x": 6,
+        "y": 33
       },
       "id": 6,
       "options": {
@@ -143,7 +805,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -152,7 +814,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "sum(container_memory_percent_ratio{host_name=\"zjumirror\"})",
+          "expr": "sum(container_memory_percent_ratio{host_name=\"zjumirror\", cloud_region=\"zjusct-falcon\"})",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -229,9 +891,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 7,
-        "x": 10,
-        "y": 0
+        "w": 12,
+        "x": 12,
+        "y": 33
       },
       "id": 7,
       "options": {
@@ -246,7 +908,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -274,7 +936,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 7
+        "y": 40
       },
       "id": 4,
       "panels": [],
@@ -347,7 +1009,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 8
+        "y": 41
       },
       "id": 1,
       "options": {
@@ -362,6 +1024,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -450,7 +1113,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 8
+        "y": 41
       },
       "id": 8,
       "options": {
@@ -465,6 +1128,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -554,7 +1218,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 14
+        "y": 47
       },
       "id": 9,
       "options": {
@@ -569,6 +1233,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -657,7 +1322,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 14
+        "y": 47
       },
       "id": 2,
       "options": {
@@ -672,6 +1337,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -760,7 +1426,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 53
       },
       "id": 3,
       "options": {
@@ -775,6 +1441,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -799,7 +1466,9 @@
       "type": "timeseries"
     }
   ],
-  "schemaVersion": 39,
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 40,
   "tags": [],
   "templating": {
     "list": []
@@ -812,6 +1481,6 @@
   "timezone": "browser",
   "title": "ZJU Mirror",
   "uid": "be0q417oay0aoe",
-  "version": 2,
+  "version": 36,
   "weekStart": ""
 }
