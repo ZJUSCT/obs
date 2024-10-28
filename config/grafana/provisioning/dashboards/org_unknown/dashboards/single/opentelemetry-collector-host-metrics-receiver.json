@@ -86,7 +86,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -155,7 +155,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -233,7 +233,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -316,7 +316,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -386,7 +386,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -427,8 +427,7 @@
             "scaleDistribution": {
               "type": "linear"
             }
-          },
-          "fieldMinMax": false
+          }
         },
         "overrides": []
       },
@@ -490,7 +489,7 @@
           "unit": ""
         }
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -530,8 +529,7 @@
             "scaleDistribution": {
               "type": "linear"
             }
-          },
-          "fieldMinMax": false
+          }
         },
         "overrides": []
       },
@@ -593,7 +591,7 @@
           "unit": "rothz"
         }
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -691,7 +689,7 @@
           "reverse": false
         }
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -816,7 +814,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -920,7 +918,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -1024,7 +1022,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -1111,7 +1109,7 @@
         "showThresholdMarkers": true,
         "sizing": "auto"
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -1221,7 +1219,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -1386,7 +1384,7 @@
           }
         ]
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -1449,6 +1447,7 @@
           "useBackend": false
         }
       ],
+      "title": "",
       "transformations": [
         {
           "id": "joinByField",
@@ -1632,7 +1631,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -1702,7 +1701,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -1774,6 +1773,12 @@
       "id": 1,
       "options": {
         "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
         "maxVizHeight": 300,
         "minVizHeight": 16,
         "minVizWidth": 8,
@@ -1788,7 +1793,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -1871,7 +1876,7 @@
               }
             ]
           },
-          "unit": "binBps"
+          "unit": "Bps"
         },
         "overrides": []
       },
@@ -1894,7 +1899,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -1983,7 +1988,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -2087,7 +2092,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -2176,7 +2181,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -2258,7 +2263,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -2327,7 +2332,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -2396,7 +2401,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -2409,7 +2414,7 @@
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
-          "legendFormat": "__auto",
+          "legendFormat": "{{direction}}:{{type}}",
           "range": true,
           "refId": "A",
           "useBackend": false
@@ -2468,6 +2473,12 @@
       "id": 13,
       "options": {
         "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
         "maxVizHeight": 300,
         "minVizHeight": 16,
         "minVizWidth": 8,
@@ -2482,7 +2493,7 @@
         "sizing": "auto",
         "valueMode": "color"
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -2556,7 +2567,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -2720,7 +2731,7 @@
           }
         ]
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "datasource": {
@@ -2822,6 +2833,7 @@
           "useBackend": false
         }
       ],
+      "title": "",
       "transformations": [
         {
           "id": "timeSeriesTable",
@@ -2871,32 +2883,28 @@
       "type": "table"
     }
   ],
+  "preload": false,
   "refresh": "5s",
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": ["otelcol", "prometheus", "linux"],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": false,
           "text": "Prometheus",
           "value": "prometheus"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "datasource",
         "options": [],
         "query": "prometheus",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "selected": false,
           "text": "zjusct-cluster",
           "value": "zjusct-cluster"
         },
@@ -2905,10 +2913,8 @@
           "uid": "${datasource}"
         },
         "definition": "label_values(cloud_region)",
-        "hide": 0,
         "includeAll": false,
         "label": "Cloud Region",
-        "multi": false,
         "name": "cloud_region",
         "options": [],
         "query": {
@@ -2918,13 +2924,10 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "Root",
           "value": "Root"
         },
@@ -2933,10 +2936,8 @@
           "uid": "${datasource}"
         },
         "definition": "label_values({cloud_region=\"$cloud_region\"},host_name)",
-        "hide": 0,
         "includeAll": false,
         "label": "Host Name",
-        "multi": false,
         "name": "host_name",
         "options": [],
         "query": {
@@ -2946,8 +2947,6 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -2960,6 +2959,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Host Metrics Receiver",
   "uid": "de100g4yd5xxcc",
-  "version": 1,
+  "version": 4,
   "weekStart": ""
 }

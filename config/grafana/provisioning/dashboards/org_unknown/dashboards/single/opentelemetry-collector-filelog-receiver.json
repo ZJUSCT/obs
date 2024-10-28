@@ -186,7 +186,7 @@
         "xTickLabelRotation": 0,
         "xTickLabelSpacing": -100
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "builderOptions": {
@@ -363,6 +363,7 @@
           "refId": "A"
         }
       ],
+      "title": "",
       "type": "barchart"
     },
     {
@@ -370,6 +371,10 @@
         "default": false,
         "type": "grafana-clickhouse-datasource",
         "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
       },
       "gridPos": {
         "h": 22,
@@ -388,6 +393,7 @@
         "sortOrder": "Descending",
         "wrapLogMessage": true
       },
+      "pluginVersion": "11.3.0",
       "targets": [
         {
           "builderOptions": {
@@ -564,36 +570,32 @@
           "refId": "A"
         }
       ],
+      "title": "",
       "type": "logs"
     }
   ],
-  "schemaVersion": 39,
+  "preload": false,
+  "schemaVersion": 40,
   "tags": ["otelcol", "clickhouse"],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": false,
           "text": "ClickHouse",
           "value": "clickhouse"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "datasource",
         "options": [],
         "query": "grafana-clickhouse-datasource",
-        "queryValue": "",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "allValue": "ALL",
         "current": {
-          "selected": true,
           "text": "All",
           "value": "$__all"
         },
@@ -602,23 +604,19 @@
           "uid": "${datasource}"
         },
         "definition": "SELECT ResourceAttributes['cloud.region'] AS cloud_region\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(cloud_region))\nGROUP BY cloud_region;",
-        "hide": 0,
         "includeAll": true,
         "label": "Cloud Region",
-        "multi": false,
         "name": "cloud_region",
         "options": [],
         "query": "SELECT ResourceAttributes['cloud.region'] AS cloud_region\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(cloud_region))\nGROUP BY cloud_region;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "allValue": "ALL",
         "current": {
-          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -627,23 +625,19 @@
           "uid": "${datasource}"
         },
         "definition": "SELECT \n  ResourceAttributes['host.name'] AS host_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(host_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\nGROUP BY host_name; ",
-        "hide": 0,
         "includeAll": true,
         "label": "Host Name",
-        "multi": false,
         "name": "host_name",
         "options": [],
         "query": "SELECT \n  ResourceAttributes['host.name'] AS host_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(host_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\nGROUP BY host_name; ",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "allValue": "ALL",
         "current": {
-          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -653,23 +647,19 @@
         },
         "definition": "SELECT \n  ResourceAttributes['service.name'] AS service_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(service_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY service_name;",
         "description": "SELECT \n  ResourceAttributes['service.name'] AS service_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(service_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY service_name;",
-        "hide": 0,
         "includeAll": true,
         "label": "Service Name",
-        "multi": false,
         "name": "service_name",
         "options": [],
         "query": "SELECT \n  ResourceAttributes['service.name'] AS service_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(service_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY service_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       },
       {
         "allValue": "ALL",
         "current": {
-          "selected": false,
           "text": "All",
           "value": "$__all"
         },
@@ -678,16 +668,13 @@
           "uid": "${datasource}"
         },
         "definition": "SELECT \n  ResourceAttributes['container.name'] AS container_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(container_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY container_name;",
-        "hide": 0,
         "includeAll": true,
         "label": "Container Name",
-        "multi": false,
         "name": "container_name",
         "options": [],
         "query": "SELECT \n  ResourceAttributes['container.name'] AS container_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(container_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY container_name;",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
         "type": "query"
       }
@@ -701,6 +688,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Filelog Receiver",
   "uid": "ae11zuc35vv28f",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }
