@@ -161,213 +161,6 @@
       },
       "fieldConfig": {
         "defaults": {
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "scaleDistribution": {
-              "type": "linear"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 0,
-        "y": 12
-      },
-      "id": 12,
-      "options": {
-        "calculate": false,
-        "cellGap": 1,
-        "cellValues": {
-          "unit": "reqpm"
-        },
-        "color": {
-          "exponent": 0.5,
-          "fill": "dark-orange",
-          "mode": "scheme",
-          "reverse": false,
-          "scale": "exponential",
-          "scheme": "Oranges",
-          "steps": 64
-        },
-        "exemplars": {
-          "color": "rgba(255,0,255,0.7)"
-        },
-        "filterValues": {
-          "le": 1e-9
-        },
-        "legend": {
-          "show": true
-        },
-        "rowsFrame": {
-          "layout": "auto"
-        },
-        "tooltip": {
-          "mode": "single",
-          "showColorScale": false,
-          "yHistogram": false
-        },
-        "yAxis": {
-          "axisPlacement": "left",
-          "decimals": -3,
-          "reverse": true
-        }
-      },
-      "pluginVersion": "11.3.0",
-      "targets": [
-        {
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "4.5.0",
-          "queryType": "table",
-          "rawSql": "select timestamp,\n        ip,\n        request_count\nfrom zjumirror_nginx_request_ipv4\nwhere timestamp \u003e= $__fromTime\n        AND timestamp \u003c= $__toTime\norder by request_count desc -- 按请求数降序排列，然后对每个时间段取前 10 个\nLIMIT 10 BY timestamp;",
-          "refId": "A"
-        }
-      ],
-      "title": "IPv4 Top Requests",
-      "transformations": [
-        {
-          "id": "prepareTimeSeries",
-          "options": {
-            "format": "multi"
-          }
-        },
-        {
-          "id": "labelsToFields",
-          "options": {
-            "mode": "columns",
-            "valueLabel": "ip"
-          }
-        }
-      ],
-      "type": "heatmap"
-    },
-    {
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "fieldConfig": {
-        "defaults": {
-          "custom": {
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "scaleDistribution": {
-              "type": "linear"
-            }
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 10,
-        "w": 12,
-        "x": 12,
-        "y": 12
-      },
-      "id": 13,
-      "options": {
-        "calculate": false,
-        "cellGap": 1,
-        "cellValues": {
-          "unit": "Bps"
-        },
-        "color": {
-          "exponent": 0.5,
-          "fill": "dark-orange",
-          "mode": "scheme",
-          "reverse": false,
-          "scale": "exponential",
-          "scheme": "Oranges",
-          "steps": 64
-        },
-        "exemplars": {
-          "color": "rgba(255,0,255,0.7)"
-        },
-        "filterValues": {
-          "le": 1e-9
-        },
-        "legend": {
-          "show": true
-        },
-        "rowsFrame": {
-          "layout": "auto"
-        },
-        "tooltip": {
-          "mode": "single",
-          "showColorScale": false,
-          "yHistogram": false
-        },
-        "yAxis": {
-          "axisPlacement": "left",
-          "reverse": true
-        }
-      },
-      "pluginVersion": "11.3.0",
-      "targets": [
-        {
-          "editorType": "sql",
-          "format": 1,
-          "meta": {
-            "builderOptions": {
-              "columns": [],
-              "database": "",
-              "limit": 1000,
-              "mode": "list",
-              "queryType": "table",
-              "table": ""
-            }
-          },
-          "pluginVersion": "4.5.0",
-          "queryType": "table",
-          "rawSql": "select timestamp,\n        ip,\n        request_size / 60 -- 时间戳精度为分钟，Grafana 只有 byte/s 的单位\nfrom zjumirror_nginx_request_ipv4\nwhere timestamp \u003e= $__fromTime\n        AND timestamp \u003c= $__toTime\norder by request_size desc -- 按带宽降序排列，然后对每个时间段取前 10 个\nLIMIT 10 BY timestamp;",
-          "refId": "A"
-        }
-      ],
-      "title": "IPv4 Top Bandwidth",
-      "transformations": [
-        {
-          "id": "prepareTimeSeries",
-          "options": {
-            "format": "multi"
-          }
-        },
-        {
-          "id": "labelsToFields",
-          "options": {
-            "mode": "columns",
-            "valueLabel": "ip"
-          }
-        }
-      ],
-      "type": "heatmap"
-    },
-    {
-      "datasource": {
-        "type": "grafana-clickhouse-datasource",
-        "uid": "clickhouse"
-      },
-      "fieldConfig": {
-        "defaults": {
           "color": {
             "mode": "thresholds"
           },
@@ -404,7 +197,7 @@
         "h": 10,
         "w": 12,
         "x": 0,
-        "y": 22
+        "y": 12
       },
       "id": 11,
       "options": {
@@ -555,7 +348,7 @@
         "h": 10,
         "w": 12,
         "x": 12,
-        "y": 22
+        "y": 12
       },
       "id": 16,
       "options": {
@@ -662,6 +455,213 @@
       ],
       "title": "IPv4 Bandwidth Average",
       "type": "geomap"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
+      "id": 12,
+      "options": {
+        "calculate": false,
+        "cellGap": 1,
+        "cellValues": {
+          "unit": "reqpm"
+        },
+        "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "Oranges",
+          "steps": 64
+        },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "mode": "single",
+          "showColorScale": false,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "decimals": -3,
+          "reverse": true
+        }
+      },
+      "pluginVersion": "11.3.0",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.5.0",
+          "queryType": "table",
+          "rawSql": "select timestamp,\n        ip,\n        request_count\nfrom zjumirror_nginx_request_ipv4\nwhere timestamp \u003e= $__fromTime\n        AND timestamp \u003c= $__toTime\norder by request_count desc -- 按请求数降序排列，然后对每个时间段取前 10 个\nLIMIT 10 BY timestamp;",
+          "refId": "A"
+        }
+      ],
+      "title": "IPv4 Top Requests",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "multi"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "ip"
+          }
+        }
+      ],
+      "type": "heatmap"
+    },
+    {
+      "datasource": {
+        "type": "grafana-clickhouse-datasource",
+        "uid": "clickhouse"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "scaleDistribution": {
+              "type": "linear"
+            }
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 22
+      },
+      "id": 13,
+      "options": {
+        "calculate": false,
+        "cellGap": 1,
+        "cellValues": {
+          "unit": "Bps"
+        },
+        "color": {
+          "exponent": 0.5,
+          "fill": "dark-orange",
+          "mode": "scheme",
+          "reverse": false,
+          "scale": "exponential",
+          "scheme": "Oranges",
+          "steps": 64
+        },
+        "exemplars": {
+          "color": "rgba(255,0,255,0.7)"
+        },
+        "filterValues": {
+          "le": 1e-9
+        },
+        "legend": {
+          "show": true
+        },
+        "rowsFrame": {
+          "layout": "auto"
+        },
+        "tooltip": {
+          "mode": "single",
+          "showColorScale": false,
+          "yHistogram": false
+        },
+        "yAxis": {
+          "axisPlacement": "left",
+          "reverse": true
+        }
+      },
+      "pluginVersion": "11.3.0",
+      "targets": [
+        {
+          "editorType": "sql",
+          "format": 1,
+          "meta": {
+            "builderOptions": {
+              "columns": [],
+              "database": "",
+              "limit": 1000,
+              "mode": "list",
+              "queryType": "table",
+              "table": ""
+            }
+          },
+          "pluginVersion": "4.5.0",
+          "queryType": "table",
+          "rawSql": "select timestamp,\n        ip,\n        request_size / 60 -- 时间戳精度为分钟，Grafana 只有 byte/s 的单位\nfrom zjumirror_nginx_request_ipv4\nwhere timestamp \u003e= $__fromTime\n        AND timestamp \u003c= $__toTime\norder by request_size desc -- 按带宽降序排列，然后对每个时间段取前 10 个\nLIMIT 10 BY timestamp;",
+          "refId": "A"
+        }
+      ],
+      "title": "IPv4 Top Bandwidth",
+      "transformations": [
+        {
+          "id": "prepareTimeSeries",
+          "options": {
+            "format": "multi"
+          }
+        },
+        {
+          "id": "labelsToFields",
+          "options": {
+            "mode": "columns",
+            "valueLabel": "ip"
+          }
+        }
+      ],
+      "type": "heatmap"
     },
     {
       "collapsed": false,
@@ -1351,7 +1351,7 @@
           "useBackend": false
         }
       ],
-      "title": "jobs-ftpsync",
+      "title": "jobs-ftpsync CPU %",
       "type": "timeseries"
     },
     {
@@ -1474,6 +1474,6 @@
   "timezone": "browser",
   "title": "ZJU Mirror",
   "uid": "be0q417oay0aoe",
-  "version": 46,
+  "version": 50,
   "weekStart": ""
 }

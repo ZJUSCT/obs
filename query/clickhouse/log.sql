@@ -84,7 +84,11 @@ SELECT toStartOfInterval(
   countIf(
     SeverityNumber >= 1
     AND SeverityNumber <= 4
-  ) as trace
+  ) as trace,
+  countIf(
+    SeverityNumber = 0
+    OR SeverityNumber >= 25
+  ) as unknown
 FROM default.otel_logs
 WHERE (
     timestamp >= $__fromTime
@@ -113,6 +117,7 @@ ORDER BY timestamp DESC;
 SELECT Timestamp as "timestamp",
   Body as "body",
   SeverityText as "level",
+  SeverityNumber as "level_number",
   mapConcat(LogAttributes, ResourceAttributes) as "labels",
   TraceId as "traceID"
 FROM "default"."otel_logs"
