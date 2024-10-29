@@ -7,7 +7,6 @@
 ## Todo List
 
 - To be done
-    - [ ] Elastic Exporter
     - [ ] InfluxDB Exporter
     - [ ] Nginx Native Collector
     - [ ] Grafana Provision Alerts
