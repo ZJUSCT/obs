@@ -708,7 +708,7 @@
             "value": ""
           }
         ],
-        "query": "raspbian",
+        "query": "",
         "type": "textbox"
       }
     ]
@@ -721,6 +721,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Filelog Receiver",
   "uid": "ae11zuc35vv28f",
-  "version": 10,
+  "version": 12,
   "weekStart": ""
 }

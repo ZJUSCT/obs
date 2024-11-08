@@ -35,6 +35,101 @@
         "x": 0,
         "y": 0
       },
+      "id": 45,
+      "panels": [],
+      "title": "System",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 3600
+              },
+              {
+                "color": "green",
+                "value": 86400
+              },
+              {
+                "color": "blue",
+                "value": 604800
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 46,
+      "options": {
+        "colorMode": "background_solid",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "builder",
+          "exemplar": false,
+          "expr": "system_uptime_seconds{cloud_region=\"$cloud_region\", host_name=\"$host_name\"}",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": true,
+          "legendFormat": "__auto",
+          "range": false,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Uptime",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
       "id": 7,
       "panels": [],
       "title": "CPU",
@@ -68,7 +163,7 @@
         "h": 3,
         "w": 3,
         "x": 0,
-        "y": 1
+        "y": 6
       },
       "id": 43,
       "options": {
@@ -137,7 +232,7 @@
         "h": 3,
         "w": 3,
         "x": 3,
-        "y": 1
+        "y": 6
       },
       "id": 11,
       "options": {
@@ -215,7 +310,7 @@
         "h": 5,
         "w": 9,
         "x": 6,
-        "y": 1
+        "y": 6
       },
       "id": 16,
       "options": {
@@ -298,7 +393,7 @@
         "h": 5,
         "w": 9,
         "x": 15,
-        "y": 1
+        "y": 6
       },
       "id": 15,
       "options": {
@@ -365,7 +460,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 4
+        "y": 9
       },
       "id": 42,
       "options": {
@@ -435,7 +530,7 @@
         "h": 6,
         "w": 9,
         "x": 6,
-        "y": 6
+        "y": 11
       },
       "id": 41,
       "options": {
@@ -537,7 +632,7 @@
         "h": 6,
         "w": 9,
         "x": 15,
-        "y": 6
+        "y": 11
       },
       "id": 40,
       "options": {
@@ -620,7 +715,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 17
       },
       "id": 20,
       "panels": [],
@@ -652,7 +747,7 @@
         "h": 9,
         "w": 8,
         "x": 0,
-        "y": 13
+        "y": 18
       },
       "id": 22,
       "options": {
@@ -799,7 +894,7 @@
         "h": 9,
         "w": 6,
         "x": 8,
-        "y": 13
+        "y": 18
       },
       "id": 21,
       "options": {
@@ -903,7 +998,7 @@
         "h": 9,
         "w": 5,
         "x": 14,
-        "y": 13
+        "y": 18
       },
       "id": 23,
       "options": {
@@ -1007,7 +1102,7 @@
         "h": 9,
         "w": 5,
         "x": 19,
-        "y": 13
+        "y": 18
       },
       "id": 24,
       "options": {
@@ -1050,7 +1145,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 27
       },
       "id": 25,
       "panels": [],
@@ -1093,7 +1188,7 @@
         "h": 7,
         "w": 12,
         "x": 0,
-        "y": 23
+        "y": 28
       },
       "id": 26,
       "options": {
@@ -1201,7 +1296,7 @@
         "h": 7,
         "w": 12,
         "x": 12,
-        "y": 23
+        "y": 28
       },
       "id": 37,
       "options": {
@@ -1281,7 +1376,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 35
       },
       "id": 35,
       "panels": [],
@@ -1363,7 +1458,7 @@
         "h": 8,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 36
       },
       "id": 36,
       "options": {
@@ -1486,12 +1581,82 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 39
+        "y": 44
       },
       "id": 27,
       "panels": [],
       "title": "Memory",
       "type": "row"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 5,
+        "x": 0,
+        "y": 45
+      },
+      "id": 44,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.3.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(system_memory_usage_bytes{cloud_region=\"$cloud_region\", host_name=\"$host_name\", state=\"used\"}) + sum(system_memory_usage_bytes{cloud_region=\"$cloud_region\", host_name=\"$host_name\", state=\"free\"}) + sum(system_memory_usage_bytes{cloud_region=\"$cloud_region\", host_name=\"$host_name\", state=\"cached\"})",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "Size",
+      "type": "stat"
     },
     {
       "datasource": {
@@ -1609,9 +1774,9 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 40
+        "w": 7,
+        "x": 5,
+        "y": 45
       },
       "id": 28,
       "options": {
@@ -1683,7 +1848,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 40
+        "y": 45
       },
       "id": 29,
       "options": {
@@ -1729,7 +1894,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 48
+        "y": 53
       },
       "id": 2,
       "panels": [],
@@ -1768,7 +1933,7 @@
         "h": 14,
         "w": 6,
         "x": 0,
-        "y": 49
+        "y": 54
       },
       "id": 1,
       "options": {
@@ -1884,7 +2049,7 @@
         "h": 7,
         "w": 14,
         "x": 6,
-        "y": 49
+        "y": 54
       },
       "id": 3,
       "options": {
@@ -1970,7 +2135,7 @@
         "h": 7,
         "w": 4,
         "x": 20,
-        "y": 49
+        "y": 54
       },
       "id": 9,
       "options": {
@@ -2077,7 +2242,7 @@
         "h": 7,
         "w": 14,
         "x": 6,
-        "y": 56
+        "y": 61
       },
       "id": 8,
       "options": {
@@ -2163,7 +2328,7 @@
         "h": 7,
         "w": 4,
         "x": 20,
-        "y": 56
+        "y": 61
       },
       "id": 10,
       "options": {
@@ -2209,7 +2374,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 63
+        "y": 68
       },
       "id": 31,
       "panels": [],
@@ -2245,7 +2410,7 @@
         "h": 8,
         "w": 8,
         "x": 0,
-        "y": 64
+        "y": 69
       },
       "id": 39,
       "options": {
@@ -2314,7 +2479,7 @@
         "h": 8,
         "w": 8,
         "x": 8,
-        "y": 64
+        "y": 69
       },
       "id": 32,
       "options": {
@@ -2383,7 +2548,7 @@
         "h": 8,
         "w": 8,
         "x": 16,
-        "y": 64
+        "y": 69
       },
       "id": 38,
       "options": {
@@ -2429,7 +2594,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 72
+        "y": 77
       },
       "id": 18,
       "panels": [],
@@ -2468,7 +2633,7 @@
         "h": 6,
         "w": 12,
         "x": 0,
-        "y": 73
+        "y": 78
       },
       "id": 13,
       "options": {
@@ -2549,7 +2714,7 @@
         "h": 6,
         "w": 12,
         "x": 12,
-        "y": 73
+        "y": 78
       },
       "id": 14,
       "options": {
@@ -2595,7 +2760,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 79
+        "y": 84
       },
       "id": 12,
       "panels": [],
@@ -2711,7 +2876,7 @@
         "h": 14,
         "w": 24,
         "x": 0,
-        "y": 80
+        "y": 85
       },
       "id": 17,
       "options": {
@@ -2959,6 +3124,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Host Metrics Receiver",
   "uid": "de100g4yd5xxcc",
-  "version": 5,
+  "version": 19,
   "weekStart": ""
 }

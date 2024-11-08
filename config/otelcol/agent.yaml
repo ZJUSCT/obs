@@ -282,8 +282,6 @@ exporters:
 service:
   extensions: [bearertokenauth, pprof, zpages]
   pipelines:
-    # not enabled by default:
-    # - filelog/nginx_access, filelog/nginx_error
     logs:
       receivers: [otlp, filelog/docker]
       processors: [memory_limiter, batch, resourcedetection, resource/cloud]
@@ -292,10 +290,16 @@ service:
       receivers: [journald]
       processors: [memory_limiter, batch, transform/journald, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
+    # not enabled by default:
+    # logs/nginx:
+    #   receivers: [filelog/nginx_access, filelog/nginx_error]
+    #   processors: [memory_limiter, batch, resourcedetection, resource/cloud]
+    #   exporters: [otlphttp/with_auth]
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
+    # not enabled by default:
     # - podman_stats
     metrics:
       receivers: [docker_stats, hostmetrics]

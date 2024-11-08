@@ -876,6 +876,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Container Stats Receiver",
   "uid": "be10un9edmmf4c",
-  "version": 3,
+  "version": 4,
   "weekStart": ""
 }
