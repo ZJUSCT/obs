@@ -1,7 +1,7 @@
 # https://opentelemetry.io/docs/collector/configuration/
 # https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
-# Version: otelcol-contrib v0.111.0
-# Date: 2024-10-18
+# Version: otelcol-contrib v0.113.0
+# Date: 2024-11-08
 # Environment Variables should be set in systemd service file:
 #
 #   [Service]
@@ -128,8 +128,6 @@ receivers:
     # 正在等待标准修订，下面的 Issue 需要跟踪。
     # https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/7298
     operators:
-    # 特殊情况：
-    # - kernel 和某些 log 没有 PID、COMM、EXE、CMDLINE、UID、GID 等字段
     # https://www.freedesktop.org/software/systemd/man/latest/systemd.journal-fields.html
     # 全部移动到 attributes.journald，然后将语义明确的移动到 resource 和 attributes
     - type: move
@@ -138,6 +136,7 @@ receivers:
     - type: move
       from: attributes.journald["MESSAGE"]
       to: body
+    # 注意：kernel 和某些 log 没有 PID、COMM、EXE、CMDLINE、UID、GID 等字段
     - type: move
       from: attributes.journald["_PID"]
       to: resource["process.pid"]
@@ -181,7 +180,7 @@ receivers:
         debug: 7
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver
   hostmetrics:
-    collection_interval: 15s
+    collection_interval: 1m
     scrapers:
       # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/cpuscraper/documentation.md
       cpu:
@@ -208,24 +207,17 @@ receivers:
       paging:
       processes:
       # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/processscraper/documentation.md
-      # consumes a lot of resources
-      # process:
-      #   mute_process_all_errors: true
-      #   metrics:
-      #     process.cpu.utilization:
-      #       enabled: true
-      #     process.disk.operations:
-      #       enabled: true
-      #     process.handles:
-      #       enabled: true
-      #     process.open_file_descriptors:
-      #       enabled: true
-      #     process.paging.faults:
-      #       enabled: true
-      #     process.signals_pending:
-      #       enabled: true
-      #     process.threads:
-      #       enabled: true
+      # 消耗资源较多，默认不启用
+      process:
+        mute_process_all_errors: true
+        metrics:
+          process.cpu.utilization:
+            enabled: true
+          process.disk.operations:
+            enabled: true
+          process.threads:
+            enabled: true
+      system:
 
 processors:
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
