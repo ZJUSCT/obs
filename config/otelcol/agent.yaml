@@ -10,7 +10,7 @@
 #   Environment=OTEL_CLOUD_REGION=
 
 extensions:
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/bearertokenauthextension
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/bearertokenauthextension
   bearertokenauth:
     token: ${OTEL_BEARER_TOKEN}
   pprof:
@@ -19,15 +19,15 @@ extensions:
     endpoint: localhost:55680
 
 receivers:
-##############
-# Containers #
-##############
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver
+  ##############
+  # Containers #
+  ##############
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver
   docker_stats:
     metrics:
       container.uptime:
         enabled: true
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
   filelog/docker:
     include: /var/lib/docker/containers/*/*-json.log
     operators:
@@ -41,24 +41,24 @@ receivers:
       - type: remove
         field: attributes.attrs
         if: 'type(attributes.attrs) != "nil"'
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/podmanreceiver
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/podmanreceiver
   podman_stats:
     # 默认仅收集 root 的 /run/podman/podman.sock
     # 每个用户有自己的 /run/user/<uid>/podman/podman.sock，无法逐一收集
 
-########
-# Apps #
-########
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
+  ########
+  # Apps #
+  ########
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
   filelog/nginx_access:
     include: /var/log/nginx/otel.log
-    resource: 
+    resource:
       service.name: nginx
     operators:
       - type: json_parser
         timestamp:
-          layout_type: 'epoch'
-          layout: 's.ms'
+          layout_type: "epoch"
+          layout: "s.ms"
           parse_from: attributes["timestamp"]
       - type: remove
         field: attributes["timestamp"]
@@ -68,16 +68,16 @@ receivers:
       - type: move
         from: attributes["resource.process.pid"]
         to: resource["process.pid"]
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
   filelog/nginx_error:
     include: /var/log/nginx/error.log
-    resource: 
+    resource:
       service.name: nginx
     operators:
       - type: regex_parser
         regex: '(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<severity>\w+)\] (?P<pid>\d+)#(?P<tid>\d+): (?:\*(?P<cid>\d+) )?(?P<message>.+)'
         timestamp:
-          layout: '%Y/%m/%d %H:%M:%S'
+          layout: "%Y/%m/%d %H:%M:%S"
           parse_from: attributes["timestamp"]
         severity:
           parse_from: attributes["severity"]
@@ -108,17 +108,17 @@ receivers:
         from: attributes["cid"]
         to: resource["correlation.id"]
         if: 'type(attributes["cid"]) != "nil"'
-# https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver
+  # https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver
   otlp:
-    protocols: 
+    protocols:
       # default to localhost
       grpc:
       http:
 
-##########
-# System #  
-##########
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/journaldreceiver
+  ##########
+  # System #
+  ##########
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/journaldreceiver
   journald:
     # https://www.freedesktop.org/software/systemd/man/249/journald.conf.html
     # In journald.conf, set Storage=volatile
@@ -128,64 +128,64 @@ receivers:
     # 正在等待标准修订，下面的 Issue 需要跟踪。
     # https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/7298
     operators:
-    # https://www.freedesktop.org/software/systemd/man/latest/systemd.journal-fields.html
-    # 全部移动到 attributes.journald，然后将语义明确的移动到 resource 和 attributes
-    - type: move
-      from: body
-      to: attributes.journald
-    - type: move
-      from: attributes.journald["MESSAGE"]
-      to: body
-    # 注意：kernel 和某些 log 没有 PID、COMM、EXE、CMDLINE、UID、GID 等字段
-    - type: move
-      from: attributes.journald["_PID"]
-      to: resource["process.pid"]
-      if: 'type(attributes.journald["_PID"]) != "nil"'
-    - type: move
-      from: attributes.journald["_COMM"]
-      to: resource["process.executable.name"]
-      if: 'type(attributes.journald["_COMM"]) != "nil"'
-    - type: move
-      from: attributes.journald["_EXE"]
-      to: resource["process.executable.path"]
-      if: 'type(attributes.journald["_EXE"]) != "nil"'
-    - type: move
-      from: attributes.journald["_CMDLINE"]
-      to: resource["process.command_line"]
-      if: 'type(attributes.journald["_CMDLINE"]) != "nil"'
-    - type: move
-      from: attributes.journald["_UID"]
-      to: resource["process.owner"]
-      if: 'type(attributes.journald["_UID"]) != "nil"'
-    # 下面的字段所有情况都有
-    - type: move
-      from: attributes.journald["SYSLOG_IDENTIFIER"]
-      to: resource["service.name"]
-      if: 'type(attributes.journald["SYSLOG_IDENTIFIER"]) != "nil"'
-    - type: move
-      from: attributes.journald["_HOSTNAME"]
-      to: resource["host.name"]
-    - type: severity_parser
-      parse_from: attributes.journald["PRIORITY"]
-      preset: none
-      mapping:
-      # OTel severity number: systemd priority # syslog severity
-        fatal: 0 # emerg
-        error3: 1 # alert
-        error2: 2 # crit
-        error: 3 
-        warn: 4
-        info2: 5 # notice
-        info: 6
-        debug: 7
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver
+      # https://www.freedesktop.org/software/systemd/man/latest/systemd.journal-fields.html
+      # 全部移动到 attributes.journald，然后将语义明确的移动到 resource 和 attributes
+      - type: move
+        from: body
+        to: attributes.journald
+      - type: move
+        from: attributes.journald["MESSAGE"]
+        to: body
+      # 注意：kernel 和某些 log 没有 PID、COMM、EXE、CMDLINE、UID、GID 等字段
+      - type: move
+        from: attributes.journald["_PID"]
+        to: resource["process.pid"]
+        if: 'type(attributes.journald["_PID"]) != "nil"'
+      - type: move
+        from: attributes.journald["_COMM"]
+        to: resource["process.executable.name"]
+        if: 'type(attributes.journald["_COMM"]) != "nil"'
+      - type: move
+        from: attributes.journald["_EXE"]
+        to: resource["process.executable.path"]
+        if: 'type(attributes.journald["_EXE"]) != "nil"'
+      - type: move
+        from: attributes.journald["_CMDLINE"]
+        to: resource["process.command_line"]
+        if: 'type(attributes.journald["_CMDLINE"]) != "nil"'
+      - type: move
+        from: attributes.journald["_UID"]
+        to: resource["process.owner"]
+        if: 'type(attributes.journald["_UID"]) != "nil"'
+      # 下面的字段所有情况都有
+      - type: move
+        from: attributes.journald["SYSLOG_IDENTIFIER"]
+        to: resource["service.name"]
+        if: 'type(attributes.journald["SYSLOG_IDENTIFIER"]) != "nil"'
+      - type: move
+        from: attributes.journald["_HOSTNAME"]
+        to: resource["host.name"]
+      - type: severity_parser
+        parse_from: attributes.journald["PRIORITY"]
+        preset: none
+        mapping:
+          # OTel severity number: systemd priority # syslog severity
+          fatal: 0 # emerg
+          error3: 1 # alert
+          error2: 2 # crit
+          error: 3
+          warn: 4
+          info2: 5 # notice
+          info: 6
+          debug: 7
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver
   hostmetrics:
     collection_interval: 1m
     scrapers:
       # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/cpuscraper/documentation.md
       cpu:
         metrics:
-          system.cpu.frequency: 
+          system.cpu.frequency:
             enabled: true
           system.cpu.utilization:
             enabled: true
@@ -220,23 +220,23 @@ receivers:
       system:
 
 processors:
-# https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
+  # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
   batch:
     timeout: 1s
-# https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor
+  # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor
   memory_limiter:
     # 75% of maximum memory up to 2G
     limit_mib: 1536
     # 25% of limit up to 2G
     spike_limit_mib: 512
     check_interval: 5s
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourcedetectionprocessor
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourcedetectionprocessor
   resourcedetection:
     detectors: ["system"]
     timeout: 24h
     system:
       hostname_sources: ["os"]
-      resource_attributes:     
+      resource_attributes:
         host.arch:
           enabled: true
         host.name:
@@ -251,29 +251,29 @@ processors:
           enabled: true
         os.type:
           enabled: true
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourceprocessor
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/processor/resourceprocessor
   resource/cloud:
     attributes:
-    - key: cloud.region
-      value: ${OTEL_CLOUD_REGION}
-      action: upsert
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/transformprocessor
+      - key: cloud.region
+        value: ${OTEL_CLOUD_REGION}
+        action: upsert
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/transformprocessor
   transform/journald:
     error_mode: ignore
     log_statements:
       - context: log
         statements:
-        - flatten(attributes)
+          - flatten(attributes)
 
 exporters:
-# https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
+  # https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
   debug/basic:
     verbosity: basic
   debug/normal:
     verbosity: normal
   debug/detailed:
     verbosity: detailed
-# https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
+  # https://github.com/open-telemetry/opentelemetry-collector/blob/main/exporter/otlphttpexporter/README.md
   otlphttp/with_auth:
     endpoint: https://otel.clusters.zjusct.io
     auth:
@@ -288,7 +288,14 @@ service:
       exporters: [otlphttp/with_auth]
     logs/journald:
       receivers: [journald]
-      processors: [memory_limiter, batch, transform/journald, resourcedetection, resource/cloud]
+      processors:
+        [
+          memory_limiter,
+          batch,
+          transform/journald,
+          resourcedetection,
+          resource/cloud,
+        ]
       exporters: [otlphttp/with_auth]
     # not enabled by default:
     # logs/nginx:

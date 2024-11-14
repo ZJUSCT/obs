@@ -14,10 +14,10 @@
 #     - OTEL_BEARER_TOKEN=${OTEL_BEARER_TOKEN}
 
 extensions:
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/healthcheckextension
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/extension/healthcheckextension
   health_check:
     endpoint: otelcol:13133
-    response_body: 
+    response_body:
       healthy: "ok"
   pprof:
     endpoint: otelcol:1777
@@ -27,7 +27,7 @@ extensions:
     token: ${OTEL_BEARER_TOKEN}
 
 receivers:
-# https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver
+  # https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver
   otlp/with_auth:
     protocols:
       http:
@@ -38,7 +38,7 @@ receivers:
     protocols:
       grpc:
         endpoint: otelcol:4317
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/syslogreceiver
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/syslogreceiver
   syslog:
     udp:
       listen_address: otelcol:514
@@ -66,15 +66,15 @@ receivers:
     #    regex: '%%(?P<version>\d+)(?P<module_name>[^\/]+)\/(?P<serverity>\d+)\/(?P<brief>.+)\((?P<type>.+)\)'
     #  - id: noop
     #    type: noop
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/collectdreceiver
-#  collectd:
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/collectdreceiver
+  #  collectd:
 
-################
-# SNMP for PDU #  
-################
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/snmpreceiver
-# https://oid-rep.orange-labs.fr/get/1.3.6.1.4.1.30966
-# oid prefix: 1.3.6.1.4.1.30966.10.8
+  ################
+  # SNMP for PDU #
+  ################
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/snmpreceiver
+  # https://oid-rep.orange-labs.fr/get/1.3.6.1.4.1.30966
+  # oid prefix: 1.3.6.1.4.1.30966.10.8
   snmp/pdu-30966-1:
     collection_interval: 1s
     endpoint: udp://pdu1:161
@@ -85,16 +85,40 @@ receivers:
     auth_password: ${SNMP_AUTH_KEY}
     privacy_type: "DES"
     privacy_password: ${SNMP_PRIVATE_KEY}
-    resource_attributes: 
+    resource_attributes:
       device.id:
         scalar_oid: ".1.3.6.1.4.1.30966.10.8.1.1.0"
     attributes:
       pdu.port.type:
-        enum: [ "input", "outlet" ]
+        enum: ["input", "outlet"]
       pdu.port.index:
-        enum: [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", 
-          "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", 
-          "21", "22", "23", "24"]
+        enum:
+          [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+          ]
     metrics:
       pdu.current:
         # 0.1A
@@ -935,16 +959,40 @@ receivers:
     auth_password: ${SNMP_AUTH_KEY}
     privacy_type: "DES"
     privacy_password: ${SNMP_PRIVATE_KEY}
-    resource_attributes: 
+    resource_attributes:
       device.id:
         scalar_oid: ".1.3.6.1.4.1.30966.10.8.1.1.0"
     attributes:
       pdu.port.type:
-        enum: [ "input", "outlet" ]
+        enum: ["input", "outlet"]
       pdu.port.index:
-        enum: [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", 
-          "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", 
-          "21", "22", "23", "24"]
+        enum:
+          [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+          ]
     metrics:
       pdu.current:
         # 0.1A
@@ -1775,8 +1823,8 @@ receivers:
                 value: "outlet"
               - name: pdu.port.index
                 value: "24"
-# https://oid-rep.orange-labs.fr/get/1.3.6.1.4.1.42578
-# oid prefix: 1.3.6.1.4.1.42578
+  # https://oid-rep.orange-labs.fr/get/1.3.6.1.4.1.42578
+  # oid prefix: 1.3.6.1.4.1.42578
   snmp/pdu-42578-1:
     collection_interval: 1s
     endpoint: udp://pdu3:161
@@ -1787,15 +1835,36 @@ receivers:
     auth_password: ${SNMP_AUTH_KEY}
     privacy_type: "DES"
     privacy_password: ${SNMP_PRIVATE_KEY}
-    resource_attributes: 
+    resource_attributes:
       device.id:
         scalar_oid: ".1.3.6.1.2.1.1.5.0"
     attributes:
       pdu.port.type:
-        enum: [ "input", "outlet" ]
+        enum: ["input", "outlet"]
       pdu.port.index:
-        enum: [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", 
-          "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"]
+        enum:
+          [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+          ]
     metrics:
       pdu.warn:
         unit: "count"
@@ -2655,7 +2724,7 @@ receivers:
               - name: pdu.port.type
                 value: "outlet"
               - name: pdu.port.index
-                value: "20"            
+                value: "20"
       pdu.energy:
         # 0.01kWh
         unit: "kWh"
@@ -2830,15 +2899,15 @@ receivers:
                 value: "20"
 
 processors:
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/resourceprocessor
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/resourceprocessor
   resource/cloud:
     attributes:
       - key: cloud.region
         value: "zjusct-cluster"
         action: insert
-# https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
+  # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
   batch:
-# https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor
+  # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor
   memory_limiter:
     check_interval: 1s
     limit_percentage: 50
@@ -2848,25 +2917,25 @@ processors:
       - include: pdu.current
         action: update
         operations:
-          - action: toggle_scalar_data_type 
+          - action: toggle_scalar_data_type
           - action: experimental_scale_value
             experimental_scale: 0.01
       - include: pdu.voltage
         action: update
         operations:
-          - action: toggle_scalar_data_type 
+          - action: toggle_scalar_data_type
           - action: experimental_scale_value
             experimental_scale: 0.01
       - include: pdu.power_factor
         action: update
         operations:
-          - action: toggle_scalar_data_type 
+          - action: toggle_scalar_data_type
           - action: experimental_scale_value
             experimental_scale: 0.001
       - include: pdu.energy
         action: update
         operations:
-          - action: toggle_scalar_data_type 
+          - action: toggle_scalar_data_type
           - action: experimental_scale_value
             experimental_scale: 0.01
   metricstransform/pdu-30966:
@@ -2874,42 +2943,42 @@ processors:
       - include: pdu.current
         action: update
         operations:
-          - action: toggle_scalar_data_type 
+          - action: toggle_scalar_data_type
           - action: experimental_scale_value
             experimental_scale: 0.1
       - include: pdu.voltage
         action: update
         operations:
-          - action: toggle_scalar_data_type 
+          - action: toggle_scalar_data_type
       - include: pdu.power_factor
         action: update
         operations:
-          - action: toggle_scalar_data_type 
+          - action: toggle_scalar_data_type
           - action: experimental_scale_value
             experimental_scale: 0.01
       - include: pdu.energy
         action: update
         operations:
-          - action: toggle_scalar_data_type 
+          - action: toggle_scalar_data_type
           - action: experimental_scale_value
             experimental_scale: 0.1
 
 exporters:
-# https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
+  # https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
   debug:
     # basic, normal, detailed
     verbosity: basic
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/clickhouseexporter
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/clickhouseexporter
   clickhouse:
     endpoint: clickhouse://clickhouse:9000
     ttl: 4320h
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusexporter
-#  prometheus:
-#    endpoint: otelcol:9090
-#    send_timestamps: true
-#    resource_to_telemetry_conversion:
-#      enabled: true
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusexporter
+  #  prometheus:
+  #    endpoint: otelcol:9090
+  #    send_timestamps: true
+  #    resource_to_telemetry_conversion:
+  #      enabled: true
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter
   prometheusremotewrite:
     endpoint: "http://prometheus:9090/api/v1/write"
     # wal cause error, do not use
@@ -2923,14 +2992,14 @@ exporters:
       max_elapsed_time: 10m
     # to be same with prometheus exporter
     add_metric_suffixes: true
-# https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/elasticsearchexporter
+  # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/elasticsearchexporter
   elasticsearch:
     endpoint: http://elasticsearch:9200
 # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/fileexporter
-  #file:
-  #  path: /test/otel-collector.json
+#file:
+#  path: /test/otel-collector.json
 # https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/nopexporter
-  #nop:
+#nop:
 
 service:
   extensions: [health_check, pprof, zpages, bearertokenauth]
@@ -2953,9 +3022,11 @@ service:
       exporters: [clickhouse, elasticsearch]
     metrics/pdu-30966:
       receivers: [snmp/pdu-30966-1, snmp/pdu-30966-2]
-      processors: [memory_limiter, batch, metricstransform/pdu-30966, resource/cloud]
+      processors:
+        [memory_limiter, batch, metricstransform/pdu-30966, resource/cloud]
       exporters: [prometheusremotewrite]
     metrics/pdu-42578:
       receivers: [snmp/pdu-42578-1]
-      processors: [memory_limiter, batch, metricstransform/pdu-42578, resource/cloud]
+      processors:
+        [memory_limiter, batch, metricstransform/pdu-42578, resource/cloud]
       exporters: [prometheusremotewrite]

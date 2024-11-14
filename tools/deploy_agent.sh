@@ -1,46 +1,49 @@
 #!/bin/bash
-set -x
 
-OTELCOL_VERSION=0.113.0
-#DEST_ROOT=
-
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR/..
+alias curl="curl --retry-all-errors --retry 5 --silent --show-error --location"
+alias wget="wget --tries=5 --quiet"
+alias apt-get="apt-get -qq -o=Dpkg::Use-Pty=0"
 
 if [ "$EUID" -ne 0 ]; then
-        echo "Please run as root"
-        exit 1
+	echo "Please run as root"
+	exit 1
 fi
 
-# check if otelcol-contrib is installed and is up to date
-dpkg -l | grep otelcol-contrib > /dev/null
-OTELCOL_INSTALLED=$?
-dpkg -l | grep otelcol-contrib | grep $OTELCOL_VERSION > /dev/null
-OTELCOL_LATEST=$?
+install_deb_from_url() {
+	url=$1
+	tmpfile=$(mktemp).deb
+	if ! wget -O "$tmpfile" "$url"; then
+		echo "Failed to download $url"
+		exit 1
+	fi
+	dpkg -i "$tmpfile" >/dev/null || apt-get -f install
+	rm "$tmpfile"
+}
 
-if [ $OTELCOL_INSTALLED -ne 0 ] || [ $OTELCOL_LATEST -ne 0 ]; then
-        echo "installing/upgrading otelcol-contrib $OTELCOL_VERSION"
-        # https://ghp.ci/
-        wget https://ghp.ci/https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v${OTELCOL_VERSION}/otelcol-contrib_${OTELCOL_VERSION}_linux_amd64.deb -O /tmp/otelcol-contrib.deb
-        dpkg -i /tmp/otelcol-contrib.deb
-        rm /tmp/otelcol-contrib.deb
-fi
+# https://gist.github.com/steinwaywhw/a4cd19cda655b8249d908261a62687f8
+install_deb_from_github() {
+	repo=$1
+	match=$2
+	url=$(curl "https://api.github.com/repos/$repo/releases/latest" | jq -r ".assets[] | select(.name|$match) | .browser_download_url")
+	# https://ghp.ci/
+	install_deb_from_url https://ghp.ci/"$url"
+}
 
-if [ $OTELCOL_INSTALLED -ne 0 ]; then
-        source .env
-        if [ -z "$OTEL_BEARER_TOKEN" ]; then
-                echo "OTEL_BEARER_TOKEN is not set"
-                exit 1
-        fi
-        if [ -z "$OTEL_CLOUD_REGION" ]; then
-                echo "OTEL_CLOUD_REGION is not set"
-                exit 1
-        fi
-        if [ ! -d /etc/systemd/system/otelcol-contrib.service.d ]; then
-                mkdir -p /etc/systemd/system/otelcol-contrib.service.d
-        fi
-        cp config/others/systemd-otelcol-override.conf /etc/systemd/system/otelcol-contrib.service.d/override.conf
+install_deb_from_github "open-telemetry/opentelemetry-collector-releases" 'endswith("linux_amd64.deb") and contains("contrib")'
+
+source .env
+if [ -z "$OTEL_BEARER_TOKEN" ]; then
+	echo "OTEL_BEARER_TOKEN is not set"
+	exit 1
 fi
+if [ -z "$OTEL_CLOUD_REGION" ]; then
+	echo "OTEL_CLOUD_REGION is not set"
+	exit 1
+fi
+if [ ! -d /etc/systemd/system/otelcol-contrib.service.d ]; then
+	mkdir -p /etc/systemd/system/otelcol-contrib.service.d
+fi
+cp config/others/systemd-otelcol-override.conf /etc/systemd/system/otelcol-contrib.service.d/override.conf
 
 cp config/otelcol/agent.yaml /etc/otelcol-contrib/config.yaml
 

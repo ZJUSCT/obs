@@ -1,0 +1,24 @@
+# EditorConfig is awesome: https://editorconfig.org
+
+# top-most EditorConfig file
+root = true
+
+# Tab indentation (no size specified)
+[*.sh]
+indent_style = tab
+indent_size = 8
+end_of_line = lf
+insert_final_newline = true
+
+[*.{yaml,yml}]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+
+[*.md]
+trim_trailing_whitespace = false
+insert_final_newline = true
+end_of_line = lf
+indent_style = space
+indent_size = 4

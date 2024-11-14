@@ -2,8 +2,8 @@
 # https://github.com/prometheus/prometheus/tree/main/documentation/examples
 # changed to remote write
 #global:
-#  scrape_interval: 15s 
-#  evaluation_interval: 15s 
+#  scrape_interval: 15s
+#  evaluation_interval: 15s
 
 #scrape_configs:
 #  - job_name: 'otelcol'

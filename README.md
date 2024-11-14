@@ -1,4 +1,4 @@
-# ZJUSCT 可观测性系统
+# clusters.zju.edu.cn
 
 [可观测性 - ZJUSCT OpenDocs](https://zjusct.pages.zjusct.io/ops/opendocs/operation/observability/)
 
@@ -7,12 +7,12 @@
 ## Todo List
 
 - To be done
+    - [ ] 拆分 SNMP Receiver
     - [ ] InfluxDB Exporter
     - [ ] Nginx Native Collector
     - [ ] Grafana Provision Alerts
 - Pending
     - [ ] 修复 Prometheus Exporter 描述不一致报错：Wait for [Inconsistent Metric Descriptions Between `dockerstatsreceiver` and `podmanstatsreceiver` Causing `prometheusexporter` Errors · Issue #35829 · open-telemetry/opentelemetry-collector-contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/35829)
-    - [ ] Uptime 指标：Wait for [Add system uptime metric · Issue #648 · open-telemetry/semantic-conventions](https://github.com/open-telemetry/semantic-conventions/issues/648), [Semantic conventions for Uptime Monitoring by jsuereth · Pull Request #185 · open-telemetry/oteps](https://github.com/open-telemetry/oteps/pull/185)
     - [ ] Netflow 分析：Wait for [New component: netflow receiver · Issue #32732 · open-telemetry/opentelemetry-collector-contrib](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/32732)
         - [IPFIX Lookup Processor](https://github.com/fizzers123/opentelemetry-collector-contrib/tree/ipfix-processor-implementation/processor/ipfixlookupprocessor)
     - [ ] Wait for Prometheus 3.0, [native support for OpenTelemetry](https://prometheus.io/blog/2024/03/14/commitment-to-opentelemetry/) is coming.
@@ -148,4 +148,5 @@ flowchart TD
 
 ## 代码风格
 
+- 请使用 EditorConfig 插件保持一致的代码风格。
 - SQL 使用 VSCode SQLTools 插件格式化。

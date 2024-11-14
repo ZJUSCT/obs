@@ -1,14 +1,13 @@
 #!/bin/bash
 
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-cd $SCRIPT_DIR/..
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
+cd "$SCRIPT_DIR"/.. || exit
 
 # check if gdg is installed
-if ! command -v gdg &> /dev/null
-then
-    echo "gdg could not be found"
-    echo "get it from https://github.com/esnet/gdg"
-    exit
+if ! command -v gdg &>/dev/null; then
+	echo "gdg could not be found"
+	echo "get it from https://github.com/esnet/gdg"
+	exit
 fi
 
 # # anonymous access enabled, no need to login
@@ -16,11 +15,9 @@ fi
 # export GDG_CONTEXTS__ZJUSCT__PASSWORD=$GF_SECURITY_ADMIN_PASSWORD
 
 # test grafana up
-curl -f https://grafana.clusters.zjusct.io/api/health
-
-if [ $? -ne 0 ]; then
-    echo "Grafana is down"
-    exit
+if ! curl -f https://grafana.clusters.zjusct.io/api/health; then
+	echo "Grafana is down"
+	exit
 fi
 
 # backup dashboards

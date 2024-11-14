@@ -27,7 +27,6 @@ scrape_configs:
 
     static_configs:
       - targets: ["localhost:9090"]
-
 # don't know how to enable this
 #tracing_config:
 #  client_type: http
