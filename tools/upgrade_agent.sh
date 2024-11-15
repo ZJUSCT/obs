@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# curl https://ghp.ci/https://raw.githubusercontent.com/ZJUSCT/clusters.zju.edu.cn/refs/heads/main/tools/update_agent_config.sh | sudo bash
+# curl https://ghp.ci/https://raw.githubusercontent.com/ZJUSCT/clusters.zju.edu.cn/refs/heads/main/tools/upgrade_agent.sh | sudo bash
 
 install_deb_from_url() {
 	url=$1

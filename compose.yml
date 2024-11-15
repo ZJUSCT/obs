@@ -34,6 +34,9 @@ services:
       elasticsearch:
         condition: service_healthy
         restart: true
+      prometheus:
+        condition: service_healthy
+        restart: true
 
 # https://hub.docker.com/r/clickhouse/clickhouse-server/
   clickhouse:
@@ -72,8 +75,6 @@ services:
       "--web.enable-remote-write-receiver",
       "--web.enable-admin-api"
     ]
-    depends_on:
-      - otelcol # scrape from OpenTelemetry Collector
     healthcheck:
       # no curl command in the image
       test: ["CMD", "wget", "-q", "--spider", "http://prometheus:9090/-/healthy"]
