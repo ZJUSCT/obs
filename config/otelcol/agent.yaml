@@ -309,6 +309,6 @@ service:
     # not enabled by default:
     # - podman_stats
     metrics:
-      receivers: [docker_stats, hostmetrics]
+      receivers: [docker_stats, hostmetrics/fast, hostmetrics/slow]
       processors: [memory_limiter, batch, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
