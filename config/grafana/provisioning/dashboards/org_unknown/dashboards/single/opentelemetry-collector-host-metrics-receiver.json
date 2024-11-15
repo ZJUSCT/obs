@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 7,
+  "id": 6,
   "links": [],
   "panels": [
     {
@@ -593,7 +593,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "sum by(cpu) (system_cpu_utilization_ratio{cloud_region=\"$cloud_region\", host_name=\"$host_name\", state!=\"idle\"})",
+          "expr": "sum by(cpu) (rate(system_cpu_time_seconds_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\", state!=\"idle\"}[$__rate_interval]))",
           "format": "time_series",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
@@ -2925,7 +2925,7 @@
           "disableTextWrap": false,
           "editorMode": "builder",
           "exemplar": false,
-          "expr": "topk(100, sum by(process_executable_name) (process_cpu_utilization_ratio{cloud_region=\"$cloud_region\", host_name=\"$host_name\"}))",
+          "expr": "sum by(process_executable_name) (topk(100, rate(process_cpu_time_seconds_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\"}[$__rate_interval])))",
           "format": "time_series",
           "fullMetaSearch": false,
           "hide": false,
@@ -3124,6 +3124,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Host Metrics Receiver",
   "uid": "de100g4yd5xxcc",
-  "version": 19,
+  "version": 10,
   "weekStart": ""
 }

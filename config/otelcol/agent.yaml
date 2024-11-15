@@ -207,7 +207,7 @@ receivers:
             enabled: true
       system:
   hostmetrics/slow:
-    collection_interval: 1h
+    collection_interval: 4m
     scrapers:
       cpu:
         metrics:
