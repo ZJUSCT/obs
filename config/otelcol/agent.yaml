@@ -1,7 +1,7 @@
 # https://opentelemetry.io/docs/collector/configuration/
 # https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
 # Version: otelcol-contrib v0.113.0
-# Date: 2024-11-08
+# Date: 2024-11-15
 # Environment Variables should be set in systemd service file:
 #
 #   [Service]
@@ -179,26 +179,16 @@ receivers:
           info: 6
           debug: 7
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver
-  hostmetrics:
-    collection_interval: 1m
+  hostmetrics/fast:
+    collection_interval: 15s
     scrapers:
       # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/cpuscraper/documentation.md
       cpu:
         metrics:
           system.cpu.frequency:
             enabled: true
-          system.cpu.utilization:
-            enabled: true
-          system.cpu.logical.count:
-            enabled: true
-          system.cpu.physical.count:
-            enabled: true
       disk:
       load:
-      filesystem:
-        include_fs_types:
-          fs_types: [btrfs, nfs, ext4, zfs, xfs, nfs4, exfat]
-          match_type: "strict"
       memory:
       network:
         include:
@@ -206,23 +196,33 @@ receivers:
           match_type: "regexp"
       paging:
       processes:
+      # 消耗资源较多，在生产环境中建议关闭
       # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/hostmetricsreceiver/internal/scraper/processscraper/documentation.md
-      # 消耗资源较多，默认不启用
       process:
         mute_process_all_errors: true
         metrics:
-          process.cpu.utilization:
-            enabled: true
           process.disk.operations:
             enabled: true
           process.threads:
             enabled: true
       system:
+  hostmetrics/slow:
+    collection_interval: 1h
+    scrapers:
+      cpu:
+        metrics:
+          system.cpu.logical.count:
+            enabled: true
+          system.cpu.physical.count:
+            enabled: true
+      filesystem:
+        include_fs_types:
+          fs_types: [btrfs, nfs, ext4, zfs, xfs, nfs4, exfat]
+          match_type: "strict"
 
 processors:
   # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/batchprocessor
   batch:
-    timeout: 1s
   # https://github.com/open-telemetry/opentelemetry-collector/tree/main/processor/memorylimiterprocessor
   memory_limiter:
     # 75% of maximum memory up to 2G
