@@ -46,7 +46,7 @@ services:
       - SNMP_AUTH_KEY=${SNMP_AUTH_KEY}
     restart: unless-stopped
     depends_on:
-      otelcol:
+      otelcol-gateway:
         condition: service_healthy
         restart: true
 
