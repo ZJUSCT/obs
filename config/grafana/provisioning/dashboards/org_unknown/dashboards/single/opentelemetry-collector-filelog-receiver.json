@@ -624,7 +624,7 @@
         "name": "cloud_region",
         "options": [],
         "query": "SELECT ResourceAttributes['cloud.region'] AS cloud_region\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(cloud_region))\nGROUP BY cloud_region;",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "sort": 1,
         "type": "query"
@@ -645,7 +645,7 @@
         "name": "host_name",
         "options": [],
         "query": "SELECT \n  ResourceAttributes['host.name'] AS host_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(host_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\nGROUP BY host_name; ",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "sort": 1,
         "type": "query"
@@ -661,7 +661,7 @@
           "uid": "${datasource}"
         },
         "definition": "SELECT \n  ResourceAttributes['service.name'] AS service_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(service_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY service_name;",
-        "description": "SELECT \n  ResourceAttributes['service.name'] AS service_name\nFROM otel_logs\nWHERE ( Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime ) \n  AND (NOT empty(service_name))\n  AND ( '$cloud_region' = 'ALL' \n    OR ResourceAttributes['cloud.region'] = '$cloud_region')\n  AND ( '$host_name' = 'ALL' \n    OR ResourceAttributes['host.name'] = '$host_name')\nGROUP BY service_name;",
+        "description": "",
         "includeAll": true,
         "label": "Service Name",
         "name": "service_name",
@@ -713,8 +713,8 @@
       },
       {
         "current": {
-          "text": "",
-          "value": ""
+          "text": ["All"],
+          "value": ["$__all"]
         },
         "definition": "SELECT SeverityText as level\nFROM otel_logs\nWHERE (\n    Timestamp \u003e= $__fromTime\n    AND Timestamp \u003c= $__toTime\n  )\n  AND (\n    '$cloud_region' = 'ALL'\n    OR ResourceAttributes ['cloud.region'] = '$cloud_region'\n  )\n  AND (\n    '$host_name' = 'ALL'\n    OR ResourceAttributes ['host.name'] = '$host_name'\n  )\n  AND (\n    '$service_name' = 'ALL'\n    OR ResourceAttributes ['service.name'] = '$service_name'\n  )\n  AND (\n    '$container_name' = 'ALL'\n    OR ResourceAttributes ['container.name'] = '$container_name'\n  )\nGROUP BY level;",
         "includeAll": true,
@@ -723,7 +723,7 @@
         "name": "level",
         "options": [],
         "query": "SELECT SeverityText as level\nFROM otel_logs\nWHERE (\n    Timestamp \u003e= $__fromTime\n    AND Timestamp \u003c= $__toTime\n  )\n  AND (\n    '$cloud_region' = 'ALL'\n    OR ResourceAttributes ['cloud.region'] = '$cloud_region'\n  )\n  AND (\n    '$host_name' = 'ALL'\n    OR ResourceAttributes ['host.name'] = '$host_name'\n  )\n  AND (\n    '$service_name' = 'ALL'\n    OR ResourceAttributes ['service.name'] = '$service_name'\n  )\n  AND (\n    '$container_name' = 'ALL'\n    OR ResourceAttributes ['container.name'] = '$container_name'\n  )\nGROUP BY level;",
-        "refresh": 1,
+        "refresh": 2,
         "regex": "",
         "sort": 1,
         "type": "query"
@@ -731,13 +731,13 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "OpenTelemetry Collector Filelog Receiver",
   "uid": "ae11zuc35vv28f",
-  "version": 15,
+  "version": 20,
   "weekStart": ""
 }

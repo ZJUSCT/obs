@@ -69,7 +69,7 @@ receivers:
         from: attributes["resource.process.pid"]
         to: resource["process.pid"]
       - type: severity_parser
-        parse_from: attributes["http.status_code"]
+        parse_from: attributes["http.response.status_code"]
         overwrite_text: true
         mapping:
           ERROR: 5xx
