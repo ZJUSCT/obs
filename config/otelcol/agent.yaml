@@ -53,7 +53,7 @@ receivers:
   filelog/nginx_access:
     include: /var/log/nginx/otel.log
     resource:
-      service.name: nginx
+      service.name: nginx-access
     operators:
       - type: json_parser
         timestamp:
@@ -80,10 +80,10 @@ receivers:
   filelog/nginx_error:
     include: /var/log/nginx/error.log
     resource:
-      service.name: nginx
+      service.name: nginx-error
     operators:
       - type: regex_parser
-        regex: '(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<severity>\w+)\] (?P<pid>\d+)#(?P<tid>\d+): (?:\*(?P<cid>\d+) )?(?P<message>.+)'
+        regex: '(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<severity>\w+)\] (?P<pid>\d+)#(?P<tid>\d+): (?:\*(?P<cid>\d+) )?(?P<message>[^,]+), (?P<kv>.+)'
         timestamp:
           layout: "%Y/%m/%d %H:%M:%S"
           parse_from: attributes["timestamp"]
@@ -117,6 +117,14 @@ receivers:
         from: attributes["cid"]
         to: resource["correlation.id"]
         if: 'type(attributes["cid"]) != "nil"'
+      # kv
+      - type: key_value_parser
+        parse_from: attributes["kv"]
+        parse_to: attributes["nginx"]
+        delimiter: ':'
+        pair_delimiter: ','
+      - type: remove
+        field: attributes["kv"]
   # https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver
   otlp:
     protocols:
@@ -278,6 +286,9 @@ processors:
   transform/nginx_error:
     error_mode: ignore
     log_statements:
+      - context: log
+        statements:
+          - flatten(attributes)
       - context: log
         conditions:
           - IsMatch(body, "limiting requests*")
