@@ -20,9 +20,9 @@ extensions:
     response_body:
       healthy: "ok"
   pprof:
-    endpoint: otelcol:1777
+    endpoint: otelcol-gateway:1777
   zpages:
-    endpoint: otelcol:55679
+    endpoint: otelcol-gateway:55679
   bearertokenauth:
     token: ${OTEL_BEARER_TOKEN}
 
@@ -31,17 +31,17 @@ receivers:
   otlp/with_auth:
     protocols:
       http:
-        endpoint: otelcol:4318
+        endpoint: otelcol-gateway:4318
         auth:
           authenticator: bearertokenauth
   otlp/internal:
     protocols:
       grpc:
-        endpoint: otelcol:4317
+        endpoint: otelcol-gateway:4317
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/syslogreceiver
   syslog:
     udp:
-      listen_address: otelcol:514
+      listen_address: otelcol-gateway:514
       add_attributes: true
       one_log_per_packet: true
     protocol: rfc3164
@@ -101,7 +101,7 @@ exporters:
   #      enabled: true
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/exporter/prometheusremotewriteexporter
   prometheusremotewrite:
-    endpoint: "http://prometheus:9090/api/v1/write"
+    endpoint: http://prometheus:9090/api/v1/write
     # wal cause error, do not use
     # wal:
     resource_to_telemetry_conversion:

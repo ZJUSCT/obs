@@ -45,6 +45,10 @@ services:
       - SNMP_PRIVATE_KEY=${SNMP_PRIVATE_KEY}
       - SNMP_AUTH_KEY=${SNMP_AUTH_KEY}
     restart: unless-stopped
+    depends_on:
+      otelcol-gateway:
+        condition: service_started
+        restart: true
 
 # https://hub.docker.com/r/clickhouse/clickhouse-server/
   clickhouse:

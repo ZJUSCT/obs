@@ -2908,7 +2908,7 @@ exporters:
   # https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/otlpexporter
   # grpc only
   otlp/internal:
-    endpoint: dns://otelcol-gateway:4317
+    endpoint: otelcol-gateway:4317
     tls:
       insecure: true
 
