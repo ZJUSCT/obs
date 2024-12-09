@@ -4,7 +4,7 @@ name: zjusct-observability # COMPOSE_PROJECT_NAME variable
 services:
 # https://opentelemetry.io/docs/collector/installation/
   otelcol-gateway:
-    build: .
+    image: otel/opentelemetry-collector-contrib
     volumes:
       - ./config/otelcol/gateway.yaml:/etc/otelcol-contrib/config.yaml:ro
     # https://opentelemetry.io/docs/collector/configuration/#environment-variables
@@ -45,10 +45,6 @@ services:
       - SNMP_PRIVATE_KEY=${SNMP_PRIVATE_KEY}
       - SNMP_AUTH_KEY=${SNMP_AUTH_KEY}
     restart: unless-stopped
-    depends_on:
-      otelcol-gateway:
-        condition: service_healthy
-        restart: true
 
 # https://hub.docker.com/r/clickhouse/clickhouse-server/
   clickhouse:
