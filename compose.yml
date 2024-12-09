@@ -3,25 +3,21 @@ name: zjusct-observability # COMPOSE_PROJECT_NAME variable
 
 services:
 # https://opentelemetry.io/docs/collector/installation/
-  otelcol:
-    image: otel/opentelemetry-collector-contrib
+  otelcol-gateway:
+    build: .
     volumes:
       - ./config/otelcol/gateway.yaml:/etc/otelcol-contrib/config.yaml:ro
     # https://opentelemetry.io/docs/collector/configuration/#environment-variables
     environment:
       - OTEL_BEARER_TOKEN=${OTEL_BEARER_TOKEN}
-      - SNMP_PRIVATE_KEY=${SNMP_PRIVATE_KEY}
-      - SNMP_AUTH_KEY=${SNMP_AUTH_KEY}
     ports:
     # extension ports
       - 127.0.0.1:13133:13133   # health_check extension
       - 127.0.0.1:1777:1777     # pprof
       - 127.0.0.1:55679:55679   # zpages
     # receiver ports
-    #  - 161:161       # SNMP (responses) receiver
-    #  - 162:162       # SNMP (traps) receiver
       - 514:514/udp   # syslog receiver
-    #  - 4317:4317     # OTLP gRPC receiver, conflict with host otelcol
+    #  - 4317:4317     # OTLP gRPC receiver, only for internal use
       - 4319:4318     # OTLP http receiver, conflict with host otel-collector
     restart: unless-stopped
     # cannot use any command in this image...
@@ -35,6 +31,22 @@ services:
         condition: service_healthy
         restart: true
       prometheus:
+        condition: service_healthy
+        restart: true
+      influxdb:
+        condition: service_healthy
+        restart: true
+
+  otelcol-snmp:
+    image: otel/opentelemetry-collector-contrib
+    volumes:
+      - ./config/otelcol/snmp.yaml:/etc/otelcol-contrib/config.yaml:ro
+    environment:
+      - SNMP_PRIVATE_KEY=${SNMP_PRIVATE_KEY}
+      - SNMP_AUTH_KEY=${SNMP_AUTH_KEY}
+    restart: unless-stopped
+    depends_on:
+      otelcol:
         condition: service_healthy
         restart: true
 
@@ -81,7 +93,7 @@ services:
       interval: 10s
       timeout: 3s
       retries: 3
-  
+
 # https://hub.docker.com/_/influxdb
   influxdb:
     image: influxdb:2
