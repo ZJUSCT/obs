@@ -55,6 +55,30 @@ WHERE (
     OR ResourceAttributes ['host.name'] = '$host_name'
   )
 GROUP BY container_name;
+-- level
+SELECT SeverityText as level
+FROM otel_logs
+WHERE (
+    Timestamp >= $__fromTime
+    AND Timestamp <= $__toTime
+  )
+  AND (
+    '$cloud_region' = 'ALL'
+    OR ResourceAttributes ['cloud.region'] = '$cloud_region'
+  )
+  AND (
+    '$host_name' = 'ALL'
+    OR ResourceAttributes ['host.name'] = '$host_name'
+  )
+  AND (
+    '$service_name' = 'ALL'
+    OR ResourceAttributes ['service.name'] = '$service_name'
+  )
+  AND (
+    '$container_name' = 'ALL'
+    OR ResourceAttributes ['container.name'] = '$container_name'
+  )
+GROUP BY level;
 -- panels
 -- log volume
 SELECT toStartOfInterval(
@@ -62,13 +86,13 @@ SELECT toStartOfInterval(
     toIntervalMillisecond($__interval_ms * 6)
   ) as timestamp,
   countIf(
-    SeverityNumber >= 17
-    AND SeverityNumber <= 20
-  ) as error,
-  countIf(
     SeverityNumber >= 21
     AND SeverityNumber <= 24
   ) as fatal,
+  countIf(
+    SeverityNumber >= 17
+    AND SeverityNumber <= 20
+  ) as error,
   countIf(
     SeverityNumber >= 13
     AND SeverityNumber <= 16
@@ -111,6 +135,13 @@ WHERE (
     OR ResourceAttributes ['container.name'] = '$container_name'
   )
   AND (Body LIKE '%$content%')
+  AND (
+    SeverityText IN (
+      SELECT *
+      FROM
+      VALUES($level)
+    )
+  )
 GROUP BY timestamp
 ORDER BY timestamp DESC;
 -- log details
@@ -142,5 +173,12 @@ WHERE (
     OR ResourceAttributes ['container.name'] = '$container_name'
   )
   AND (body LIKE '%$content%')
+  AND (
+    SeverityText IN (
+      SELECT *
+      FROM
+      VALUES($level)
+    )
+  )
 ORDER BY timestamp DESC
 LIMIT 500;

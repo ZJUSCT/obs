@@ -1,7 +1,6 @@
 # https://opentelemetry.io/docs/collector/configuration/
 # https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
 # Version: otelcol-contrib v0.111.0
-# Date: 2024-10-14
 # Environment Variables should be set in .env:
 #
 #   OTEL_BEARER_TOKEN=

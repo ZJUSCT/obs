@@ -1,7 +1,7 @@
+# curl https://ghp.ci/https://raw.githubusercontent.com/ZJUSCT/clusters.zju.edu.cn/refs/heads/main/tools/update_agent_config.sh | sudo bash
 # https://opentelemetry.io/docs/collector/configuration/
 # https://github.com/open-telemetry/opentelemetry-collector/blob/main/examples/local/otel-config.yaml
-# Version: otelcol-contrib v0.113.0
-# Date: 2024-11-15
+# Version: otelcol-contrib v0.115.0
 # Environment Variables should be set in systemd service file:
 #
 #   [Service]
@@ -70,11 +70,12 @@ receivers:
         to: resource["process.pid"]
       - type: severity_parser
         parse_from: attributes["http.status_code"]
+        overwrite_text: true
         mapping:
-          error: 5xx
-          warn: 4xx
-          info: 3xx
-          debug: 2xx
+          ERROR: 5xx
+          WARN: 4xx
+          INFO: 3xx
+          DEBUG: 2xx
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
   filelog/nginx_error:
     include: /var/log/nginx/error.log
@@ -89,15 +90,16 @@ receivers:
         severity:
           parse_from: attributes["severity"]
           # nginx error level: debug, info, notice, warn, error, crit, alert, or emerg
+          overwrite_text: true
           mapping:
-            fatal: emerg
-            error3: alert
-            error2: crit
-            error: error
-            warn: warn
-            info2: notice
-            info: info
-            debug: debug
+            FATAL: emerg
+            ERROR3: alert
+            ERROR2: crit
+            ERROR: error
+            WARN: warn
+            INFO2: notice
+            INFO: info
+            DEBUG: debug
       - type: remove
         field: attributes["timestamp"]
       - type: remove
@@ -175,16 +177,17 @@ receivers:
       - type: severity_parser
         parse_from: attributes.journald["PRIORITY"]
         preset: none
+        overwrite_text: true
         mapping:
           # OTel severity number: systemd priority # syslog severity
-          fatal: 0 # emerg
-          error3: 1 # alert
-          error2: 2 # crit
-          error: 3
-          warn: 4
-          info2: 5 # notice
-          info: 6
-          debug: 7
+          FATAL: 0 # emerg
+          ERROR3: 1 # alert
+          ERROR2: 2 # crit
+          ERROR: 3
+          WARN: 4
+          INFO2: 5 # notice
+          INFO: 6
+          DEBUG: 7
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver
   hostmetrics/fast:
     collection_interval: 15s
@@ -280,7 +283,7 @@ processors:
           - IsMatch(body, "limiting requests*")
         statements:
           - set(severity_number, 9)
-          - set(severity_text, "info")
+          - set(severity_text, "INFO")
 
 exporters:
   # https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
