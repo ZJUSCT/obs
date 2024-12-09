@@ -68,6 +68,13 @@ receivers:
       - type: move
         from: attributes["resource.process.pid"]
         to: resource["process.pid"]
+      - type: severity_parser
+        parse_from: attributes["http.status_code"]
+        mapping:
+          error: 5xx
+          warn: 4xx
+          info: 3xx
+          debug: 2xx
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/receiver/filelogreceiver/README.md
   filelog/nginx_error:
     include: /var/log/nginx/error.log
@@ -264,6 +271,16 @@ processors:
       - context: log
         statements:
           - flatten(attributes)
+  # set severity to info if body contains 'limiting requests'
+  transform/nginx_error:
+    error_mode: ignore
+    log_statements:
+      - context: log
+        conditions:
+          - IsMatch(body, "limiting requests*")
+        statements:
+          - set(severity_number, 9)
+          - set(severity_text, "info")
 
 exporters:
   # https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/debugexporter
@@ -298,17 +315,28 @@ service:
         ]
       exporters: [otlphttp/with_auth]
     # not enabled by default:
-    # logs/nginx:
-    #   receivers: [filelog/nginx_access, filelog/nginx_error]
+    # logs/nginx_access:
+    #   receivers: [filelog/nginx_access]
     #   processors: [memory_limiter, batch, resourcedetection, resource/cloud]
+    #   exporters: [otlphttp/with_auth]
+    # logs/nginx_error:
+    #   receivers: [filelog/nginx_error]
+    #   processors:
+    #     [
+    #       memory_limiter,
+    #       batch,
+    #       transform/nginx_error,
+    #       resourcedetection,
+    #       resource/cloud,
+    #     ]
     #   exporters: [otlphttp/with_auth]
     traces:
       receivers: [otlp]
       processors: [memory_limiter, batch, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
+    metrics:
     # not enabled by default:
     # - podman_stats
-    metrics:
       receivers: [docker_stats, hostmetrics/fast, hostmetrics/slow]
       processors: [memory_limiter, batch, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
