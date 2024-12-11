@@ -24,7 +24,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 6,
   "links": [],
   "panels": [
     {
@@ -745,7 +745,7 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 8,
+        "w": 6,
         "x": 0,
         "y": 18
       },
@@ -893,16 +893,18 @@
       "gridPos": {
         "h": 9,
         "w": 6,
-        "x": 8,
+        "x": 6,
         "y": 18
       },
       "id": 21,
       "options": {
         "legend": {
-          "calcs": [],
-          "displayMode": "list",
+          "calcs": ["lastNotNull"],
+          "displayMode": "table",
           "placement": "right",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Last *",
+          "sortDesc": false
         },
         "tooltip": {
           "mode": "single",
@@ -918,7 +920,7 @@
           },
           "disableTextWrap": false,
           "editorMode": "builder",
-          "expr": "sum by(device) (rate(system_disk_io_bytes_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\"}[$__rate_interval]))",
+          "expr": "sum by(device) (rate(system_disk_io_bytes_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\", direction=\"read\"}[$__rate_interval]))",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -926,6 +928,19 @@
           "range": true,
           "refId": "A",
           "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "builder",
+          "expr": "- sum by(device) (rate(system_disk_io_bytes_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\", direction=\"write\"}[$__rate_interval]))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
         }
       ],
       "title": "I/O Bytes",
@@ -996,17 +1011,19 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 5,
-        "x": 14,
+        "w": 6,
+        "x": 12,
         "y": 18
       },
       "id": 23,
       "options": {
         "legend": {
-          "calcs": [],
-          "displayMode": "list",
+          "calcs": ["lastNotNull"],
+          "displayMode": "table",
           "placement": "right",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Last *",
+          "sortDesc": false
         },
         "tooltip": {
           "mode": "single",
@@ -1021,8 +1038,8 @@
             "uid": "${datasource}"
           },
           "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "sum by(device) (rate(system_disk_operations_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\"}[$__rate_interval]))",
+          "editorMode": "code",
+          "expr": "sum by(device) (rate(system_disk_operations_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\", direction=\"read\"}[$__rate_interval]))",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1030,6 +1047,19 @@
           "range": true,
           "refId": "A",
           "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "-sum by(device) (rate(system_disk_operations_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\", direction=\"write\"}[$__rate_interval]))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
         }
       ],
       "title": "I/O Operation",
@@ -1100,17 +1130,19 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 5,
-        "x": 19,
+        "w": 6,
+        "x": 18,
         "y": 18
       },
       "id": 24,
       "options": {
         "legend": {
-          "calcs": [],
-          "displayMode": "list",
+          "calcs": ["lastNotNull"],
+          "displayMode": "table",
           "placement": "right",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Last *",
+          "sortDesc": true
         },
         "tooltip": {
           "mode": "single",
@@ -1125,8 +1157,8 @@
             "uid": "${datasource}"
           },
           "disableTextWrap": false,
-          "editorMode": "builder",
-          "expr": "sum by(device) (rate(system_disk_operation_time_seconds_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\"}[$__rate_interval]))",
+          "editorMode": "code",
+          "expr": "sum by(device) (rate(system_disk_operation_time_seconds_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\", direction=\"read\"}[$__rate_interval]))",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
           "instant": false,
@@ -1134,6 +1166,19 @@
           "range": true,
           "refId": "A",
           "useBackend": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "-sum by(device) (rate(system_disk_operation_time_seconds_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\", direction=\"write\"}[$__rate_interval]))",
+          "hide": false,
+          "instant": false,
+          "legendFormat": "__auto",
+          "range": true,
+          "refId": "B"
         }
       ],
       "title": "I/O Operation Time",
@@ -2047,7 +2092,7 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 14,
+        "w": 10,
         "x": 6,
         "y": 54
       },
@@ -2102,6 +2147,87 @@
       ],
       "title": "I/O Bytes",
       "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "default": false,
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 4,
+        "x": 16,
+        "y": 54
+      },
+      "id": 47,
+      "options": {
+        "displayMode": "gradient",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "11.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "disableTextWrap": false,
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sort_desc(sum by(device, direction) (system_network_io_bytes_total{cloud_region=\"$cloud_region\", host_name=\"$host_name\"}))",
+          "fullMetaSearch": false,
+          "includeNullMetadata": true,
+          "instant": true,
+          "legendFormat": "{{device}}-{{direction}}",
+          "range": false,
+          "refId": "A",
+          "useBackend": false
+        }
+      ],
+      "title": "I/O Bytes Total",
+      "type": "bargauge"
     },
     {
       "datasource": {
@@ -2240,7 +2366,7 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 14,
+        "w": 10,
         "x": 6,
         "y": 61
       },
@@ -2791,7 +2917,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -2895,7 +3022,7 @@
           }
         ]
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -3123,6 +3250,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Host Metrics Receiver",
   "uid": "de100g4yd5xxcc",
-  "version": 4,
+  "version": 12,
   "weekStart": ""
 }
