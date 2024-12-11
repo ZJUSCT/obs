@@ -122,7 +122,7 @@ SELECT toStartOfMinute(Timestamp) as timestamp,
 FROM otel_logs
 WHERE ResourceAttributes ['cloud.region'] = 'zjusct-falcon'
         AND ResourceAttributes ['host.name'] = 'zjumirror'
-        AND ResourceAttributes ['service.name'] = 'nginx' -- 过滤 IPv4 地址
+        AND ResourceAttributes ['service.name'] = 'nginx-access' -- 过滤 IPv4 地址
         AND isIPv4String(LogAttributes ['client.address'])
         AND LogAttributes ['log.file.name'] = 'otel.log'
 GROUP BY timestamp,
