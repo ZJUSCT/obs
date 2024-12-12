@@ -10,7 +10,7 @@ indent_size = 8
 end_of_line = lf
 insert_final_newline = true
 
-[*.{yaml,yml}]
+[*.{yaml,yml,sql}]
 indent_style = space
 indent_size = 2
 end_of_line = lf

@@ -7,7 +7,6 @@
 ## Todo List
 
 - To be done
-    - [ ] 拆分 SNMP Receiver
     - [ ] InfluxDB Exporter
     - [ ] Nginx Native Collector
     - [ ] Grafana Provision Alerts
@@ -121,7 +120,7 @@ flowchart TD
 
 除了上述资源属性和基本的 JSON 等格式解析，agent 尽可能不进行其他处理。这样既方便部署（更改主要发生在 gateway），也能够保持 agent 的轻量化，减少边缘侧资源消耗。
 
-### Grafana Dashboards
+### Grafana
 
 我们基于上述的数据源、资源属性和 OpenTelemetry 语义规范，制作了一系列的 Grafana 仪表盘，存放于 [`config/grafana/provisioning/dashboards`](config/grafana/provisioning/dashboards) 目录下：
 

@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 9,
   "links": [],
   "panels": [
     {
@@ -95,7 +95,7 @@
           "reverse": true
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "editorType": "sql",
@@ -110,9 +110,9 @@
               "table": ""
             }
           },
-          "pluginVersion": "4.5.0",
+          "pluginVersion": "4.5.1",
           "queryType": "table",
-          "rawSql": "SELECT toStartOfInterval(\n    Timestamp,\n    -- 根据 grafana 的查询时间范围调整聚合粒度\n    toIntervalMillisecond($__interval_ms * 30) \n  ) as timestamp,\n  replaceRegexpOne(\n    -- 从 URL 中提取仓库名\n    LogAttributes ['url.path'],\n    '^/([^/]+)/.*',\n    '\\\\1'\n  ) AS repo,\n  COUNT(*)\nFROM default.otel_logs\nWHERE (\n    Timestamp \u003e= $__fromTime\n    AND Timestamp \u003c= $__toTime\n  )\n  AND (\n    ResourceAttributes ['cloud.region'] = 'zjusct-falcon'\n  )\n  AND (ResourceAttributes ['host.name'] = 'zjumirror')\n  AND (ResourceAttributes ['service.name'] = 'nginx')\n  AND (LogAttributes ['log.file.name'] = 'otel.log')\n  AND (\n    match(LogAttributes ['url.path'], '^/([^/]+)/.*')\n  )\nGROUP BY ALL\n-- 按请求次数降序排列，然后对每个时间段取前 5 个\nORDER BY COUNT(*) DESC\nLIMIT 5 BY timestamp;",
+          "rawSql": "SELECT toStartOfInterval(\n    Timestamp,\n    -- 根据 grafana 的查询时间范围调整聚合粒度\n    toIntervalMillisecond($__interval_ms * 30)\n  ) as timestamp,\n  replaceRegexpOne(\n    -- 从 URL 中提取仓库名\n    LogAttributes ['url.path'],\n    '^/([^/]+)/.*',\n    '\\\\1'\n  ) AS repo,\n  COUNT(*)\nFROM default.otel_logs\nWHERE (\n    Timestamp \u003e= $__fromTime\n    AND Timestamp \u003c= $__toTime\n  )\n  AND (\n    ResourceAttributes ['cloud.region'] = 'zjusct-falcon'\n  )\n  AND (ResourceAttributes ['host.name'] = 'zjumirror')\n  AND (ResourceAttributes ['service.name'] = 'nginx-access')\n  AND (LogAttributes ['log.file.name'] = 'otel.log')\n  AND (\n    match(LogAttributes ['url.path'], '^/([^/]+)/.*')\n  )\nGROUP BY ALL -- 按请求次数降序排列，然后对每个时间段取前 5 个\nORDER BY COUNT(*) DESC\nLIMIT 5 BY timestamp;\n",
           "refId": "A"
         }
       ],
@@ -281,7 +281,7 @@
           "zoom": 4
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "editorType": "sql",
@@ -432,7 +432,7 @@
           "zoom": 4
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "editorType": "sql",
@@ -521,7 +521,7 @@
           "reverse": true
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "editorType": "sql",
@@ -624,7 +624,7 @@
           "reverse": true
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "editorType": "sql",
@@ -726,7 +726,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -798,7 +798,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -901,7 +901,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -1017,7 +1017,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -1121,7 +1121,7 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -1194,8 +1194,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1299,8 +1298,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1403,8 +1401,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               },
               {
                 "color": "red",
@@ -1474,6 +1471,6 @@
   "timezone": "browser",
   "title": "ZJU Mirror",
   "uid": "be0q417oay0aoe",
-  "version": 51,
+  "version": 3,
   "weekStart": ""
 }

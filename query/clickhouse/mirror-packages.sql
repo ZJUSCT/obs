@@ -19,7 +19,7 @@ WHERE (
     ResourceAttributes ['cloud.region'] = 'zjusct-falcon'
   )
   AND (ResourceAttributes ['host.name'] = 'zjumirror')
-  AND (ResourceAttributes ['service.name'] = 'nginx')
+  AND (ResourceAttributes ['service.name'] = 'nginx-access')
   AND (LogAttributes ['log.file.name'] = 'otel.log')
   AND (
     match(LogAttributes ['url.path'], '^/([^/]+)/.*')
