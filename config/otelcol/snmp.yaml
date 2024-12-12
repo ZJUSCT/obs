@@ -2949,7 +2949,7 @@ exporters:
   # https://github.com/open-telemetry/opentelemetry-collector/tree/main/exporter/otlpexporter
   # grpc only
   otlp/internal:
-    endpoint: localhost:4317
+    endpoint: otelcol-gateway:4317
     tls:
       insecure: true
 
@@ -2959,9 +2959,9 @@ service:
       receivers: [snmp/pdu-30966-1, snmp/pdu-30966-2]
       processors:
         [memory_limiter, batch, metricstransform/pdu-30966, resource/cloud]
-      exporters: [otlp/internal, debug/normal]
+      exporters: [otlp/internal]
     metrics/pdu-42578:
       receivers: [snmp/pdu-42578-1]
       processors:
         [memory_limiter, batch, metricstransform/pdu-42578, resource/cloud]
-      exporters: [otlp/internal, debug/normal]
+      exporters: [otlp/internal]
