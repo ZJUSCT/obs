@@ -91,7 +91,7 @@ receivers:
       service.name: nginx-error
     operators:
       - type: regex_parser
-        regex: '(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<severity>\w+)\] (?P<pid>\d+)#(?P<tid>\d+): (?:\*(?P<cid>\d+) )?(?P<message>[^,]+), (?P<kv>.+)'
+        regex: '(?P<timestamp>\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}) \[(?P<severity>\w+)\] (?P<pid>\d+)#(?P<tid>\d+): (?:\*(?P<cid>\d+) )?(?P<message>[^,]+?)(?:, (?P<kv>.+))?'
         timestamp:
           layout: "%Y/%m/%d %H:%M:%S"
           parse_from: attributes["timestamp"]
