@@ -716,6 +716,10 @@
           "text": ["All"],
           "value": ["$__all"]
         },
+        "datasource": {
+          "type": "grafana-clickhouse-datasource",
+          "uid": "clickhouse"
+        },
         "definition": "SELECT SeverityText as level\nFROM otel_logs\nWHERE (\n    Timestamp \u003e= $__fromTime\n    AND Timestamp \u003c= $__toTime\n  )\n  AND (\n    '$cloud_region' = 'ALL'\n    OR ResourceAttributes ['cloud.region'] = '$cloud_region'\n  )\n  AND (\n    '$host_name' = 'ALL'\n    OR ResourceAttributes ['host.name'] = '$host_name'\n  )\n  AND (\n    '$service_name' = 'ALL'\n    OR ResourceAttributes ['service.name'] = '$service_name'\n  )\n  AND (\n    '$container_name' = 'ALL'\n    OR ResourceAttributes ['container.name'] = '$container_name'\n  )\nGROUP BY level;",
         "includeAll": true,
         "label": "Level",
@@ -738,6 +742,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Filelog Receiver",
   "uid": "ae11zuc35vv28f",
-  "version": 20,
+  "version": 21,
   "weekStart": ""
 }
