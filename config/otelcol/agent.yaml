@@ -34,6 +34,7 @@ receivers:
       - type: container
         format: docker
         add_metadata_from_filepath: false
+      # self defined docker log format
       - type: key_value_parser
         parse_from: attributes.attrs.tag
         parse_to: resource
@@ -41,6 +42,13 @@ receivers:
       - type: remove
         field: attributes.attrs
         if: 'type(attributes.attrs) != "nil"'
+      # use iostrem to determine severity
+      - type: severity_parser
+        parse_from: attributes["log.iostream"]
+        overwrite_text: true
+        mapping:
+          WARN: stderr
+          INFO: stdout
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/podmanreceiver
   podman_stats:
     # 默认仅收集 root 的 /run/podman/podman.sock
