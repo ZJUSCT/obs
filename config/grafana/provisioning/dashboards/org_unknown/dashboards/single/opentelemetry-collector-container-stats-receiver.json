@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 5,
+  "id": 4,
   "links": [],
   "panels": [
     {
@@ -88,7 +88,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -175,7 +175,7 @@
         "textMode": "auto",
         "wideLayout": true
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -280,6 +280,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -384,6 +385,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -488,6 +490,7 @@
           "sort": "none"
         }
       },
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -645,7 +648,7 @@
           }
         ]
       },
-      "pluginVersion": "11.2.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "datasource": {
@@ -762,7 +765,7 @@
           "useBackend": false
         }
       ],
-      "title": "CPU Utilization",
+      "title": "Resource Table",
       "transformations": [
         {
           "id": "timeSeriesTable",
@@ -786,33 +789,28 @@
       "type": "table"
     }
   ],
+  "preload": false,
   "refresh": "5s",
-  "schemaVersion": 39,
+  "schemaVersion": 40,
   "tags": ["docker", "podman", "otelcol", "prometheus"],
   "templating": {
     "list": [
       {
         "current": {
-          "selected": false,
           "text": "Prometheus",
           "value": "prometheus"
         },
-        "hide": 0,
         "includeAll": false,
         "label": "Data Source",
-        "multi": false,
         "name": "datasource",
         "options": [],
         "query": "prometheus",
-        "queryValue": "",
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
         "type": "datasource"
       },
       {
         "current": {
-          "selected": false,
           "text": "zjusct-falcon",
           "value": "zjusct-falcon"
         },
@@ -821,10 +819,8 @@
           "uid": "${datasource}"
         },
         "definition": "label_values(cloud_region)",
-        "hide": 0,
         "includeAll": false,
         "label": "Cloud Region",
-        "multi": false,
         "name": "cloud_region",
         "options": [],
         "query": {
@@ -834,13 +830,10 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": false,
           "text": "zjumirror",
           "value": "zjumirror"
         },
@@ -849,10 +842,8 @@
           "uid": "${datasource}"
         },
         "definition": "label_values({cloud_region=\"$cloud_region\"},host_name)",
-        "hide": 0,
         "includeAll": false,
         "label": "Host Name",
-        "multi": false,
         "name": "host_name",
         "options": [],
         "query": {
@@ -862,8 +853,6 @@
         },
         "refresh": 1,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       }
     ]
@@ -876,6 +865,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Collector Container Stats Receiver",
   "uid": "be10un9edmmf4c",
-  "version": 4,
+  "version": 2,
   "weekStart": ""
 }

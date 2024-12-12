@@ -2848,30 +2848,71 @@ processors:
   # https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/metricstransformprocessor/README.md
   metricstransform/pdu-42578:
     transforms:
+      # outlet should scale down more
       - include: pdu.current
         action: update
+        match_type: strict
+        experimental_match_labels: {"pdu.port.type": "input"}
+        operations:
+          - action: toggle_scalar_data_type
+          - action: experimental_scale_value
+            experimental_scale: 0.01
+      - include: pdu.current
+        action: update
+        match_type: strict
+        experimental_match_labels: {"pdu.port.type": "outlet"}
+        operations:
+          - action: toggle_scalar_data_type
+          - action: experimental_scale_value
+            experimental_scale: 0.001
+      - include: pdu.voltage
+        action: update
+        match_type: strict
+        experimental_match_labels: {"pdu.port.type": "input"}
         operations:
           - action: toggle_scalar_data_type
           - action: experimental_scale_value
             experimental_scale: 0.01
       - include: pdu.voltage
         action: update
-        operations:
-          - action: toggle_scalar_data_type
-          - action: experimental_scale_value
-            experimental_scale: 0.01
-      - include: pdu.power_factor
-        action: update
+        match_type: strict
+        experimental_match_labels: {"pdu.port.type": "outlet"}
         operations:
           - action: toggle_scalar_data_type
           - action: experimental_scale_value
             experimental_scale: 0.001
+      - include: pdu.power_factor
+        action: update
+        match_type: strict
+        experimental_match_labels: {"pdu.port.type": "input"}
+        operations:
+          - action: toggle_scalar_data_type
+          - action: experimental_scale_value
+            experimental_scale: 0.001
+      - include: pdu.power_factor
+        action: update
+        match_type: strict
+        experimental_match_labels: {"pdu.port.type": "outlet"}
+        operations:
+          - action: toggle_scalar_data_type
+          - action: experimental_scale_value
+            experimental_scale: 0.0001
       - include: pdu.energy
         action: update
+        match_type: strict
+        experimental_match_labels: {"pdu.port.type": "input"}
         operations:
           - action: toggle_scalar_data_type
           - action: experimental_scale_value
             experimental_scale: 0.01
+      - include: pdu.energy
+        action: update
+        match_type: strict
+        experimental_match_labels: {"pdu.port.type": "outlet"}
+        operations:
+          - action: toggle_scalar_data_type
+          - action: experimental_scale_value
+            experimental_scale: 0.001
   metricstransform/pdu-30966:
     transforms:
       - include: pdu.current
