@@ -2859,8 +2859,8 @@ processors:
             experimental_scale: 0.01
       - include: pdu.current
         action: update
-        match_type: strict
-        experimental_match_labels: {"pdu.port.type": "outlet"}
+        match_type: regexp
+        experimental_match_labels: {"pdu.port.type": "outlet", "pdu.port.index": "*"}
         operations:
           - action: toggle_scalar_data_type
           - action: experimental_scale_value
@@ -2875,8 +2875,8 @@ processors:
             experimental_scale: 0.01
       - include: pdu.voltage
         action: update
-        match_type: strict
-        experimental_match_labels: {"pdu.port.type": "outlet"}
+        match_type: regexp
+        experimental_match_labels: {"pdu.port.type": "outlet", "pdu.port.index": "*"}
         operations:
           - action: toggle_scalar_data_type
           - action: experimental_scale_value
@@ -2891,8 +2891,8 @@ processors:
             experimental_scale: 0.001
       - include: pdu.power_factor
         action: update
-        match_type: strict
-        experimental_match_labels: {"pdu.port.type": "outlet"}
+        match_type: regexp
+        experimental_match_labels: {"pdu.port.type": "outlet", "pdu.port.index": "*"}
         operations:
           - action: toggle_scalar_data_type
           - action: experimental_scale_value
@@ -2907,8 +2907,8 @@ processors:
             experimental_scale: 0.01
       - include: pdu.energy
         action: update
-        match_type: strict
-        experimental_match_labels: {"pdu.port.type": "outlet"}
+        match_type: regexp
+        experimental_match_labels: {"pdu.port.type": "outlet", "pdu.port.index": "*"}
         operations:
           - action: toggle_scalar_data_type
           - action: experimental_scale_value
