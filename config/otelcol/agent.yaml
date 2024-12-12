@@ -136,7 +136,7 @@ receivers:
   # https://github.com/open-telemetry/opentelemetry-collector/tree/main/receiver/otlpreceiver
   otlp:
     protocols:
-      # default to localhost
+      # by default bind to localhost, grpc 4317, http 4318
       grpc:
       http:
 
@@ -359,6 +359,6 @@ service:
     metrics:
     # not enabled by default:
     # - podman_stats
-      receivers: [docker_stats, hostmetrics/fast, hostmetrics/slow]
+      receivers: [otlp, docker_stats, hostmetrics/fast, hostmetrics/slow]
       processors: [memory_limiter, batch, resourcedetection, resource/cloud]
       exporters: [otlphttp/with_auth]
