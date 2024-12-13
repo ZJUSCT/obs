@@ -87,8 +87,8 @@
         ]
       },
       "gridPos": {
-        "h": 18,
-        "w": 9,
+        "h": 16,
+        "w": 24,
         "x": 0,
         "y": 0
       },
@@ -110,7 +110,7 @@
           }
         ]
       },
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "builderOptions": {
@@ -331,7 +331,7 @@
               "table": "otel_traces"
             }
           },
-          "pluginVersion": "4.5.0",
+          "pluginVersion": "4.5.1",
           "queryType": "traces",
           "rawSql": "SELECT \n        \"Timestamp\" as startTime, \n        \"TraceId\" as traceID, \n        \"SpanName\" as operationName,\n        \"Duration\" as duration\nFROM \n        \"default\".\"otel_traces\" \nWHERE \n        (Timestamp \u003e= $__fromTime AND Timestamp \u003c= $__toTime) \n        AND (ParentSpanId = '') \n        AND (ServiceName = '$service_name')\nORDER BY \n        Timestamp DESC, \n        Duration DESC \nLIMIT 1000;",
           "refId": "A"
@@ -352,13 +352,13 @@
       },
       "gridPos": {
         "h": 18,
-        "w": 15,
-        "x": 9,
-        "y": 0
+        "w": 24,
+        "x": 0,
+        "y": 16
       },
       "id": 3,
       "options": {},
-      "pluginVersion": "11.3.0",
+      "pluginVersion": "11.4.0",
       "targets": [
         {
           "builderOptions": {
@@ -562,6 +562,6 @@
   "timezone": "browser",
   "title": "OpenTelemetry Tracing",
   "uid": "de14bivmffl6oe",
-  "version": 4,
+  "version": 2,
   "weekStart": ""
 }
