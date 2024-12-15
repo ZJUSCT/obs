@@ -60,7 +60,7 @@ We ❤️ Open Source
 
 ### OpenTelemetry
 
-Collector 部署为 **Agent + Gateway 模式**。在这种模式下，agent 尽可能只负责采集数据，更多的转换和处理逻辑交给 gateway。
+Collector 部署为 **Agent + Gateway 模式**。在这种模式下，agent 尽可能只负责采集数据，更多的转换和处理逻辑交给 gateway。**资源属性（Resource Attributes）** 用于标识产生数据的实体，由不同层级的 Collector 附加。通过资源属性划分数据来源的层级结构，有利于在 Grafana 中对数据进行分析。
 
 ```mermaid
 flowchart TD
@@ -87,36 +87,33 @@ flowchart TD
  n8["Infrastructure"] --> n1
 ```
 
-**资源属性（Resource Attributes）**用于表示产生数据的实体，由不同层级的 Collector 附加。下面是基于
+下面是基于 Semantic Conventions 1.28.0 的在 ZJUSCT 可观测性系统中的资源属性及其来源：
 
-- Semantic Conventions 1.28.0
-- OTel 1.38.0
-- OTel Collector Contrib v0.111.0
-- 日期：2024-10-14
+- 节点 agent
 
-在 ZJUSCT 可观测性系统中的资源属性及其来源：
+    - 节点自身的资源属性
 
-- 节点 agent：服务和容器至少具有一项，节点必须有。
-    - [进程和运行时 `process.*`](https://opentelemetry.io/docs/specs/semconv/resource/process/)：不强制要求。
-    - [服务 `service.name`](https://opentelemetry.io/docs/specs/semconv/resource/#service)：
-        - `journaldreceiver` **使用 Operator 提取** `SYSLOG_IDENTIFIER` 字段。
-        - `filelogreceiver` **使用 Operator 添加**。一般情况下手动添加（文件内很少再包含服务名）。
-    - [容器 `container.name`](https://opentelemetry.io/docs/specs/semconv/resource/container/)：
-        - `dockerstatsreceiver` **自动添加**。
-        - `filelogreceiver` **使用 Operator 提取** Docker JSON 日志中的字段，需要修改 Docker `deamon.json`。
-            > 修改 `daemon.json` 后，需要重建 docker 容器，日志选项才会生效。[linux - Docker daemon.json logging config not effective - Stack Overflow](https://stackoverflow.com/questions/46304780/docker-daemon-json-logging-config-not-effective)
-    - [节点 `host.name`](https://opentelemetry.io/docs/specs/semconv/resource/host/) 和[系统 `os.*`](https://opentelemetry.io/docs/specs/semconv/resource/os/)：
-        - `resourcedetector` 在流水线中**自动添加**。
-- 集群 gateway：
-    - [集群 `cloud.region`](https://opentelemetry.io/docs/specs/semconv/resource/cloud/)：
-        - 在流水线中**手动添加**。
-        > 目前 OTel 并未规定真正意义上的“集群”资源属性，因此暂借云服务信息 `cloud.*` 代替。
-    > 在简单跨集群部署的情况下可能没有单独的集群 gateway，此时需要 agent 中添加 `cloud.region`。
-    - [设备 `device.*`](https://opentelemetry.io/docs/specs/semconv/resource/device/)：
-        > 我们主要使用设备属性表示基础设施（路由器、交换机、智能 PDU 等），和节点有所区分。
-        > - `device.id`
-        > - `device.type`
-        - `syslogreceiver` **使用 Operator 提取** `hostname` 字段。
+        | 资源属性 | 来源 | 备注 |
+        | --- | --- | --- |
+        | [节点 `host.name`](https://opentelemetry.io/docs/specs/semconv/resource/host/) 和 [系统 `os.*`](https://opentelemetry.io/docs/specs/semconv/resource/os/) | `resourcedetector` | 在流水线中**自动添加** |
+
+    - 节点上运行的服务大致可以分为两类：进程和容器。
+
+    | 资源属性 | 来源 | 备注 |
+    | --- | --- | --- |
+    | [进程和运行时 `process.*`](https://opentelemetry.io/docs/specs/semconv/resource/process/) | 不强制要求 | - |
+    | [服务 `service.name`](https://opentelemetry.io/docs/specs/semconv/resource/#service) | `journaldreceiver` | **使用 Operator 提取** `SYSLOG_IDENTIFIER` 字段 |
+    | | `filelogreceiver` | **使用 Operator 添加**。一般情况下手动添加（文件内很少再包含服务名） |
+    | [容器 `container.name`](https://opentelemetry.io/docs/specs/semconv/resource/container/) | `dockerstatsreceiver` | **自动添加** |
+    | | `filelogreceiver` | **使用 Operator 提取** Docker JSON 日志中的字段，需要修改 Docker `deamon.json` |
+
+- 集群 gateway
+
+    | 资源属性 | 来源 | 备注 |
+    | --- | --- | --- |
+    | [集群 `cloud.region`](https://opentelemetry.io/docs/specs/semconv/resource/cloud/) | 在流水线中**手动添加** | 目前 OTel 并未规定真正意义上的“集群”资源属性，因此暂借云服务信息 `cloud.*` 代替。<br />在简单跨集群部署的情况下可能没有单独的集群 gateway，此时需要 agent 中添加 `cloud.region`。 |
+    | [设备 `device.*`](https://opentelemetry.io/docs/specs/semconv/resource/device/) | - | 我们主要使用设备属性表示基础设施（路由器、交换机、智能 PDU 等），和节点有所区分。<br />- `device.id`<br />- `device.type` |
+    | | `syslogreceiver` | **使用 Operator 提取** `hostname` 字段。 |
 
 除了上述资源属性和基本的 JSON 等格式解析，agent 尽可能不进行其他处理。这样既方便部署（更改主要发生在 gateway），也能够保持 agent 的轻量化，减少边缘侧资源消耗。
 
@@ -125,19 +122,7 @@ flowchart TD
 我们基于上述的数据源、资源属性和 OpenTelemetry 语义规范，制作了一系列的 Grafana 仪表盘，存放于 [`config/grafana/provisioning/dashboards`](config/grafana/provisioning/dashboards) 目录下：
 
 - `zjusct/single`：为单个种类的数据（比如某个 Receiver 和某个存储后端的搭配）制作的 panel 集合，方便 dashboard 取用组合。
-
-    | State | Dashboard | DataSources |
-    | --- | --- | --- |
-    | Stable | [Host Metrics](config/grafana/provisioning/dashboards/zjusct/single/OpenTelemetry%20Collector%20Host%20Metrics%20Receiver-1729080703572.json) | [otelcol-contrib hostmetricsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/hostmetricsreceiver)<br />Prometheus |
-    | Dev    | [Container Stats](config/grafana/provisioning/dashboards/zjusct/single/OpenTelemetry%20Collector%20Container%20Stats%20Receiver-1729080694443.json) | [otelcol-contrib dockerstatsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/dockerstatsreceiver) <br/> [otelcol-contrib podmanstatsreceiver](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/receiver/podmanreceiver)<br/>Prometheus |
-
 - `zjusct/combined`：多种数据源组合的仪表盘，有更加具体的应用场景。
-
-    | State | Dashboard |
-    | --- | --- |
-    | Dev    | [ZJUSCT Cluster](config/grafana/provisioning/dashboards/zjusct/combined/ZJUSCT%20Cluster-1729080780675.json) |
-    | Dev    | [ZJU Mirror](config/grafana/provisioning/dashboards/zjusct/combined/ZJU%20Mirror-1729080729604.json) |
-    | Dev    | [ZJU Mirror Defence](config/grafana/provisioning/dashboards/zjusct/combined/defence.json) |
 
 因为 Grafana 数据无持久化，移除 Grafana Docker 时应当注意备份仪表盘。我们使用 [esnet/gdg: Grafana Dashboard Manager](https://github.com/esnet/gdg) 进行仪表盘批量备份。
 
@@ -147,5 +132,5 @@ flowchart TD
 
 ## 代码风格
 
-- 请使用 EditorConfig 插件保持一致的代码风格。
+- 使用 EditorConfig 插件。你可以参考 [.editorconfig](.editorconfig) 文件。
 - SQL 使用 VSCode SQLTools 插件格式化。
